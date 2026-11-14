@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Create project files
+      - name: Create project files (1)
         run: |
           mkdir -p 'app'
           cat > 'app/build.gradle' <<'EOF_FILE'
@@ -23,14 +23,73 @@ jobs:
                   applicationId "com.mohamed.shifts"
                   minSdk 26
                   targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 4
+                  versionName "2.2"
+              }
+              signingConfigs {
+                  debug {
+                      storeFile file('shifts.keystore')
+                      storePassword 'android'
+                      keyAlias 'shifts'
+                      keyPassword 'android'
+                  }
+              }
+              buildTypes {
+                  debug { signingConfig signingConfigs.debug }
               }
               compileOptions {
                   sourceCompatibility JavaVersion.VERSION_17
                   targetCompatibility JavaVersion.VERSION_17
               }
           }
+          EOF_FILE
+          mkdir -p 'app'
+          cat > 'app/ks.b64' <<'EOF_FILE'
+          MIIJ9AIBAzCCCZ4GCSqGSIb3DQEHAaCCCY8EggmLMIIJhzCCBa4GCSqGSIb3DQEHAaCCBZ8EggWb
+          MIIFlzCCBZMGCyqGSIb3DQEMCgECoIIFQDCCBTwwZgYJKoZIhvcNAQUNMFkwOAYJKoZIhvcNAQUM
+          MCsEFFxOqGju0TVNa1ucA1yCu6oJGPfGAgInEAIBIDAMBggqhkiG9w0CCQUAMB0GCWCGSAFlAwQB
+          KgQQumVE7+W62HZutupuH8ud4wSCBNBLOX9Zv81ZPbVhpF7sd6D6nyqoIP7Ql+7v74uxdaM6cXMP
+          qHVP/4YNyx2eckK/2kLKuRUdpC+Gedu2ZzZJfuv34iYMs1QqMvpOUbAjqj4r/kkgnrqJTYcw3rep
+          61y2r6f0SAXOXrhic1dnoUSQUXUFpic8tlKXdsaJ1bDB88qwvyMzmXWuTDLS4yHjwIb0g/BdQRNt
+          UJAvxydfSw00ZqAlJXDiID1n7YwQHpaYBXuFi+2M0p6gKYgzLMNiYGpJE5RrLTYQ2EwAinpIB42V
+          Qhub5AEyxC5a/W1QvG9sl4nArMN7hDyUjdG3Bh9Iag5JiYprAd/tbT39f/oPmNDro66amVQhg+Mn
+          VhC/3124es3omp/XX0YLayU/4H08VainJlKylj3gVd8hObFS72AQilcs41yltKwF1pcE/XcQX0vT
+          jBoVz2xajQaTCzQ+k7JhOcPAFxewDp4DftOn9D/WKdO/EXUbDXIT0C9QxUMKt0CesbdV88XflqQF
+          0d2egz+DWAVMyx1CUDaLXzY/om5pXBTwK9DIB4SW5WAu0X5AwXwEOH8WMv4MOM9MawAurp2VGkPd
+          GgPJIc8OE+2JvoOLBhSMpj35O8x8+0C8wa2hPFYAQpj0zz2ZhCiC9mVz58U/bZBqABLXz0puj36q
+          l3DqmO7mlaLVNDYqpu4IJjJd5jgMB8GX0nLJ8fj8SE5Mtc9jFLR3odfAXsV97TlW0YIRi27GwGj8
+          0139SBO0QUJN4rmbpCx5LEFDtBAzu610jcX+MRN6o1AKKXi26KCom6dTS8KdjnieQxxzlddzu8xo
+          PCw3qV0Fm5FO5F5BFb6nquVxvg8h5cZTrfP/+CLazl5Xdj7fhtLZ14ZIVv1ipwVkJBLSqSaBii3k
+          dQb4InYTYNYpvu4ZWjlcdAqdC8VSzUdyj8s304UYgQBLQlS6s1bBt5QLEBMBZ8+4jMG2UWU7gQlb
+          LSXDgS/r9Kzw6WWmVZeTVypX9MbrGvHvwQAiiJBMcTS6O9UQ1B+up3CEYj27MdLrkYoKpUvq8Bxs
+          WumOZMKgkM7ymCyJ9xnMYWkabvD7OO79ou6sys+hFqrBMQG8IvicvmkPbqrHmI88wwhd/nXJcTCq
+          ZNu0WmEwdtkSZgm6rsxhklXbs9IBp/W3rDWj8SXYGP6ZiftP3P/5fUKmSwHH7mwxv41xTDOcKF72
+          4wXA7Ch2psKo/HSfcVBMNwBSdTzRsRyb2HOt/wq4pjhLroBfIw6Ac8Qpups2YsD8LJ5eGTATjcnk
+          S5/c44kIWmHySNubF3WGh1o1/VzvCADY+T139Fik8GXc4xHxUYHOh+sxNo5I3FBisjQF+4vUVdxv
+          F9uDrWNZ8t1BwQ25odkzHN6xW5xRONFrswTKsMFmfKhj/Rx+lbVivZy1vroXGB8o4cKpO6WgOazR
+          i95lqI+3wSWkqZBjiyIWa7otf84XbCUZaRML9M2FfmRqKXqedsTiYa9USfYioJmvj+sVloLJQk2Q
+          xbUO8glXC2jlsiZBTPhulRRdPH3zWBvZDWMFDt0FgOTI2KtnTRdM1uTRlokigFz/RuezuxzzRsBd
+          dH3yoiWFlLsrUgaEdYWwb9L3qHJ9lZuKSnVAlhgd7imC1HSv1YOPoyxzTL4hSFFJDzTYsdXTwp8w
+          eTFAMBsGCSqGSIb3DQEJFDEOHgwAcwBoAGkAZgB0AHMwIQYJKoZIhvcNAQkVMRQEElRpbWUgMTc5
+          NDY2OTUyMzA4MDCCA9EGCSqGSIb3DQEHBqCCA8IwggO+AgEAMIIDtwYJKoZIhvcNAQcBMGYGCSqG
+          SIb3DQEFDTBZMDgGCSqGSIb3DQEFDDArBBQeB8+qE43DAX34pssB8rStH5iMTQICJxACASAwDAYI
+          KoZIhvcNAgkFADAdBglghkgBZQMEASoEEG6SCeBIPJJLpXuVfNqg1xeAggNA0st4RZlW9177ipSI
+          XyKB4kgRe4YcDJdbGnfyvEK+NPPwgeTj9H7zMSawZj8M7vbe6ogqEz1445ydCoxp747mUj5fPwds
+          iihkUBRSO7rgbaNOx03yqz5NDWruqqCRrtYsvHpIsz23WCkuKfoAre1toRPeXmmK9CBOtR7lepRS
+          kDNsa3pBn+8j30cXnnhQ7eJIpDMpS5tPMKNWS/XIIaTR90RFKzts7O87AZHiSv21ZX30K2MVZ6fg
+          3YnRmXhFhnxlsTNp7Uyor2V34g7mQeiY1+5u3IKyVpM7O9xfJ2bKlyFZ8xKiix5Xl4XngOlgKcr/
+          LQSXSwhE7lSGc0HpYwnyj/u9MD/5Q+gMJ27IGr1vJutcJsZc5KClXmjTe2ApOX4V8JVW3CuHM+Gp
+          v23n6vDQe648P4N6TRBx2nereo76/ymxFHsTOU3tt1yZSTcn6zCYxcy/eixlnbANrHlDr3bgGTIE
+          3rt+1en2rjmFxotVMd6mrbcIS/omxIVqKZu8rCAFuDTUFwPxPg1wLamI7noDiH7CQfAcb/2AEcPn
+          AeiRfsZqu8swuFDzzm2XHYR0QUtuBuEzO0XagcgJiEqDDktJaleaPykNo+Lvg4Jqg+k21DtTEN0s
+          9YEyMyvMhDBjCD0YS6uACer3z/1fw5e1iHzarfCkCt35fd8/3WTaK9Bdkrrvac16gEPEYNTUTgGL
+          BpPiRByyGX87/DU67yUEN3mw1Fyasu/fvZjvMGFtvXMPl5CdVNI9iMtVghsewkvVBI2BHiURT4tM
+          E5Lxkzx7PuPfRlLeGKlWLl3mG+6XNxALsete+2jinQh/V1DSIrIuj7tXzyU/DcBzLMBeCSMkZs9J
+          1KQzJeE4osV/MGiPZCrgrLHrBZOOnxwWq0n+b/PNX4Ead63Bj+Y9lq58kA+BS+QhHcWC6sLQrhi5
+          cgpYnPp/Ual/UAch9V1404n4yLGQGrJhTTYBYwVqc8bc3pCw2CfadC+eZTQm9/ZIP5gde6x1a84u
+          K/14aC+nbAJbBB6Z/cDSxRbY2RHUHLwn/aRfuNKzrzSPWtqPw/XvqBBGM4+J5lU8maFt19f70qy7
+          hfTRZxlen+REa59QuABGfTJ76ZoOQjBNMDEwDQYJYIZIAWUDBAIBBQAEIED3JZX8J+C/0krqEcf8
+          sb+tpRvXmKRKi+ltjphx6T9pBBSsNM1am6saKXTmi8SFhfcaq6VBBwICJxA=
           EOF_FILE
           mkdir -p 'app/src/main'
           cat > 'app/src/main/AndroidManifest.xml' <<'EOF_FILE'
@@ -44,7 +103,7 @@ jobs:
                   android:supportsRtl="true"
                   android:theme="@android:style/Theme.Material.NoActionBar">
                   <activity android:name=".MainActivity" android:exported="true"
-                      android:configChanges="orientation|screenSize|keyboardHidden">
+                      android:configChanges="orientation|screenSize|keyboardHidden|uiMode">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
                           <category android:name="android.intent.category.LAUNCHER" />
@@ -53,6 +112,9 @@ jobs:
               </application>
           </manifest>
           EOF_FILE
+
+      - name: Create project files (2)
+        run: |
           mkdir -p 'app/src/main/assets'
           cat > 'app/src/main/assets/index.html' <<'EOF_FILE'
           <!DOCTYPE html>
@@ -60,263 +122,604 @@ jobs:
           <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-          <meta name="theme-color" content="#0f172a">
-          <meta name="apple-mobile-web-app-capable" content="yes">
-          <meta name="mobile-web-app-capable" content="yes">
-          <title>جدول الورديات</title>
-          <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+          <title>الورديات</title>
           <style>
-            :root{
-              --bg:#0f172a; --card:#1e293b; --card2:#273449; --text:#f1f5f9; --muted:#94a3b8;
-              --day:#f59e0b; --dayBg:rgba(245,158,11,.16);
-              --night:#818cf8; --nightBg:rgba(129,140,248,.18);
-              --off:#34d399; --offBg:rgba(52,211,153,.15);
-              --accent:#38bdf8;
-            }
-            *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-            body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--text);
-              padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 24px);
-              max-width:520px;margin:0 auto;min-height:100vh}
-            h1{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
-            .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-            .gear{background:var(--card);border:0;color:var(--text);width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer}
-            .teams{display:flex;gap:8px;margin-bottom:14px}
-            .teams button{flex:1;padding:10px 0;border-radius:12px;border:2px solid transparent;background:var(--card);
-              color:var(--muted);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
-            .teams button.on{border-color:var(--accent);color:var(--text);background:var(--card2)}
-            .hero{border-radius:22px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
-            .hero.D{background:linear-gradient(135deg,#b45309,#f59e0b)}
-            .hero.N{background:linear-gradient(135deg,#312e81,#6366f1)}
-            .hero.O{background:linear-gradient(135deg,#065f46,#10b981)}
-            .hero .lbl{font-size:14px;opacity:.9}
-            .hero .big{font-size:38px;font-weight:800;line-height:1.3;display:flex;align-items:center;gap:10px}
-            .hero .sub{font-size:15px;opacity:.95;margin-top:2px}
-            .hero .ico{position:absolute;left:14px;top:10px;font-size:64px;opacity:.25}
-            .row{display:flex;gap:10px;margin-bottom:14px}
-            .stat{flex:1;background:var(--card);border-radius:16px;padding:12px}
-            .stat .k{font-size:12px;color:var(--muted)}
-            .stat .v{font-size:17px;font-weight:700}
-            .sec{font-size:15px;font-weight:700;color:var(--muted);margin:6px 2px 8px}
-            .week{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
-            .week::-webkit-scrollbar{display:none}
-            .wd{min-width:62px;flex:0 0 auto;background:var(--card);border-radius:14px;padding:8px 4px;text-align:center}
-            .wd .n{font-size:11px;color:var(--muted)}
-            .wd .d{font-size:18px;font-weight:800}
-            .wd .s{font-size:12px;font-weight:700;margin-top:2px;border-radius:8px;padding:2px 0}
-            .wd.today{outline:2px solid var(--accent)}
-            .cal{background:var(--card);border-radius:20px;padding:12px}
-            .calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-            .calhead b{font-size:17px}
-            .calhead button{background:var(--card2);border:0;color:var(--text);width:38px;height:38px;border-radius:10px;font-size:18px;cursor:pointer}
-            .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-            .dn{text-align:center;font-size:11px;color:var(--muted);padding:4px 0}
-            .c{aspect-ratio:1/1.1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-              font-weight:700;font-size:15px;cursor:pointer;border:0;font-family:inherit;color:var(--text)}
-            .c small{font-size:11px;line-height:1}
-            .c.D{background:var(--dayBg)} .c.D small{color:var(--day)}
-            .c.N{background:var(--nightBg)} .c.N small{color:var(--night)}
-            .c.O{background:var(--offBg)} .c.O small{color:var(--off)}
-            .c.today{outline:2px solid var(--accent)}
-            .c.empty{background:transparent;cursor:default}
-            .legend{display:flex;justify-content:center;gap:14px;margin-top:10px;font-size:12px;color:var(--muted)}
-            .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:4px;vertical-align:middle}
-            .todaybtn{display:block;margin:10px auto 0;background:none;border:0;color:var(--accent);font:inherit;font-weight:700;cursor:pointer}
-            .sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:9}
-            .sheet.show{display:flex}
-            .panel{background:var(--card);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom) + 18px)}
-            .panel h3{font-size:18px;margin-bottom:12px}
-            .tl{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:8px}
-            .tl.me{outline:2px solid var(--accent)}
-            .pill{font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px}
-            .pill.D{background:var(--dayBg);color:var(--day)} .pill.N{background:var(--nightBg);color:var(--night)} .pill.O{background:var(--offBg);color:var(--off)}
-            .close{width:100%;margin-top:8px;padding:12px;border-radius:12px;border:0;background:var(--accent);color:#04263a;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
-            label{display:block;font-size:14px;color:var(--muted);margin:10px 0 6px}
-            select,input{width:100%;padding:10px;border-radius:10px;border:1px solid #334155;background:var(--bg);color:var(--text);font:inherit;font-size:16px}
-            .hint{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7}
+          :root{--bg:#0f172a;--card:#1e293b;--card2:#273449;--line:#334155;--text:#f1f5f9;--muted:#94a3b8;
+          --day:#f59e0b;--dayBg:rgba(245,158,11,.16);--night:#818cf8;--nightBg:rgba(129,140,248,.18);
+          --off:#34d399;--offBg:rgba(52,211,153,.15);--accent:#38bdf8;--danger:#f87171;--dangerBg:rgba(248,113,113,.15)}
+          body.light{--bg:#f1f5f9;--card:#ffffff;--card2:#e8eef6;--line:#cbd5e1;--text:#0f172a;--muted:#64748b;
+          --day:#b45309;--dayBg:rgba(245,158,11,.18);--night:#4f46e5;--nightBg:rgba(99,102,241,.14);
+          --off:#047857;--offBg:rgba(16,185,129,.14);--accent:#0284c7;--danger:#dc2626;--dangerBg:rgba(220,38,38,.1)}
+          *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+          body{font-family:'Cairo','Noto Sans Arabic',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+          header{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px}
+          header h1{font-size:19px;font-weight:800}
+          .ib{background:var(--card);border:0;color:var(--text);width:40px;height:40px;border-radius:12px;font-size:19px}
+          main{padding:0 14px 96px;max-width:560px;margin:0 auto}
+          .view{display:none}.view.on{display:block}
+          nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;border-top:1px solid var(--line);z-index:6;padding-bottom:env(safe-area-inset-bottom)}
+          nav button{flex:1;background:none;border:0;color:var(--muted);font:inherit;font-size:11px;padding:8px 0 10px;display:flex;flex-direction:column;align-items:center;gap:1px}
+          nav button span{font-size:20px;line-height:1.2}
+          nav button.on{color:var(--accent);font-weight:700}
+          .card{background:var(--card);border-radius:18px;padding:14px;margin-bottom:12px}
+          .card h3{font-size:15px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+          .muted{color:var(--muted);font-size:13px}
+          .hero{border-radius:22px;padding:18px;margin-bottom:12px;color:#fff;position:relative;overflow:hidden}
+          .hero.D{background:linear-gradient(135deg,#b45309,#f59e0b)}.hero.N{background:linear-gradient(135deg,#312e81,#6366f1)}.hero.O{background:linear-gradient(135deg,#065f46,#10b981)}
+          .hero .lbl{font-size:13px;opacity:.92}.hero .big{font-size:28px;font-weight:800;line-height:1.35}.hero .sub{font-size:14px;opacity:.95}
+          .hero .ico{position:absolute;inset-inline-end:14px;top:8px;font-size:56px;opacity:.25}
+          .badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:20px;padding:1px 10px;font-size:12px;font-weight:700;margin-top:6px}
+          .row{display:flex;gap:10px}.row>*{flex:1}
+          .stat{background:var(--card);border-radius:16px;padding:10px 12px;margin-bottom:12px}
+          .stat .k{font-size:12px;color:var(--muted)}.stat .v{font-size:15px;font-weight:700}
+          .week{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+          .week::-webkit-scrollbar{display:none}
+          .wd{min-width:60px;flex:0 0 auto;background:var(--card);border-radius:14px;padding:7px 3px;text-align:center}
+          .wd .n{font-size:11px;color:var(--muted)}.wd .d{font-size:17px;font-weight:800}
+          .wd .s{font-size:11px;font-weight:700;border-radius:8px;padding:1px 0}
+          .wd.today{outline:2px solid var(--accent)}
+          .D-t{color:var(--day)}.N-t{color:var(--night)}.O-t{color:var(--off)}
+          .D-b{background:var(--dayBg)}.N-b{background:var(--nightBg)}.O-b{background:var(--offBg)}
+          .task{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+          .task:last-child{border-bottom:0}
+          .task .ti{font-size:20px}.task .tx{flex:1}.task .st{font-size:13px;font-weight:700}
+          .ok{color:var(--off)}.bad{color:var(--danger)}
+          .alert{background:var(--dangerBg);color:var(--danger);border-radius:14px;padding:10px 12px;margin-bottom:12px;font-weight:700;font-size:14px}
+          .calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+          .calhead b{font-size:16px}
+          .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+          .dn{text-align:center;font-size:11px;color:var(--muted);padding:3px 0}
+          .c{aspect-ratio:1/1.15;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:0;font-family:inherit;color:var(--text);position:relative}
+          .c small{font-size:10px;line-height:1}
+          .c.today{outline:2px solid var(--accent)}.c.empty{background:transparent}
+          .c .dot{position:absolute;top:4px;inset-inline-start:5px;width:6px;height:6px;border-radius:50%;background:var(--danger)}
+          .legend{display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:12px;color:var(--muted)}
+          .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:4px;vertical-align:middle}
+          .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:10px 14px;font:inherit;font-weight:700;font-size:14px;background:var(--card2);color:var(--text)}
+          .btn.pri{background:var(--accent);color:#04263a}.btn.dang{background:var(--dangerBg);color:var(--danger)}
+          .btn.sm{padding:5px 10px;font-size:12px;border-radius:9px}
+          .btn.full{width:100%;margin-top:8px}
+          label{display:block;font-size:13px;color:var(--muted);margin:8px 0 4px}
+          input,select,textarea{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:15px}
+          textarea{min-height:80px;resize:vertical}
+          input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
+          .chk{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:15px;color:var(--text);margin:0}
+          .seg{display:flex;background:var(--card2);border-radius:12px;padding:3px;gap:3px;margin-bottom:12px}
+          .seg button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;padding:7px 0;border-radius:9px;font-size:13px}
+          .seg button.on{background:var(--card);color:var(--text)}
+          .item{background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+          .item .h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:14px}
+          .item .b{font-size:13px;color:var(--muted);white-space:pre-wrap;margin-top:2px}
+          .pill{font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap}
+          EOF_FILE
+
+      - name: Create project files (3)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          .tl{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border-radius:12px;padding:9px 12px;margin-bottom:8px;gap:8px}
+          .tl.me{outline:2px solid var(--accent)}
+          .shnav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+          .shnav .btn{padding:8px 14px;font-size:18px}
+          .shnav .mid{flex:1;text-align:center;background:var(--card);border-radius:12px;padding:6px}
+          .shnav .mid b{display:block;font-size:15px}
+          .sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}
+          .sheet.show{display:flex}
+          .panel{background:var(--card);width:100%;max-width:560px;max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:16px 16px calc(env(safe-area-inset-bottom) + 16px)}
+          .panel h3{font-size:17px;margin-bottom:10px}
+          .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;opacity:0;transition:opacity .25s;z-index:30;pointer-events:none}
+          .toast.show{opacity:1}
+          pre.rep{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;font-family:inherit;font-size:13px;max-height:50vh;overflow:auto}
+          .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.btns .btn{flex:1}
+          .sec{font-size:14px;font-weight:700;color:var(--muted);margin:4px 2px 8px}
+          .empty-msg{text-align:center;color:var(--muted);font-size:13px;padding:10px}
           </style>
           </head>
           <body>
-            <div class="top">
-              <h1>🗓️ جدول الورديات</h1>
-              <button class="gear" id="gear" aria-label="الإعدادات">⚙️</button>
-            </div>
-
-            <div class="teams" id="teams"></div>
-
-            <div class="hero" id="hero">
-              <div class="ico" id="heroIco"></div>
-              <div class="lbl" id="heroLbl"></div>
-              <div class="big" id="heroBig"></div>
-              <div class="sub" id="heroSub"></div>
-            </div>
-
-            <div class="row">
-              <div class="stat"><div class="k">الوردية الجاية</div><div class="v" id="next"></div></div>
-              <div class="stat"><div class="k">الراحة الجاية</div><div class="v" id="nextOff"></div></div>
-            </div>
-
-            <div class="sec">الأيام الجاية</div>
-            <div class="week" id="week"></div>
-
-            <div class="cal">
-              <div class="calhead">
-                <button id="prev" aria-label="الشهر السابق">›</button>
-                <b id="month"></b>
-                <button id="nextM" aria-label="الشهر التالي">‹</button>
-              </div>
-              <div class="grid" id="grid"></div>
-              <div class="legend">
-                <span><i style="background:var(--day)"></i>نهار</span>
-                <span><i style="background:var(--night)"></i>ليل</span>
-                <span><i style="background:var(--off)"></i>راحة</span>
-              </div>
-              <button class="todaybtn" id="goToday">الرجوع لليوم</button>
-            </div>
-
-            <div class="sheet" id="daySheet"><div class="panel">
-              <h3 id="dayTitle"></h3>
-              <div id="dayList"></div>
-              <button class="close" data-close>تمام</button>
-            </div></div>
-
-            <div class="sheet" id="setSheet"><div class="panel">
-              <h3>⚙️ الإعدادات</h3>
-              <label for="startHour">بداية وردية النهار</label>
-              <select id="startHour"></select>
-              <label for="anchor">تاريخ أول يوم نهار لفريق 1 (مرجع الحساب)</label>
-              <input type="date" id="anchor">
-              <div class="hint">النظام: 12 ساعة، يومين نهار، يومين ليل، يومين راحة. 3 فرق، كل فريق 4 أشخاص، والخامس احتياط.<br>
-              لو صار تغيير في الدورة، غيّر التاريخ المرجعي وكل الجدول يتعدّل تلقائياً.</div>
-              <button class="close" data-close>حفظ</button>
-            </div></div>
-
+          <header><h1 id="appTitle"></h1><button class="ib" id="gear">⚙️</button></header>
+          <main>
+            <section class="view" id="v-home"></section>
+            <section class="view" id="v-cal"></section>
+            <section class="view" id="v-log"></section>
+            <section class="view" id="v-team"></section>
+            <section class="view" id="v-rep"></section>
+            <section class="view" id="v-set"></section>
+          </main>
+          <nav id="nav"></nav>
+          <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+          <div class="toast" id="toast"></div>
           <script>
           (function(){
-            const DEF = {team:1, anchor:'2026-11-13', hour:7};
-            const S = Object.assign({}, DEF);
-            try{ const s = JSON.parse(localStorage.getItem('shiftcfg')||'null'); if(s) Object.assign(S,s); }catch(e){}
-            const save = () => { try{ localStorage.setItem('shiftcfg', JSON.stringify(S)); }catch(e){} };
+          'use strict';
+          // ---------- i18n ----------
+          const T={
+          ar:{app:'الورديات',home:'الرئيسية',cal:'التقويم',log:'السجل',team:'الفريق',rep:'التقارير',set:'الإعدادات',
+          D:'نهار',N:'ليل',O:'راحة',first:'اليوم الأول',second:'اليوم الثاني',onDuty:'في الخدمة الآن',ends:'تنتهي',
+          yourNext:'ورديتك الجاية',nextShift:'الوردية الجاية',nextOff:'الراحة الجاية',fp:'البصمة',work:'الدوام',today:'اليوم',
+          teamOf:'فريق',member:'عضو',supervisor:'المشرف',reserve:'الاحتياط',myTeam:'فريقي',yours:'فريقك',
+          tasks:'مهام الوردية',cardsRecv:'استلام البطاقات',cardsHand:'تسليم البطاقات',cards:'بطاقات الدخول',received:'المستلم',handed:'المسلّم',of:'من',
+          mismatch:'⚠️ فيه فرق في عدد البطاقات',mismatchNote:'سبب الفرق',logChange:'تغيير السجلات',visitorsLog:'سجل الزوار',workersLog:'سجل العمال',
+          done:'تم',notDone:'لم يتم',handNotes:'ملاحظات التسليم',handNotesPh:'اكتب اللي لازم تعرفه الوردية الجاية…',
+          incidents:'الحوادث',addIncident:'+ إضافة حادث',time:'الوقت',type:'النوع',desc:'الوصف',action:'الإجراء المتخذ',
+          save:'حفظ',cancel:'إلغاء',del:'حذف',confirmDel:'متأكد تبي تحذف؟',yes:'نعم',
+          ev_absence:'غياب',ev_coverage:'تغطية احتياط',ev_swap:'تبديل وردية',ev_leave:'إجازة',events:'سجل الفريق',addEvent:'+ إضافة',
+          person:'الشخص',coversFor:'يغطي عن',swapWith:'بدّل مع',from:'من',to:'إلى',date:'التاريخ',note:'ملاحظة',noEvents:'ما فيه شي مسجّل',
+          period:'الفترة',thisMonth:'هذا الشهر',lastMonth:'الشهر الماضي',custom:'مخصص',generate:'إنشاء التقرير',copy:'📋 نسخ',share:'📤 مشاركة',print:'🖨️ طباعة / PDF',copied:'تم النسخ',
+          include:'يشمل',secShifts:'ملخص وردياتي',secIncidents:'الحوادث',secCards:'استلام وتسليم البطاقات',secTeam:'غياب وتغطيات وتبديل وإجازات',secNotes:'ملاحظات التسليم',secLogs:'تغيير السجلات',
+          shifts:'وردية',hours:'ساعة',nothing:'لا يوجد',total:'المجموع',report:'تقرير',
+          language:'اللغة',theme:'المظهر',dark:'ليلي',light:'نهاري',auto:'تلقائي',myName:'اسمي',times:'الأوقات',
+          startTime:'بداية دوام النهار',fpStart:'بداية البصمة',fpEnd:'نهاية البصمة',logFrom:'تغيير السجلات من',logTo:'إلى',cardsTotal:'عدد بطاقات الدخول',
+          anchor:'أول يوم نهار لفريق المشرف الأول (مرجع الحساب)',teams:'الفرق والأسماء',reserveName:'اسم الاحتياط',
+          backup:'نسخة احتياطية',copyBackup:'نسخ البيانات',restore:'استرجاع',restoreHint:'الصق نص النسخة الاحتياطية هنا',restored:'تم الاسترجاع',bad:'النص غير صالح',
+          reset:'مسح كل البيانات',resetQ:'هذا يمسح كل السجلات والأحداث. متأكد؟',saved:'تم الحفظ',
+          prev:'السابقة',next:'التالية',current:'الوردية الحالية',last:'آخر وردية',logReminder:'⏰ وقت تغيير سجل الزوار وسجل العمال',
+          inc_security:'أمني',inc_fire:'حريق',inc_fault:'عطل',inc_medical:'طبي',inc_other:'أخرى',
+          close:'تمام',openLog:'افتح السجل',noNotes:'لا توجد ملاحظات',dayShift:'وردية النهار',nightShift:'وردية الليل',
+          generated:'أُنشئ في',empty:'—',nightNote:'الليل: نفس الأوقات بعد 12 ساعة',hint:'النظام: 12 ساعة — يومين نهار، يومين ليل، يومين راحة',
+          EOF_FILE
 
-            const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-            const SHORT = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
-            const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-            const NAME = {D:'نهار', N:'ليل', O:'راحة'};
-            const ICO = {D:'☀️', N:'🌙', O:'🛋️'};
-            const PAT = ['D','D','N','N','O','O'];
-            const OFFSET = {1:0, 2:4, 3:2};
+      - name: Create project files (4)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          covered:'تغطيات',absences:'غيابات',uni:'الزي الرسمي',newEmp:'+ موظف جديد',move:'🔀 نقل لفريق آخر',resign:'🚪 استقالة / مغادرة',leftOn:'غادر في',former:'الموظفون السابقون',restoreEmp:'↩️ إرجاع للخدمة',makeSup:'مشرف الفريق ★',name:'الاسم',startDate:'تاريخ المباشرة',moveDate:'تاريخ النقل',newTeam:'إلى',reason:'السبب',addReplacement:'إضافة موظف جديد مكانه',newName:'اسم الموظف الجديد',manageInTeam:'إدارة الموظفين (إضافة، نقل، استقالة) من شاشة الفريق 👥',goTeam:'افتح شاشة الفريق',teamHist:'التنقلات',personEvents:'الأحداث',needName:'اكتب الاسم',active:'في الخدمة',noMembers:'لا يوجد أعضاء',uniNew:'+ صرف جديد',uniItems:'قطع الزي',items:'القطع',qty:'العدد',size:'المقاس',people:'الموظفين',all:'الكل',none:'مسح',nextStep:'التالي',sizes:'المقاسات',lastSizes:'آخر المقاسات',history:'سجل الاستلام',lastGot:'آخر استلام',never:'لم يستلم',secUni:'صرف الزي',notReceived:'لم يستلموا في هذه الفترة',addItem:'+ إضافة قطعة',itemName:'اسم القطعة',pickPeople:'اختار موظف واحد على الأقل',pickItems:'اختار قطعة واحدة على الأقل',u_shirt:'سورية',u_pants:'سروال',u_shoes:'حذاء',u_coat:'كبوط',u_cap:'طاقية',swaps:'تبديلات',leaves:'إجازات',days:'يوم',incCount:'عدد الحوادث'},
+          en:{app:'Shifts',home:'Home',cal:'Calendar',log:'Log',team:'Team',rep:'Reports',set:'Settings',
+          D:'Day',N:'Night',O:'Off',first:'1st day',second:'2nd day',onDuty:'On duty now',ends:'ends',
+          yourNext:'Your next shift',nextShift:'Next shift',nextOff:'Next day off',fp:'Fingerprint',work:'Duty',today:'Today',
+          teamOf:'Team',member:'Member',supervisor:'Supervisor',reserve:'Reserve',myTeam:'My team',yours:'yours',
+          tasks:'Shift tasks',cardsRecv:'Cards received',cardsHand:'Cards handed over',cards:'Access cards',received:'Received',handed:'Handed',of:'of',
+          mismatch:'⚠️ Card count mismatch',mismatchNote:'Reason for difference',logChange:'Log change',visitorsLog:'Visitors log',workersLog:'Workers log',
+          done:'Done',notDone:'Not done',handNotes:'Handover notes',handNotesPh:'What the next shift needs to know…',
+          incidents:'Incidents',addIncident:'+ Add incident',time:'Time',type:'Type',desc:'Description',action:'Action taken',
+          save:'Save',cancel:'Cancel',del:'Delete',confirmDel:'Delete this?',yes:'Yes',
+          ev_absence:'Absence',ev_coverage:'Reserve cover',ev_swap:'Shift swap',ev_leave:'Leave',events:'Team log',addEvent:'+ Add',
+          person:'Person',coversFor:'Covers for',swapWith:'Swapped with',from:'From',to:'To',date:'Date',note:'Note',noEvents:'Nothing recorded',
+          period:'Period',thisMonth:'This month',lastMonth:'Last month',custom:'Custom',generate:'Generate report',copy:'📋 Copy',share:'📤 Share',print:'🖨️ Print / PDF',copied:'Copied',
+          include:'Include',secShifts:'My shifts summary',secIncidents:'Incidents',secCards:'Card handover',secTeam:'Absences, covers, swaps & leave',secNotes:'Handover notes',secLogs:'Log changes',
+          shifts:'shifts',hours:'hours',nothing:'None',total:'Total',report:'Report',
+          language:'Language',theme:'Theme',dark:'Dark',light:'Light',auto:'Auto',myName:'My name',times:'Times',
+          startTime:'Day duty starts',fpStart:'Fingerprint opens',fpEnd:'Fingerprint closes',logFrom:'Log change from',logTo:'to',cardsTotal:'Number of access cards',
+          anchor:'First day shift of first supervisor\'s team (reference)',teams:'Teams & names',reserveName:'Reserve name',
+          backup:'Backup',copyBackup:'Copy data',restore:'Restore',restoreHint:'Paste backup text here',restored:'Restored',bad:'Invalid text',
+          reset:'Erase all data',resetQ:'This erases all logs and events. Sure?',saved:'Saved',
+          prev:'Previous',next:'Next',current:'Current shift',last:'Last shift',logReminder:'⏰ Time to change the visitors & workers logs',
+          inc_security:'Security',inc_fire:'Fire',inc_fault:'Fault',inc_medical:'Medical',inc_other:'Other',
+          close:'OK',openLog:'Open log',noNotes:'No notes',dayShift:'Day shift',nightShift:'Night shift',
+          generated:'Generated',empty:'—',nightNote:'Night: same times +12h',hint:'Rotation: 12h — 2 days, 2 nights, 2 off',
+          covered:'covers',absences:'absences',uni:'Uniform',newEmp:'+ New employee',move:'🔀 Move to another team',resign:'🚪 Resign / leave',leftOn:'Left on',former:'Former employees',restoreEmp:'↩️ Return to service',makeSup:'Team supervisor ★',name:'Name',startDate:'Start date',moveDate:'Move date',newTeam:'To',reason:'Reason',addReplacement:'Add a new employee in their place',newName:'New employee name',manageInTeam:'Manage employees (add, move, resign) from the Team screen 👥',goTeam:'Open Team screen',teamHist:'Moves',personEvents:'Events',needName:'Enter a name',active:'Active',noMembers:'No members',uniNew:'+ New issue',uniItems:'Uniform items',items:'Items',qty:'Qty',size:'Size',people:'Employees',all:'All',none:'Clear',nextStep:'Next',sizes:'Sizes',lastSizes:'Latest sizes',history:'Issue history',lastGot:'Last issued',never:'Never',secUni:'Uniform issues',notReceived:'Received nothing in this period',addItem:'+ Add item',itemName:'Item name',pickPeople:'Pick at least one employee',pickItems:'Pick at least one item',u_shirt:'Shirt',u_pants:'Trousers',u_shoes:'Shoes',u_coat:'Coat',u_cap:'Cap',swaps:'swaps',leaves:'leave',days:'days',incCount:'Incidents'}};
+          const DAYS={ar:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
+          const SDAYS={ar:['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'],en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
+          const MONTHS={ar:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
+          const ICO={D:'☀️',N:'🌙',O:'🛋️'};
+          const INC=['security','fire','fault','medical','other'];
+          const EVT=['absence','coverage','swap','leave'];
 
-            const ymd = d => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
-            const anchorUTC = () => { const [y,m,d] = S.anchor.split('-').map(Number); return Date.UTC(y,m-1,d); };
-            const mod = (a,n) => ((a%n)+n)%n;
-            function shift(date, team){
-              const diff = Math.round((ymd(date) - anchorUTC())/86400000);
-              const i = mod(diff + OFFSET[team], 6);
-              return {type:PAT[i], pos: i%2===0 ? 1 : 2};
-            }
-            const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
-            const pad = n => String(n).padStart(2,'0');
-            const hours = t => {
-              const a = S.hour, b = (S.hour+12)%24;
-              if(t==='D') return `من ${pad(a)}:00 لين ${pad(b)}:00`;
-              if(t==='N') return `من ${pad(b)}:00 لين ${pad(a)}:00 الصبح`;
-              return 'يوم راحة';
-            };
-            const fmt = d => `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-            const same = (a,b) => ymd(a)===ymd(b);
+          // ---------- state ----------
+          const KEY='shiftapp_v2';
+          EOF_FILE
 
-            let today = new Date();
-            let view = new Date(today.getFullYear(), today.getMonth(), 1);
+      - name: Create project files (5)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          const DEF={cfg:{lang:'ar',theme:'auto',myTeam:0,myName:'',
+            teams:[{m:['مصعب','','','']},{m:['سالم','','','']},{m:['حاتم','','','']}],reserve:'',
+            start:'08:00',fpStart:'07:30',fpEnd:'07:45',cards:22,logFrom:'05:00',logTo:'06:00',anchor:'2026-11-13',
+            uniItems:[{id:'shirt',name:''},{id:'pants',name:''},{id:'shoes',name:''},{id:'coat',name:''},{id:'cap',name:''}]},
+            logs:{},events:[],uni:[]};
+          let S=JSON.parse(JSON.stringify(DEF));
+          function migratePeople(){const c=S.cfg;if(Array.isArray(c.people))return;const used=new Set();S.events.forEach(e=>{used.add(e.p1);used.add(e.p2);});(S.uni||[]).forEach(u=>used.add(u.p));
+            const ps=[];(c.teams||DEF.cfg.teams).forEach((tm,i)=>tm.m.forEach((n,j)=>{const id='t'+i+'m'+j;if((n||'').trim()||used.has(id))ps.push({id,name:(n||'').trim(),team:i,sup:j===0,hist:[{team:i,from:'2000-01-01'}]});}));
+            ps.push({id:'res',name:(c.reserve||'').trim(),team:'res',sup:false,hist:[{team:'res',from:'2000-01-01'}]});c.people=ps;}
+          try{const raw=localStorage.getItem(KEY);if(raw){const x=JSON.parse(raw);S.cfg=Object.assign(S.cfg,x.cfg||{});S.logs=x.logs||{};S.events=x.events||[];S.uni=x.uni||[];}
+            else{const o=JSON.parse(localStorage.getItem('shiftcfg')||'null');if(o){if(o.team)S.cfg.myTeam=o.team-1;if(o.anchor)S.cfg.anchor=o.anchor;}}}catch(e){}
+          migratePeople();save();
+          function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+          const C=()=>S.cfg;
+          const t=k=>(T[C().lang]&&T[C().lang][k]!=null)?T[C().lang][k]:(T.ar[k]!=null?T.ar[k]:k);
+          const L=()=>C().lang;
 
-            function renderTeams(){
-              const el = document.getElementById('teams'); el.innerHTML='';
-              [1,2,3].forEach(t=>{
-                const b = document.createElement('button');
-                b.textContent = 'فريق '+t; if(t===S.team) b.className='on';
-                b.onclick = ()=>{ S.team=t; save(); render(); };
-                el.appendChild(b);
-              });
-            }
+          // ---------- helpers ----------
+          const $=id=>document.getElementById(id);
+          const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+          const pad=n=>String(n).padStart(2,'0');
+          const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+          const mins=s=>{const[a,b]=(s||'0:0').split(':').map(Number);return a*60+(b||0);};
+          const hm=m=>{m=((m%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60);};
+          const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+          const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+          const addDays=(d,n)=>{const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()+n);return x;};
+          const dayStart=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+          const utc=d=>Date.UTC(d.getFullYear(),d.getMonth(),d.getDate());
+          const mod=(a,n)=>((a%n)+n)%n;
+          const fmt=d=>DAYS[L()][d.getDay()]+' '+d.getDate()+' '+MONTHS[L()][d.getMonth()];
+          const fmtS=d=>SDAYS[L()][d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1);
+          const PAT=['D','D','N','N','O','O'],OFF=[0,4,2];
+          function shiftOf(date,team){const diff=Math.round((utc(date)-utc(parse(C().anchor)))/864e5);const i=mod(diff+OFF[team],6);return{type:PAT[i],pos:i%2===0?1:2};}
+          function teamOn(date,type){for(let k=0;k<3;k++)if(shiftOf(date,k).type===type)return k;return -1;}
+          function shiftTimes(date,type){const st=mins(C().start)+(type==='N'?720:0);const s=new Date(dayStart(date).getTime()+st*6e4);return{s,e:new Date(s.getTime()+720*6e4),fpS:mins(C().fpStart)+(type==='N'?720:0),fpE:mins(C().fpEnd)+(type==='N'?720:0),st};}
+          function shiftId(date,type){return ymd(date)+'_'+type;}
+          function idToShift(id){const[d,ty]=id.split('_');return{date:parse(d),type:ty};}
+          // my shift instances
+          function myShiftAround(now,dir){ // dir: 'cur' current-or-next, list helpers
+            for(let k=-1;k<14;k++){const d=addDays(now,k),s=shiftOf(d,C().myTeam);if(s.type==='O')continue;const tm=shiftTimes(d,s.type);if(tm.e>now)return{date:d,type:s.type,pos:s.pos,...tm};}
+            return null;}
+          function myShiftStep(date,type,step){ // next/prev my shift from a shift
+            let d=dayStart(date);
+            for(let k=0;k<20;k++){
+              if(type==='D'&&step>0){type='N';}else if(type==='N'&&step<0){type='D';}else{d=addDays(d,step);type=step>0?'D':'N';}
+              if(shiftOf(d,C().myTeam).type===type)return{date:d,type};}
+            return null;}
+          function lastOrCurrentMyShift(now){const n=myShiftAround(now);if(n&&n.s<=now)return{date:n.date,type:n.type};
+            let d=dayStart(now);for(let k=0;k<10;k++){for(const ty of['N','D']){const dd=addDays(d,-k);if(shiftOf(dd,C().myTeam).type===ty&&shiftTimes(dd,ty).e<=now)return{date:dd,type:ty};}}return n;}
 
-            function renderHero(){
-              const s = shift(today, S.team);
-              const h = document.getElementById('hero'); h.className = 'hero '+s.type;
-              document.getElementById('heroIco').textContent = ICO[s.type];
-              document.getElementById('heroLbl').textContent = 'اليوم — '+fmt(today);
-              document.getElementById('heroBig').textContent = (s.type==='O' ? 'راحة' : NAME[s.type]) + (s.pos===1 ? ' (اليوم الأول)' : ' (اليوم الثاني)');
-              document.getElementById('heroSub').textContent = hours(s.type);
-              let n=null, o=null;
-              for(let k=1;k<14 && (!n||!o);k++){
-                const d = addDays(today,k), x = shift(d,S.team);
-                if(!n && x.type!=='O' && !(x.type===s.type && k===1 && s.pos===1)) n = {d,x};
-                if(!o && x.type==='O' && s.type!=='O') o = d;
-                if(!o && s.type==='O' && x.type==='O' && k>1 && shift(addDays(d,-1),S.team).type!=='O') o = d;
-              }
-              document.getElementById('next').textContent = n ? `${ICO[n.x.type]} ${NAME[n.x.type]} — ${SHORT[n.d.getDay()]} ${n.d.getDate()}` : '—';
-              document.getElementById('nextOff').textContent = o ? `🛋️ ${SHORT[o.getDay()]} ${o.getDate()} ${MONTHS[o.getMonth()]}` : '—';
-            }
+          function P(id){return (C().people||[]).find(p=>p.id===id);}
+          function teamAt(p,date){let tm=p.team;const h=(p.hist||[]).slice().sort((a,b)=>a.from<b.from?-1:1);if(h.length){tm=h[0].team;h.forEach(x=>{if(x.from<=date)tm=x.team;});}return tm;}
+          function activePeople(){return (C().people||[]).filter(p=>!p.left);}
+          function teamMembers(k){return activePeople().filter(p=>p.team===k).sort((a,b)=>(b.sup?1:0)-(a.sup?1:0));}
+          function personList(){const o=[];[0,1,2,'res'].forEach(k=>teamMembers(k).forEach(p=>o.push({id:p.id,name:pName(p.id),team:p.team})));return o;}
+          function pName(id){const p=P(id);if(!p)return id||'';return (p.name||'').trim()||(p.team==='res'?t('reserve'):t('member'));}
+          function teamLabel(k){return k==='res'?t('reserve'):teamName(k);}
+          function teamName(i){const s=activePeople().find(p=>p.team===i&&p.sup);return t('teamOf')+' '+(s?pName(s.id):(i+1));}
+          function getLog(id){return S.logs[id]||(S.logs[id]={recv:null,hand:null,cardNote:'',vis:false,wrk:false,notes:'',inc:[]});}
+          function hasLog(id){const g=S.logs[id];return !!g&&(g.recv!=null||g.hand!=null||g.notes||g.vis||g.wrk||(g.inc&&g.inc.length));}
+          function eventsOn(date){const k=ymd(date);return S.events.filter(e=>e.from<=k&&(e.to||e.from)>=k);}
+          function evText(e){let s=t('ev_'+e.type)+': '+pName(e.p1);if(e.type==='coverage'&&e.p2)s+=' — '+t('coversFor')+' '+pName(e.p2);if(e.type==='swap'&&e.p2)s+=' — '+t('swapWith')+' '+pName(e.p2);return s;}
 
-            function renderWeek(){
-              const el = document.getElementById('week'); el.innerHTML='';
-              for(let k=0;k<14;k++){
-                const d = addDays(today,k), s = shift(d,S.team);
-                const c = document.createElement('div'); c.className='wd'+(k===0?' today':'');
-                const col = s.type==='D'?'var(--day)':s.type==='N'?'var(--night)':'var(--off)';
-                const bg = s.type==='D'?'var(--dayBg)':s.type==='N'?'var(--nightBg)':'var(--offBg)';
-                c.innerHTML = `<div class="n">${k===0?'اليوم':SHORT[d.getDay()]}</div><div class="d">${d.getDate()}</div><div class="s" style="color:${col};background:${bg}">${ICO[s.type]} ${NAME[s.type]}</div>`;
-                c.onclick = ()=>openDay(d);
-                el.appendChild(c);
-              }
-            }
+          // ---------- platform ----------
+          const AB=window.AndroidBridge;
+          function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),1600);}
+          function copyText(s){try{if(AB&&AB.copy){AB.copy(s);toast(t('copied'));return;}}catch(e){}
+            if(navigator.clipboard)navigator.clipboard.writeText(s).then(()=>toast(t('copied')),()=>fallbackCopy(s));else fallbackCopy(s);}
+          function fallbackCopy(s){const ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(t('copied'));}catch(e){}ta.remove();}
+          function shareText(s){try{if(AB&&AB.share){AB.share(s);return;}}catch(e){}if(navigator.share)navigator.share({text:s}).catch(()=>{});else copyText(s);}
+          EOF_FILE
 
-            function renderCal(){
-              document.getElementById('month').textContent = MONTHS[view.getMonth()]+' '+view.getFullYear();
-              const g = document.getElementById('grid'); g.innerHTML='';
-              SHORT.forEach(n=>{ const e=document.createElement('div'); e.className='dn'; e.textContent=n; g.appendChild(e); });
-              const first = view.getDay();
-              const len = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
-              for(let i=0;i<first;i++){ const e=document.createElement('div'); e.className='c empty'; g.appendChild(e); }
-              for(let d=1; d<=len; d++){
-                const dt = new Date(view.getFullYear(), view.getMonth(), d), s = shift(dt,S.team);
-                const b = document.createElement('button');
-                b.className = 'c '+s.type+(same(dt,today)?' today':'');
-                b.innerHTML = `${d}<small>${NAME[s.type]}</small>`;
-                b.onclick = ()=>openDay(dt);
-                g.appendChild(b);
-              }
-            }
+      - name: Create project files (6)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          function printHtml(html,title){try{if(AB&&AB.print){AB.print(html,title);return;}}catch(e){}
+            const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();w.print();}}
+          function sysDark(){try{if(AB&&AB.isDark)return !!AB.isDark();}catch(e){}return !window.matchMedia||window.matchMedia('(prefers-color-scheme: dark)').matches;}
+          function applyTheme(){const dark=C().theme==='dark'||(C().theme==='auto'&&sysDark());document.body.classList.toggle('light',!dark);
+            try{if(AB&&AB.setBars)AB.setBars(dark?'#0f172a':'#f1f5f9',!dark);}catch(e){}}
+          window.onSysTheme=()=>{applyTheme();};
+          function applyLang(){document.documentElement.lang=L();document.documentElement.dir=L()==='ar'?'rtl':'ltr';document.title=t('app');}
 
-            function openDay(d){
-              document.getElementById('dayTitle').textContent = fmt(d);
-              const L = document.getElementById('dayList'); L.innerHTML='';
-              [1,2,3].forEach(t=>{
-                const s = shift(d,t);
-                const r = document.createElement('div'); r.className='tl'+(t===S.team?' me':'');
-                r.innerHTML = `<span>فريق ${t}${t===S.team?' (فريقك)':''}</span><span class="pill ${s.type}">${ICO[s.type]} ${NAME[s.type]}${s.type!=='O'?' · '+(s.pos===1?'أول':'ثاني'):''}</span>`;
-                L.appendChild(r);
-              });
-              document.getElementById('daySheet').classList.add('show');
-            }
+          // ---------- sheet / confirm ----------
+          function openSheet(html){$('panel').innerHTML=html;$('sheet').classList.add('show');}
+          function closeSheet(){$('sheet').classList.remove('show');}
+          $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet();});
+          function confirmBox(msg,fn){openSheet(`<h3>${esc(msg)}</h3><div class="btns"><button class="btn dang" id="cfY">${t('yes')}</button><button class="btn" id="cfN">${t('cancel')}</button></div>`);
+            $('cfY').onclick=()=>{closeSheet();fn();};$('cfN').onclick=closeSheet;}
 
-            function render(){ today = new Date(); renderTeams(); renderHero(); renderWeek(); renderCal(); }
+          // ---------- navigation ----------
+          const TABS=[['home','🏠'],['cal','🗓️'],['log','📝'],['team','👥'],['rep','📊']];
+          let view='home',prevView='home';
+          function go(v){if(v==='set'&&view!=='set')prevView=view;view=v;render();window.scrollTo(0,0);}
+          window.handleBack=()=>{if($('sheet').classList.contains('show')){closeSheet();return true;}if(view!=='home'){go(view==='set'?prevView:'home');return true;}return false;};
+          $('gear').onclick=()=>go(view==='set'?prevView:'set');
 
-            document.getElementById('prev').onclick = ()=>{ view = new Date(view.getFullYear(), view.getMonth()-1, 1); renderCal(); };
-            document.getElementById('nextM').onclick = ()=>{ view = new Date(view.getFullYear(), view.getMonth()+1, 1); renderCal(); };
-            document.getElementById('goToday').onclick = ()=>{ view = new Date(today.getFullYear(), today.getMonth(), 1); renderCal(); };
+          // ---------- views ----------
+          let now=new Date(),calView=new Date(now.getFullYear(),now.getMonth(),1),logSel=null,evTab='all',repOut='';
+          function render(){now=new Date();applyLang();applyTheme();
+            $('appTitle').textContent=(view==='set'?'⚙️ '+t('set'):'🗓️ '+t('app'));$('gear').textContent=view==='set'?'✕':'⚙️';
+            $('nav').innerHTML=TABS.map(([k,i])=>`<button data-v="${k}" class="${view===k?'on':''}"><span>${i}</span>${t(k)}</button>`).join('');
+            $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+            document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+view));
+            ({home:rHome,cal:rCal,log:rLog,team:rTeam,rep:rRep,set:rSet})[view]();}
 
-            const hs = document.getElementById('startHour');
-            for(let h=0;h<24;h++){ const o=document.createElement('option'); o.value=h; o.textContent=pad(h)+':00'; hs.appendChild(o); }
-            const an = document.getElementById('anchor');
-            document.getElementById('gear').onclick = ()=>{ hs.value=S.hour; an.value=S.anchor; document.getElementById('setSheet').classList.add('show'); };
-            hs.onchange = ()=>{ S.hour=+hs.value; save(); render(); };
-            an.onchange = ()=>{ if(an.value){ S.anchor=an.value; save(); render(); } };
+          function logReminderActive(sh){if(!sh||sh.type!=='N')return false;const g=S.logs[shiftId(sh.date,'N')];if(g&&g.vis&&g.wrk)return false;
+            const d1=addDays(sh.date,1);const a=new Date(d1.getTime()+mins(C().logFrom)*6e4);const e=shiftTimes(sh.date,'N').e;return now>=a&&now<e;}
 
-            document.querySelectorAll('.sheet').forEach(sh=>{
-              sh.addEventListener('click', e=>{ if(e.target===sh || e.target.hasAttribute('data-close')) sh.classList.remove('show'); });
-            });
+          function rHome(){const v=$('v-home');const td=shiftOf(now,C().myTeam);const ms=myShiftAround(now);let h='';
+            const on=ms&&ms.s<=now;
+            if(on&&logReminderActive(ms))h+=`<div class="alert" data-go="log">${t('logReminder')}</div>`;
+            if(ms){const ty=ms.type;
+              h+=`<div class="hero ${on?ty:td.type}"><div class="ico">${ICO[on?ty:td.type]}</div>
+              <div class="lbl">${t('today')} — ${fmt(now)} · ${esc(teamName(C().myTeam))}</div>`;
+              if(on)h+=`<div class="big">${t('onDuty')} — ${t(ty)}</div><div class="sub">${t('ends')} ${hm(ms.st+720)} · ${ms.pos===1?t('first'):t('second')}</div>`;
+              else h+=`<div class="big">${td.type==='O'?t('O'):t(td.type)+' · '+(td.pos===1?t('first'):t('second'))}</div>
+                <div class="sub">${t('yourNext')}: ${ICO[ty]} ${t(ty)} — ${fmt(ms.date)}</div>
+                <span class="badge">${t('fp')} ${hm(ms.fpS)}–${hm(ms.fpE)} · ${t('work')} ${hm(ms.st)}</span>`;
+              h+=`</div>`;}
+            // next off
+            let off=null;for(let k=0;k<14;k++){const d=addDays(now,k),s=shiftOf(d,C().myTeam);if(s.type==='O'&&s.pos===1&&(k>0||td.type!=='O')){off=d;break;}}
+            const nx=ms&&on?myShiftStep(ms.date,ms.type,1):ms;
+            h+=`<div class="row"><div class="stat"><div class="k">${t('nextShift')}</div><div class="v">${nx?ICO[nx.type]+' '+t(nx.type)+' — '+fmtS(nx.date):'—'}</div></div>
+               <div class="stat"><div class="k">${t('nextOff')}</div><div class="v">${off?'🛋️ '+fmtS(off):'—'}</div></div></div>`;
+            // tasks for current/last shift
+            const cur=lastOrCurrentMyShift(now);
+            if(cur){const id=shiftId(cur.date,cur.type),g=S.logs[id]||{};const isOn=on;
+              h+=`<div class="card"><h3>${t('tasks')} <span class="muted">${isOn?t('current'):t('last')}: ${t(cur.type)} ${fmtS(cur.date)}</span></h3>`;
+              const st=(ok,txt)=>`<span class="st ${ok?'ok':'bad'}">${ok?'✓ ':''}${txt}</span>`;
+              h+=`<div class="task"><span class="ti">🪪</span><span class="tx">${t('cardsRecv')}</span>${st(g.recv!=null,g.recv!=null?g.recv+' / '+C().cards:t('notDone'))}</div>`;
+              if(cur.type==='N')h+=`<div class="task"><span class="ti">📒</span><span class="tx">${t('logChange')} <span class="muted">${C().logFrom}–${C().logTo}</span></span>${st(g.vis&&g.wrk,g.vis&&g.wrk?t('done'):t('notDone'))}</div>`;
+              h+=`<div class="task"><span class="ti">📝</span><span class="tx">${t('handNotes')}</span>${st(!!g.notes,g.notes?t('done'):t('notDone'))}</div>`;
+              h+=`<div class="task"><span class="ti">🪪</span><span class="tx">${t('cardsHand')}</span>${st(g.hand!=null,g.hand!=null?g.hand+' / '+C().cards:t('notDone'))}</div>`;
+              h+=`<button class="btn pri full" data-log="${id}">${t('openLog')}</button></div>`;}
+            // two weeks
+            h+=`<div class="sec">${t('days')==='يوم'?'الأيام الجاية':'Upcoming days'}</div><div class="week">`;
+            for(let k=0;k<14;k++){const d=addDays(now,k),s=shiftOf(d,C().myTeam);h+=`<div class="wd ${k===0?'today':''}" data-day="${ymd(d)}"><div class="n">${k===0?t('today'):SDAYS[L()][d.getDay()]}</div><div class="d">${d.getDate()}</div><div class="s ${s.type}-t ${s.type}-b">${ICO[s.type]} ${t(s.type)}</div></div>`;}
+            h+='</div>';
+            // today's teams
+            h+=`<div class="card"><h3>${t('today')}</h3>`+teamsForDay(now)+`</div>`;
+            v.innerHTML=h;bindCommon(v);}
 
-            window.addEventListener('focus', ()=>{ if(!same(today,new Date())) render(); });
-            render();
-            setInterval(()=>{ if(!same(today,new Date())) render(); }, 60000);
+          function teamsForDay(d){let h='';[['D',t('dayShift')],['N',t('nightShift')],['O',t('O')]].forEach(([ty,lab])=>{const k=teamOn(d,ty);
+            h+=`<div class="tl ${k===C().myTeam?'me':''}"><span>${esc(teamName(k))}${k===C().myTeam?' <span class="muted">('+t('yours')+')</span>':''}</span><span class="pill ${ty}-t ${ty}-b">${ICO[ty]} ${lab}</span></div>`;});return h;}
+
+          function bindCommon(v){v.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>openDay(parse(e.dataset.day)));
+          EOF_FILE
+
+      - name: Create project files (7)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            v.querySelectorAll('[data-log]').forEach(e=>e.onclick=()=>{logSel=idToShift(e.dataset.log);go('log');});
+            v.querySelectorAll('[data-go]').forEach(e=>e.onclick=()=>go(e.dataset.go));}
+
+          function openDay(d){let h=`<h3>${fmt(d)}</h3>`+teamsForDay(d);
+            const ev=eventsOn(d);if(ev.length){h+=`<div class="sec">${t('events')}</div>`+ev.map(e=>`<div class="item"><div class="h">${esc(evText(e))}</div>${e.note?`<div class="b">${esc(e.note)}</div>`:''}</div>`).join('');}
+            ['D','N'].forEach(ty=>{const id=shiftId(d,ty);if(shiftOf(d,C().myTeam).type===ty){const g=S.logs[id];
+              h+=`<div class="item"><div class="h">${ICO[ty]} ${t(ty)} — ${t('log')}<button class="btn sm pri" data-log="${id}">${t('openLog')}</button></div>`;
+              if(g&&hasLog(id))h+=`<div class="b">${g.inc&&g.inc.length?t('incCount')+': '+g.inc.length+'\n':''}${g.notes?esc(g.notes):''}</div>`;h+='</div>';}});
+            h+=`<button class="btn pri full" id="dClose">${t('close')}</button>`;openSheet(h);$('dClose').onclick=closeSheet;bindCommon($('panel'));
+            $('panel').querySelectorAll('[data-log]').forEach(e=>e.addEventListener('click',closeSheet));}
+
+          function rCal(){const v=$('v-cal');let h=`<div class="card"><div class="calhead"><button class="btn" id="cP">${L()==='ar'?'›':'‹'}</button><b>${MONTHS[L()][calView.getMonth()]} ${calView.getFullYear()}</b><button class="btn" id="cN">${L()==='ar'?'‹':'›'}</button></div><div class="grid">`;
+            SDAYS[L()].forEach(n=>h+=`<div class="dn">${n}</div>`);
+            const first=calView.getDay(),len=new Date(calView.getFullYear(),calView.getMonth()+1,0).getDate();
+            for(let i=0;i<first;i++)h+='<div class="c empty"></div>';
+            for(let d=1;d<=len;d++){const dt=new Date(calView.getFullYear(),calView.getMonth(),d),s=shiftOf(dt,C().myTeam);const dot=eventsOn(dt).length||hasLog(shiftId(dt,'D'))||hasLog(shiftId(dt,'N'));
+              h+=`<button class="c ${s.type}-b ${ymd(dt)===ymd(now)?'today':''}" data-day="${ymd(dt)}">${dot?'<span class="dot"></span>':''}${d}<small class="${s.type}-t">${t(s.type)}</small></button>`;}
+            h+=`</div><div class="legend"><span><i style="background:var(--day)"></i>${t('D')}</span><span><i style="background:var(--night)"></i>${t('N')}</span><span><i style="background:var(--off)"></i>${t('O')}</span><span><i style="background:var(--danger);border-radius:50%"></i>${t('note')}</span></div>
+            <button class="btn full" id="cT">${t('today')}</button></div><p class="muted" style="text-align:center">${esc(teamName(C().myTeam))} · ${t('hint')}</p>`;
+            v.innerHTML=h;bindCommon(v);
+            $('cP').onclick=()=>{calView=new Date(calView.getFullYear(),calView.getMonth()-1,1);rCal();};
+            $('cN').onclick=()=>{calView=new Date(calView.getFullYear(),calView.getMonth()+1,1);rCal();};
+            $('cT').onclick=()=>{calView=new Date(now.getFullYear(),now.getMonth(),1);rCal();};}
+
+          function rLog(){const v=$('v-log');if(!logSel||shiftOf(logSel.date,C().myTeam).type!==logSel.type)logSel=lastOrCurrentMyShift(now);
+            if(!logSel){v.innerHTML=`<div class="empty-msg">${t('nothing')}</div>`;return;}
+            const id=shiftId(logSel.date,logSel.type),g=getLog(id),tm=shiftTimes(logSel.date,logSel.type);const isCur=now>=tm.s&&now<tm.e;
+            let h=`<div class="shnav"><button class="btn" id="lP">${L()==='ar'?'›':'‹'}</button><div class="mid"><b>${ICO[logSel.type]} ${t(logSel.type)} — ${fmt(logSel.date)}</b><span class="muted">${isCur?t('current')+' · ':''}${t('work')} ${hm(tm.st)}–${hm(tm.st+720)}</span></div><button class="btn" id="lN">${L()==='ar'?'‹':'›'}</button></div>`;
+            if(isCur&&logReminderActive({date:logSel.date,type:logSel.type}))h+=`<div class="alert">${t('logReminder')}</div>`;
+            const mm=g.recv!=null&&g.hand!=null&&+g.recv!==+g.hand||g.recv!=null&&+g.recv!==+C().cards;
+            h+=`<div class="card"><h3>🪪 ${t('cards')} <span class="muted">${t('total')}: ${C().cards}</span></h3><div class="row">
+              <div><label>${t('received')}</label><input type="number" inputmode="numeric" id="fRecv" value="${g.recv==null?'':g.recv}" placeholder="${C().cards}"></div>
+              <div><label>${t('handed')}</label><input type="number" inputmode="numeric" id="fHand" value="${g.hand==null?'':g.hand}" placeholder="${C().cards}"></div></div>
+              <div class="btns"><button class="btn sm" id="fAll">✓ ${t('received')} = ${C().cards}</button><button class="btn sm" id="fAllH">✓ ${t('handed')} = ${C().cards}</button></div>
+              <div id="mmBox" style="display:${mm?'block':'none'}"><div class="alert" style="margin:10px 0 0">${t('mismatch')}</div><label>${t('mismatchNote')}</label><input id="fCN" value="${esc(g.cardNote)}"></div></div>`;
+            if(logSel.type==='N')h+=`<div class="card"><h3>📒 ${t('logChange')} <span class="muted">${C().logFrom}–${C().logTo}</span></h3>
+              <label class="chk"><input type="checkbox" id="fVis" ${g.vis?'checked':''}>${t('visitorsLog')}</label>
+              <label class="chk"><input type="checkbox" id="fWrk" ${g.wrk?'checked':''}>${t('workersLog')}</label></div>`;
+            h+=`<div class="card"><h3>📝 ${t('handNotes')}</h3><textarea id="fNotes" placeholder="${t('handNotesPh')}">${esc(g.notes)}</textarea></div>`;
+            h+=`<div class="card"><h3>🚨 ${t('incidents')} <button class="btn sm pri" id="fInc">${t('addIncident')}</button></h3>`;
+            h+=g.inc.length?g.inc.map(x=>`<div class="item"><div class="h"><span>${esc(x.time)} · ${t('inc_'+x.type)}</span><button class="btn sm dang" data-delinc="${x.id}">${t('del')}</button></div><div class="b">${esc(x.desc)}${x.action?'\n↳ '+esc(x.action):''}</div></div>`).join(''):`<div class="empty-msg">${t('nothing')}</div>`;
+            h+='</div>';v.innerHTML=h;
+            $('lP').onclick=()=>{logSel=myShiftStep(logSel.date,logSel.type,-1);rLog();};
+            $('lN').onclick=()=>{logSel=myShiftStep(logSel.date,logSel.type,1);rLog();};
+            const num=x=>x===''?null:Math.max(0,parseInt(x,10)||0);
+            const upMM=()=>{const m=g.recv!=null&&g.hand!=null&&g.recv!==g.hand||g.recv!=null&&g.recv!==+C().cards;$('mmBox').style.display=m?'block':'none';};
+            $('fRecv').oninput=e=>{g.recv=num(e.target.value);save();upMM();};
+            $('fHand').oninput=e=>{g.hand=num(e.target.value);save();upMM();};
+            $('fAll').onclick=()=>{g.recv=+C().cards;$('fRecv').value=g.recv;save();upMM();toast(t('saved'));};
+            $('fAllH').onclick=()=>{g.hand=+C().cards;$('fHand').value=g.hand;save();upMM();toast(t('saved'));};
+            $('fCN').oninput=e=>{g.cardNote=e.target.value;save();};
+            if($('fVis')){$('fVis').onchange=e=>{g.vis=e.target.checked;save();};$('fWrk').onchange=e=>{g.wrk=e.target.checked;save();};}
+            $('fNotes').oninput=e=>{g.notes=e.target.value;save();};
+          EOF_FILE
+
+      - name: Create project files (8)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            $('fInc').onclick=()=>incForm(g);
+            v.querySelectorAll('[data-delinc]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{g.inc=g.inc.filter(x=>x.id!==b.dataset.delinc);save();rLog();}));}
+
+          function incForm(g){const n=new Date();openSheet(`<h3>🚨 ${t('addIncident').replace('+ ','')}</h3>
+            <div class="row"><div><label>${t('time')}</label><input type="time" id="iT" value="${pad(n.getHours())}:${pad(n.getMinutes())}"></div>
+            <div><label>${t('type')}</label><select id="iY">${INC.map(k=>`<option value="${k}">${t('inc_'+k)}</option>`).join('')}</select></div></div>
+            <label>${t('desc')}</label><textarea id="iD"></textarea><label>${t('action')}</label><textarea id="iA" style="min-height:60px"></textarea>
+            <div class="btns"><button class="btn pri" id="iS">${t('save')}</button><button class="btn" id="iC">${t('cancel')}</button></div>`);
+            $('iC').onclick=closeSheet;$('iS').onclick=()=>{const d=$('iD').value.trim();if(!d){$('iD').focus();return;}
+              g.inc.push({id:uid(),time:$('iT').value,type:$('iY').value,desc:d,action:$('iA').value.trim()});g.inc.sort((a,b)=>a.time<b.time?-1:1);save();closeSheet();rLog();toast(t('saved'));};}
+
+          function itemName(it){return (it.name||'').trim()||t('u_'+it.id);}
+          function itemById(id){return C().uniItems.find(i=>i.id===id)||{id,name:id};}
+          function uniOf(p){return S.uni.filter(u=>u.p===p).sort((a,b)=>a.date<b.date?1:-1);}
+          function lastSize(p,it){for(const u of uniOf(p)){const x=u.items[it];if(x&&x.size)return x.size;}return '';}
+          function lastGot(p){const l=uniOf(p);return l.length?l[0].date:'';}
+          function uniLine(u){return Object.keys(u.items).map(k=>{const x=u.items[k];return itemName(itemById(k))+(x.size?' ('+x.size+')':'')+(x.qty>1?' ×'+x.qty:'');}).join('، ');}
+          function uniCard(){let h=`<div class="card"><h3>👕 ${t('uni')} <button class="btn sm pri" id="uAdd">${t('uniNew')}</button></h3>`;
+            h+=personList().map(p=>{const lg=lastGot(p.id);return `<div class="tl" data-ps="${p.id}" style="cursor:pointer"><span>${esc(p.name)}</span><span class="muted">${lg?t('lastGot')+': '+lg:t('never')}</span></div>`;}).join('');
+            return h+'</div>';}
+          function uniPerson(p){const l=uniOf(p);let h=`<h3>👕 ${esc(pName(p))}</h3><div class="sec">${t('lastSizes')}</div><div class="item">`;
+            h+=C().uniItems.map(it=>`<div class="h"><span>${esc(itemName(it))}</span><span>${esc(lastSize(p,it.id)||'—')}</span></div>`).join('')+'</div>';
+            h+=`<div class="sec">${t('history')}</div>`;
+            h+=l.length?l.map(u=>`<div class="item"><div class="h"><span>${u.date}</span><button class="btn sm dang" data-delu="${u.id}">${t('del')}</button></div><div class="b">${esc(uniLine(u))}${u.note?'\n'+esc(u.note):''}</div></div>`).join(''):`<div class="empty-msg">${t('never')}</div>`;
+            h+=`<button class="btn pri full" id="upC">${t('close')}</button>`;openSheet(h);$('upC').onclick=closeSheet;
+            $('panel').querySelectorAll('[data-delu]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{S.uni=S.uni.filter(u=>u.id!==b.dataset.delu);save();rTeam();uniPerson(p);}));}
+          function uniForm(){const ppl=personList();const sel={},its={};
+            let h=`<h3>👕 ${t('uniNew').replace('+ ','')}</h3><label>${t('date')}</label><input type="date" id="uD" value="${ymd(now)}">
+            <div class="sec" style="margin-top:10px">${t('items')}</div>`+C().uniItems.map(it=>`<div class="row" style="align-items:center"><label class="chk" style="flex:2"><input type="checkbox" data-ui="${it.id}">${esc(itemName(it))}</label><input type="number" inputmode="numeric" min="1" value="1" data-uq="${it.id}" style="flex:1"></div>`).join('');
+            h+=`<div class="sec" style="margin-top:10px">${t('people')}</div><div class="btns" style="margin-bottom:6px"><button class="btn sm" data-pq="all">${t('all')}</button>${[0,1,2].map(i=>`<button class="btn sm" data-pq="t${i}">${esc(teamName(i))}</button>`).join('')}<button class="btn sm" data-pq="none">${t('none')}</button></div>`;
+            h+=ppl.map(p=>`<label class="chk"><input type="checkbox" data-pp="${p.id}" data-tx="${p.team}">${esc(p.name)}</label>`).join('');
+            h+=`<label>${t('note')}</label><input id="uN"><div class="btns"><button class="btn pri" id="uNx">${t('nextStep')}</button><button class="btn" id="uC">${t('cancel')}</button></div>`;
+            openSheet(h);$('uC').onclick=closeSheet;
+            $('panel').querySelectorAll('[data-pq]').forEach(b=>b.onclick=()=>{const q=b.dataset.pq;$('panel').querySelectorAll('[data-pp]').forEach(c=>{c.checked=q==='all'?true:q==='none'?false:(c.dataset.tx===q.slice(1)||c.checked);});});
+            $('uNx').onclick=()=>{const date=$('uD').value||ymd(now),note=$('uN').value.trim();
+              const items=[...$('panel').querySelectorAll('[data-ui]')].filter(c=>c.checked).map(c=>({id:c.dataset.ui,qty:Math.max(1,parseInt($('panel').querySelector('[data-uq="'+c.dataset.ui+'"]').value,10)||1)}));
+              const people=[...$('panel').querySelectorAll('[data-pp]')].filter(c=>c.checked).map(c=>c.dataset.pp);
+              if(!items.length){toast(t('pickItems'));return;}if(!people.length){toast(t('pickPeople'));return;}
+              let h2=`<h3>📏 ${t('sizes')} — ${date}</h3>`;
+              h2+=people.map(p=>`<div class="item"><div class="h">${esc(pName(p))}</div><div class="row" style="flex-wrap:wrap">`+items.map(it=>`<div style="min-width:30%"><label>${esc(itemName(itemById(it.id)))}${it.qty>1?' ×'+it.qty:''}</label><input data-sz="${p}|${it.id}" value="${esc(lastSize(p,it.id))}" placeholder="${t('size')}"></div>`).join('')+`</div></div>`).join('');
+              h2+=`<div class="btns"><button class="btn pri" id="uS">${t('save')}</button><button class="btn" id="uC2">${t('cancel')}</button></div>`;
+              openSheet(h2);$('uC2').onclick=closeSheet;
+              $('uS').onclick=()=>{const batch=uid();people.forEach(p=>{const o={};items.forEach(it=>{o[it.id]={qty:it.qty,size:($('panel').querySelector('[data-sz="'+p+'|'+it.id+'"]').value||'').trim()};});
+                S.uni.push({id:uid(),batch,date,p,items:o,note});});save();closeSheet();rTeam();toast(t('saved'));};};}
+          let showFormer=false;
+          const teamOpts=sel=>[0,1,2,'res'].map(k=>`<option value="${k}" ${String(k)===String(sel)?'selected':''}>${esc(teamLabel(k))}</option>`).join('');
+          const kval=v=>v==='res'?'res':+v;
+          function setSup(p,on){if(on)activePeople().forEach(x=>{if(x.team===p.team)x.sup=false;});p.sup=!!on&&p.team!=='res';}
+          function personSheet(id){const p=P(id);if(!p)return;const l=uniOf(id);
+          EOF_FILE
+
+      - name: Create project files (9)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            let h=`<h3>👤 ${esc(pName(id))}</h3><div class="muted" style="margin-bottom:8px">${p.left?t('leftOn')+' '+p.left+(p.leftNote?' — '+esc(p.leftNote):''):esc(teamLabel(p.team))+' · '+t('active')}</div>`;
+            h+=`<label>${t('name')}</label><input id="psN" value="${esc(p.name)}">`;
+            if(!p.left&&p.team!=='res')h+=`<label class="chk" style="margin-top:6px"><input type="checkbox" id="psS" ${p.sup?'checked':''}>${t('makeSup')}</label>`;
+            h+=`<div class="btns">`+(p.left?`<button class="btn" id="psR">${t('restoreEmp')}</button>`:`<button class="btn" id="psM">${t('move')}</button><button class="btn dang" id="psX">${t('resign')}</button>`)+`</div>`;
+            h+=`<div class="sec" style="margin-top:12px">👕 ${t('lastSizes')}</div><div class="item">`+C().uniItems.map(it=>`<div class="h"><span>${esc(itemName(it))}</span><span>${esc(lastSize(id,it.id)||'—')}</span></div>`).join('')+'</div>';
+            h+=`<div class="sec">${t('history')}</div>`+(l.length?l.map(u=>`<div class="item"><div class="h"><span>${u.date}</span><button class="btn sm dang" data-delu="${u.id}">${t('del')}</button></div><div class="b">${esc(uniLine(u))}${u.note?'\n'+esc(u.note):''}</div></div>`).join(''):`<div class="empty-msg">${t('never')}</div>`);
+            const ev=S.events.filter(e=>e.p1===id||e.p2===id).sort((a,b)=>a.from<b.from?1:-1);
+            if(ev.length)h+=`<div class="sec">${t('personEvents')}</div>`+ev.map(e=>`<div class="item"><div class="h">${esc(evText(e))}</div><div class="b">${e.from}${e.to!==e.from?' → '+e.to:''}</div></div>`).join('');
+            const hs=(p.hist||[]).filter(x=>x.from>'2000-01-01');if(hs.length)h+=`<div class="sec">${t('teamHist')}</div><div class="item"><div class="b">`+hs.map(x=>x.from+' → '+esc(teamLabel(x.team))).join('\n')+'</div></div>';
+            h+=`<button class="btn pri full" id="psC">${t('close')}</button>`;openSheet(h);
+            $('psC').onclick=closeSheet;
+            $('psN').onchange=e=>{p.name=e.target.value.trim();save();rTeam();};
+            if($('psS'))$('psS').onchange=e=>{setSup(p,e.target.checked);save();rTeam();};
+            if($('psR'))$('psR').onclick=()=>{delete p.left;delete p.leftNote;save();rTeam();personSheet(id);};
+            if($('psM'))$('psM').onclick=()=>moveForm(p);
+            if($('psX'))$('psX').onclick=()=>resignForm(p);
+            $('panel').querySelectorAll('[data-delu]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{S.uni=S.uni.filter(u=>u.id!==b.dataset.delu);save();rTeam();personSheet(id);}));}
+          function moveForm(p){openSheet(`<h3>${t('move')} — ${esc(pName(p.id))}</h3><label>${t('newTeam')}</label><select id="mvT">${teamOpts(p.team)}</select>
+            <label>${t('moveDate')}</label><input type="date" id="mvD" value="${ymd(now)}"><div class="btns"><button class="btn pri" id="mvS">${t('save')}</button><button class="btn" id="mvC">${t('cancel')}</button></div>`);
+            $('mvC').onclick=()=>personSheet(p.id);
+            $('mvS').onclick=()=>{const k=kval($('mvT').value),d=$('mvD').value||ymd(now);if(k===p.team){personSheet(p.id);return;}
+              p.hist=(p.hist||[{team:p.team,from:'2000-01-01'}]).filter(x=>x.from!==d);p.hist.push({team:k,from:d});p.hist.sort((a,b)=>a.from<b.from?-1:1);
+              p.team=k;p.sup=false;save();rTeam();personSheet(p.id);toast(t('saved'));};}
+          function resignForm(p){openSheet(`<h3>${t('resign')} — ${esc(pName(p.id))}</h3><label>${t('date')}</label><input type="date" id="rsD" value="${ymd(now)}">
+            <label>${t('reason')}</label><input id="rsN">
+            <label class="chk" style="margin-top:8px"><input type="checkbox" id="rsR" checked>${t('addReplacement')}</label>
+            <div id="rsW"><label>${t('newName')}</label><input id="rsNN"></div>
+            <div class="btns"><button class="btn dang" id="rsS">${t('save')}</button><button class="btn" id="rsC">${t('cancel')}</button></div>`);
+            $('rsR').onchange=e=>$('rsW').style.display=e.target.checked?'block':'none';$('rsC').onclick=()=>personSheet(p.id);
+            $('rsS').onclick=()=>{const d=$('rsD').value||ymd(now),rep=$('rsR').checked,nn=$('rsNN').value.trim();if(rep&&!nn){toast(t('needName'));$('rsNN').focus();return;}
+              if(rep){C().people.push({id:'p'+uid(),name:nn,team:p.team,sup:p.sup,hist:[{team:p.team,from:d}]});}
+              p.left=d;p.leftNote=$('rsN').value.trim();p.sup=false;save();closeSheet();rTeam();toast(t('saved'));};}
+          function empForm(){openSheet(`<h3>${t('newEmp').replace('+ ','')}</h3><label>${t('name')}</label><input id="nwN"><label>${t('teamOf')}</label><select id="nwT">${teamOpts(C().myTeam)}</select>
+            <label class="chk" style="margin-top:6px"><input type="checkbox" id="nwS">${t('makeSup')}</label><label>${t('startDate')}</label><input type="date" id="nwD" value="${ymd(now)}">
+            <div class="btns"><button class="btn pri" id="nwOk">${t('save')}</button><button class="btn" id="nwC">${t('cancel')}</button></div>`);
+            $('nwC').onclick=closeSheet;
+            $('nwOk').onclick=()=>{const n=$('nwN').value.trim();if(!n){toast(t('needName'));$('nwN').focus();return;}const k=kval($('nwT').value);
+              const p={id:'p'+uid(),name:n,team:k,sup:false,hist:[{team:k,from:$('nwD').value||ymd(now)}]};C().people.push(p);setSup(p,$('nwS').checked);save();closeSheet();rTeam();toast(t('saved'));};}
+          function rTeam(){const v=$('v-team');let h='';
+            const row=p=>`<div class="tl" data-ps="${p.id}" style="cursor:pointer"><span>${p.sup?'★ ':''}${esc(pName(p.id))}</span><span class="muted">›</span></div>`;
+            [0,1,2].forEach(i=>{const s=shiftOf(now,i),ms=teamMembers(i);h+=`<div class="card"><h3><span>${esc(teamName(i))}${i===C().myTeam?' <span class="muted">('+t('yours')+')</span>':''} <span class="muted">${ms.length}</span></span><span class="pill ${s.type}-t ${s.type}-b">${ICO[s.type]} ${t(s.type)}</span></h3>`+(ms.length?ms.map(row).join(''):`<div class="empty-msg">${t('noMembers')}</div>`)+`</div>`;});
+            const rs=teamMembers('res');h+=`<div class="card"><h3>🔁 ${t('reserve')}</h3>`+(rs.length?rs.map(row).join(''):`<div class="empty-msg">${t('noMembers')}</div>`)+`<button class="btn pri full" id="pNew">${t('newEmp')}</button></div>`;
+            const fm=(C().people||[]).filter(p=>p.left);if(fm.length){h+=`<div class="card"><h3><span>🗂️ ${t('former')} <span class="muted">${fm.length}</span></span><button class="btn sm" id="fmrT">${showFormer?'▲':'▼'}</button></h3>`;
+              if(showFormer)h+=fm.map(p=>`<div class="tl" data-ps="${p.id}" style="cursor:pointer"><span>${esc(pName(p.id))}</span><span class="muted">${t('leftOn')} ${p.left}</span></div>`).join('');h+='</div>';}
+            h+=`<div class="card"><h3>📋 ${t('events')} <button class="btn sm pri" id="eAdd">${t('addEvent')}</button></h3>
+          EOF_FILE
+
+      - name: Create project files (10)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+              <div class="seg">${['all',...EVT].map(k=>`<button data-et="${k}" class="${evTab===k?'on':''}">${k==='all'?(L()==='ar'?'الكل':'All'):t('ev_'+k)}</button>`).join('')}</div>`;
+            const list=S.events.filter(e=>evTab==='all'||e.type===evTab).sort((a,b)=>a.from<b.from?1:-1);
+            h+=list.length?list.map(e=>`<div class="item"><div class="h"><span>${esc(evText(e))}</span><button class="btn sm dang" data-delev="${e.id}">${t('del')}</button></div><div class="b">${e.from}${e.to&&e.to!==e.from?' → '+e.to:''}${e.note?'\n'+esc(e.note):''}</div></div>`).join(''):`<div class="empty-msg">${t('noEvents')}</div>`;
+            h+='</div>';h+=uniCard();v.innerHTML=h;
+            $('uAdd').onclick=uniForm;v.querySelectorAll('[data-ps]').forEach(e=>e.onclick=()=>personSheet(e.dataset.ps));$('pNew').onclick=()=>empForm();
+            const ft=$('fmrT');if(ft)ft.onclick=()=>{showFormer=!showFormer;rTeam();};
+            v.querySelectorAll('[data-et]').forEach(b=>b.onclick=()=>{evTab=b.dataset.et;rTeam();});
+            v.querySelectorAll('[data-delev]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{S.events=S.events.filter(e=>e.id!==b.dataset.delev);save();rTeam();}));
+            $('eAdd').onclick=evForm;}
+
+          function evForm(){const ppl=personList().map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');const td=ymd(now);
+            openSheet(`<h3>📋 ${t('addEvent').replace('+ ','')}</h3><label>${t('type')}</label><select id="eY">${EVT.map(k=>`<option value="${k}">${t('ev_'+k)}</option>`).join('')}</select>
+            <label>${t('person')}</label><select id="eP1">${ppl}</select>
+            <div id="eP2w" style="display:none"><label id="eP2l"></label><select id="eP2">${ppl}</select></div>
+            <div class="row"><div><label id="eFl">${t('date')}</label><input type="date" id="eF" value="${td}"></div><div id="eTw" style="display:none"><label>${t('to')}</label><input type="date" id="eT" value="${td}"></div></div>
+            <label>${t('note')}</label><input id="eN">
+            <div class="btns"><button class="btn pri" id="eS">${t('save')}</button><button class="btn" id="eC">${t('cancel')}</button></div>`);
+            const up=()=>{const y=$('eY').value;$('eP2w').style.display=(y==='coverage'||y==='swap')?'block':'none';$('eP2l').textContent=y==='coverage'?t('coversFor'):t('swapWith');
+              $('eTw').style.display=y==='leave'?'block':'none';$('eFl').textContent=y==='leave'?t('from'):t('date');
+              if(y==='coverage'&&$('eP1').value!=='res')$('eP1').value='res';};
+            $('eY').onchange=up;up();$('eC').onclick=closeSheet;
+            $('eS').onclick=()=>{const y=$('eY').value,f=$('eF').value;if(!f)return;let to=y==='leave'?($('eT').value||f):f;if(to<f)to=f;
+              S.events.push({id:uid(),type:y,p1:$('eP1').value,p2:(y==='coverage'||y==='swap')?$('eP2').value:'',from:f,to,note:$('eN').value.trim()});save();closeSheet();rTeam();toast(t('saved'));};}
+
+          let rp={per:'this',from:'',to:'',sec:{shifts:true,inc:true,cards:true,team:true,notes:true,logs:true,uni:true}};
+          function rRep(){const v=$('v-rep');if(!rp.from){const a=new Date(now.getFullYear(),now.getMonth(),1);rp.from=ymd(a);rp.to=ymd(now);}
+            let h=`<div class="card"><h3>📊 ${t('report')}</h3><label>${t('period')}</label>
+            <div class="seg">${[['this',t('thisMonth')],['last',t('lastMonth')],['custom',t('custom')]].map(([k,l])=>`<button data-per="${k}" class="${rp.per===k?'on':''}">${l}</button>`).join('')}</div>
+            <div class="row" style="display:${rp.per==='custom'?'flex':'none'}"><div><label>${t('from')}</label><input type="date" id="rF" value="${rp.from}"></div><div><label>${t('to')}</label><input type="date" id="rT" value="${rp.to}"></div></div>
+            <label>${t('include')}</label>${[['shifts','secShifts'],['inc','secIncidents'],['cards','secCards'],['logs','secLogs'],['notes','secNotes'],['team','secTeam'],['uni','secUni']].map(([k,l])=>`<label class="chk"><input type="checkbox" data-sec="${k}" ${rp.sec[k]?'checked':''}>${t(l)}</label>`).join('')}
+            <button class="btn pri full" id="rG">${t('generate')}</button></div>`;
+            if(repOut)h+=`<div class="card"><pre class="rep">${esc(repOut)}</pre><div class="btns"><button class="btn" id="rC">${t('copy')}</button><button class="btn" id="rS">${t('share')}</button><button class="btn" id="rPr">${t('print')}</button></div></div>`;
+            v.innerHTML=h;
+            v.querySelectorAll('[data-per]').forEach(b=>b.onclick=()=>{rp.per=b.dataset.per;rRep();});
+            v.querySelectorAll('[data-sec]').forEach(b=>b.onchange=()=>{rp.sec[b.dataset.sec]=b.checked;});
+            if($('rF')){$('rF').onchange=e=>rp.from=e.target.value;$('rT').onchange=e=>rp.to=e.target.value;}
+            $('rG').onclick=()=>{repOut=buildReport();rRep();setTimeout(()=>{const p=v.querySelector('pre');if(p)p.scrollIntoView({behavior:'smooth'});},50);};
+            if(repOut){$('rC').onclick=()=>copyText(repOut);$('rS').onclick=()=>shareText(repOut);$('rPr').onclick=()=>printHtml(reportHtml(repOut),t('report'));}}
+
+          function range(){let a,b;if(rp.per==='this'){a=new Date(now.getFullYear(),now.getMonth(),1);b=new Date(now.getFullYear(),now.getMonth()+1,0);}
+            else if(rp.per==='last'){a=new Date(now.getFullYear(),now.getMonth()-1,1);b=new Date(now.getFullYear(),now.getMonth(),0);}
+            else{a=parse(rp.from||ymd(now));b=parse(rp.to||ymd(now));if(b<a)[a,b]=[b,a];}return[a,b];}
+          function buildReport(){const[a,b]=range();const A=ymd(a),B=ymd(b);const me=C().myName?C().myName+' — ':'';
+            let o=`${t('report')} ${t('app')}\n${me}${teamName(C().myTeam)}\n${t('period')}: ${fmt(a)} → ${fmt(b)}\n${'─'.repeat(24)}\n`;
+            const my=[];for(let d=dayStart(a);d<=b;d=addDays(d,1)){const s=shiftOf(d,C().myTeam);if(s.type!=='O')my.push({date:new Date(d),type:s.type,id:shiftId(d,s.type)});}
+            if(rp.sec.shifts){const dn=my.filter(x=>x.type==='D').length,nn=my.filter(x=>x.type==='N').length;
+              o+=`\n■ ${t('secShifts')}\n${t('D')}: ${dn} · ${t('N')}: ${nn} · ${t('total')}: ${dn+nn} ${t('shifts')} (${(dn+nn)*12} ${t('hours')})\n`;
+              const mine=S.events.filter(e=>e.from<=B&&e.to>=A&&(P(e.p1)&&teamAt(P(e.p1),e.from)===C().myTeam));if(mine.length)o+=mine.map(e=>`- ${e.from}: ${evText(e)}`).join('\n')+'\n';}
+            if(rp.sec.inc){o+=`\n■ ${t('secIncidents')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.inc)g.inc.forEach(i=>{n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${i.time} [${t('inc_'+i.type)}] ${i.desc}${i.action?' ↳ '+i.action:''}\n`;});});if(!n)o+=t('nothing')+'\n';}
+            if(rp.sec.cards){o+=`\n■ ${t('secCards')} (${t('total')} ${C().cards})\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&(g.recv!=null||g.hand!=null)){n++;const bad=(g.recv!=null&&g.recv!==+C().cards)||(g.recv!=null&&g.hand!=null&&g.recv!==g.hand);
+          EOF_FILE
+
+      - name: Create project files (11)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+                o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${t('received')} ${g.recv==null?'—':g.recv} / ${t('handed')} ${g.hand==null?'—':g.hand}${bad?' ⚠️'+(g.cardNote?' '+g.cardNote:''):''}\n`;}});if(!n)o+=t('nothing')+'\n';}
+            if(rp.sec.logs){const ns=my.filter(x=>x.type==='N'&&shiftTimes(x.date,'N').s<=now);if(ns.length){o+=`\n■ ${t('secLogs')}\n`;ns.forEach(x=>{const g=S.logs[x.id]||{};o+=`- ${fmtS(x.date)}: ${t('visitorsLog')} ${g.vis?'✓':'✗'} · ${t('workersLog')} ${g.wrk?'✓':'✗'}\n`;});}}
+            if(rp.sec.notes){o+=`\n■ ${t('secNotes')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.notes){n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]}: ${g.notes.replace(/\n/g,' / ')}\n`;}});if(!n)o+=t('nothing')+'\n';}
+            if(rp.sec.team){o+=`\n■ ${t('secTeam')}\n`;const ev=S.events.filter(e=>e.from<=B&&e.to>=A).sort((x,y)=>x.from<y.from?-1:1);
+              if(!ev.length)o+=t('nothing')+'\n';else{ev.forEach(e=>o+=`- ${e.from}${e.to!==e.from?' → '+e.to:''}: ${evText(e)}${e.note?' ('+e.note+')':''}\n`);
+                const cnt={};ev.forEach(e=>{const k=e.p1;cnt[k]=cnt[k]||{absence:0,coverage:0,swap:0,leave:0};const d=e.type==='leave'?Math.round((utc(parse(e.to<B?e.to:B))-utc(parse(e.from>A?e.from:A)))/864e5)+1:1;cnt[k][e.type]+=d;});
+                o+=`\n${t('total')}:\n`+Object.keys(cnt).map(k=>{const c=cnt[k];const parts=[];if(c.absence)parts.push(c.absence+' '+t('absences'));if(c.coverage)parts.push(c.coverage+' '+t('covered'));if(c.swap)parts.push(c.swap+' '+t('swaps'));if(c.leave)parts.push(c.leave+' '+t('days')+' '+t('leaves'));return '- '+pName(k)+': '+parts.join(' · ');}).join('\n')+'\n';}}
+            if(rp.sec.uni){o+=`\n■ ${t('secUni')}\n`;const us=S.uni.filter(u=>u.date>=A&&u.date<=B).sort((x,y)=>x.date<y.date?-1:x.date>y.date?1:0);
+              if(!us.length)o+=t('nothing')+'\n';else{us.forEach(u=>o+=`- ${u.date} ${pName(u.p)}: ${uniLine(u)}${u.note?' ('+u.note+')':''}\n`);
+                const got=new Set(us.map(u=>u.p));const miss=personList().filter(p=>!got.has(p.id));if(miss.length)o+=`${t('notReceived')}: ${miss.map(p=>p.name).join('، ')}\n`;}}
+            o+=`\n${t('generated')}: ${fmt(now)} ${pad(now.getHours())}:${pad(now.getMinutes())}`;return o;}
+          function reportHtml(txt){return `<!DOCTYPE html><html lang="${L()}" dir="${L()==='ar'?'rtl':'ltr'}"><head><meta charset="utf-8"><title>${esc(t('report'))}</title><style>body{font-family:sans-serif;padding:24px;font-size:13px;line-height:1.8;color:#000}pre{white-space:pre-wrap;font-family:inherit}</style></head><body><pre>${esc(txt)}</pre></body></html>`;}
+
+          function rSet(){const v=$('v-set'),c=C();let h=`<div class="card"><h3>🌐 ${t('language')}</h3><div class="seg"><button data-lang="ar" class="${c.lang==='ar'?'on':''}">العربية</button><button data-lang="en" class="${c.lang==='en'?'on':''}">English</button></div>
+            <h3>🎨 ${t('theme')}</h3><div class="seg">${['dark','light','auto'].map(k=>`<button data-th="${k}" class="${c.theme===k?'on':''}">${k==='dark'?'🌙 ':k==='light'?'☀️ ':'⚙️ '}${t(k)}</button>`).join('')}</div></div>`;
+            h+=`<div class="card"><h3>👤 ${t('myTeam')}</h3><div class="seg">${[0,1,2].map(i=>`<button data-mt="${i}" class="${c.myTeam===i?'on':''}">${esc(teamName(i))}</button>`).join('')}</div>
+              <label>${t('myName')}</label><input id="sMe" value="${esc(c.myName)}"></div>`;
+            h+=`<div class="card"><h3>👥 ${t('teams')}</h3><p class="muted">${t('manageInTeam')}</p><button class="btn full" id="sGoT">${t('goTeam')}</button></div>`;
+            h+=`<div class="card"><h3>⏰ ${t('times')}</h3><div class="row"><div><label>${t('fpStart')}</label><input type="time" data-k="fpStart" value="${c.fpStart}"></div><div><label>${t('fpEnd')}</label><input type="time" data-k="fpEnd" value="${c.fpEnd}"></div></div>
+              <label>${t('startTime')}</label><input type="time" data-k="start" value="${c.start}"><p class="muted" style="margin-top:4px">${t('nightNote')}</p>
+              <div class="row"><div><label>${t('logFrom')}</label><input type="time" data-k="logFrom" value="${c.logFrom}"></div><div><label>${t('logTo')}</label><input type="time" data-k="logTo" value="${c.logTo}"></div></div>
+              <label>${t('cardsTotal')}</label><input type="number" inputmode="numeric" id="sCards" value="${c.cards}">
+              <label>${t('anchor')}</label><input type="date" id="sAnc" value="${c.anchor}"><p class="muted" style="margin-top:4px">${t('hint')}</p></div>`;
+            h+=`<div class="card"><h3>👕 ${t('uniItems')}</h3>`+c.uniItems.map((it,i)=>`<div class="row" style="align-items:center;margin-bottom:6px"><input data-itn="${i}" value="${esc(itemName(it))}" style="flex:4"><button class="btn sm dang" data-itd="${i}" style="flex:1">${t('del')}</button></div>`).join('')+`<button class="btn full" id="itA">${t('addItem')}</button></div>`;
+            h+=`<div class="card"><h3>💾 ${t('backup')}</h3><div class="btns"><button class="btn" id="bC">${t('copyBackup')}</button><button class="btn" id="bS">${t('share')}</button></div>
+              <label>${t('restoreHint')}</label><textarea id="bT" style="min-height:60px"></textarea><button class="btn full" id="bR">${t('restore')}</button>
+              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v2.2</p>`;
+            v.innerHTML=h;
+            v.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{c.lang=b.dataset.lang;repOut='';save();render();});
+            v.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{c.theme=b.dataset.th;save();render();});
+            v.querySelectorAll('[data-mt]').forEach(b=>b.onclick=()=>{c.myTeam=+b.dataset.mt;logSel=null;save();render();});
+            $('sMe').oninput=e=>{c.myName=e.target.value;save();};
+            $('sGoT').onclick=()=>{view='team';render();};
+            v.querySelectorAll('[data-k]').forEach(i=>i.onchange=()=>{if(i.value){c[i.dataset.k]=i.value;save();toast(t('saved'));}});
+            $('sCards').onchange=e=>{const n=parseInt(e.target.value,10);if(n>0){c.cards=n;save();toast(t('saved'));}};
+            $('sAnc').onchange=e=>{if(e.target.value){c.anchor=e.target.value;save();toast(t('saved'));}};
+            v.querySelectorAll('[data-itn]').forEach(i=>i.onchange=()=>{const it=c.uniItems[+i.dataset.itn];const val=i.value.trim();it.name=(val===t('u_'+it.id))?'':val;save();toast(t('saved'));});
+            v.querySelectorAll('[data-itd]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{c.uniItems.splice(+b.dataset.itd,1);save();rSet();}));
+            $('itA').onclick=()=>{c.uniItems.push({id:'i'+uid(),name:t('itemName')});save();rSet();};
+            $('bC').onclick=()=>copyText(JSON.stringify(S));$('bS').onclick=()=>shareText(JSON.stringify(S));
+          EOF_FILE
+
+      - name: Create project files (12)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            $('bR').onclick=()=>{try{const x=JSON.parse($('bT').value);if(!x.cfg)throw 0;S={cfg:Object.assign(JSON.parse(JSON.stringify(DEF.cfg)),x.cfg),logs:x.logs||{},events:x.events||[],uni:x.uni||[]};if(!x.cfg.people)delete S.cfg.people;migratePeople();save();toast(t('restored'));render();}catch(e){toast(t('bad'));}};
+            $('bX').onclick=()=>confirmBox(t('resetQ'),()=>{const keep=S.cfg;S={cfg:keep,logs:{},events:[],uni:[]};save();render();});}
+
+          render();
+          setInterval(()=>{const n=new Date();if(n.getMinutes()!==now.getMinutes()&&view!=='set'&&!$('sheet').classList.contains('show')&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))render();},30000);
+          document.addEventListener('visibilitychange',()=>{if(!document.hidden&&view!=='set')render();});
           })();
           </script>
           </body>
@@ -327,33 +730,118 @@ jobs:
           package com.mohamed.shifts;
 
           import android.app.Activity;
+          import android.content.ClipData;
+          import android.content.ClipboardManager;
+          import android.content.Context;
+          import android.content.Intent;
+          import android.content.res.Configuration;
           import android.graphics.Color;
           import android.os.Bundle;
+          import android.print.PrintAttributes;
+          import android.print.PrintDocumentAdapter;
+          import android.print.PrintManager;
+          import android.view.View;
+          import android.webkit.JavascriptInterface;
           import android.webkit.WebSettings;
           import android.webkit.WebView;
+          import android.webkit.WebViewClient;
 
           public class MainActivity extends Activity {
               private WebView web;
+              private WebView printView;
 
               @Override
               protected void onCreate(Bundle savedInstanceState) {
                   super.onCreate(savedInstanceState);
-                  int bg = Color.parseColor("#0f172a");
-                  getWindow().setStatusBarColor(bg);
-                  getWindow().setNavigationBarColor(bg);
+                  boolean dark = isDark();
+                  applyBars(dark ? "#0f172a" : "#f1f5f9", !dark);
                   web = new WebView(this);
-                  web.setBackgroundColor(bg);
+                  web.setBackgroundColor(Color.parseColor(dark ? "#0f172a" : "#f1f5f9"));
                   WebSettings s = web.getSettings();
                   s.setJavaScriptEnabled(true);
                   s.setDomStorageEnabled(true);
+                  web.setWebViewClient(new WebViewClient());
+                  web.addJavascriptInterface(new Bridge(), "AndroidBridge");
                   web.loadUrl("file:///android_asset/index.html");
                   setContentView(web);
               }
 
+              boolean isDark() {
+                  int m = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                  return m == Configuration.UI_MODE_NIGHT_YES;
+              }
+
+              void applyBars(String color, boolean light) {
+                  int c = Color.parseColor(color);
+                  getWindow().setStatusBarColor(c);
+                  getWindow().setNavigationBarColor(c);
+                  View d = getWindow().getDecorView();
+                  int f = d.getSystemUiVisibility();
+                  int mask = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                  f = light ? (f | mask) : (f & ~mask);
+                  d.setSystemUiVisibility(f);
+              }
+
               @Override
-              protected void onResume() {
-                  super.onResume();
-                  if (web != null) web.evaluateJavascript("window.dispatchEvent(new Event('focus'))", null);
+              public void onConfigurationChanged(Configuration newConfig) {
+                  super.onConfigurationChanged(newConfig);
+                  if (web != null) web.evaluateJavascript("window.onSysTheme&&window.onSysTheme()", null);
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (web == null) { finish(); return; }
+                  web.evaluateJavascript("(window.handleBack&&window.handleBack())?'1':'0'", value -> {
+                      if (value == null || !value.contains("1")) finish();
+                  });
+              }
+
+              void doPrint(String html, String title) {
+                  printView = new WebView(this);
+                  printView.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public void onPageFinished(WebView view, String url) {
+                          PrintManager pm = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                          PrintDocumentAdapter adapter = view.createPrintDocumentAdapter(title);
+                          pm.print(title, adapter, new PrintAttributes.Builder().build());
+                      }
+                  });
+                  printView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+              }
+
+              class Bridge {
+                  @JavascriptInterface
+                  public void share(String text) {
+                      runOnUiThread(() -> {
+                          Intent i = new Intent(Intent.ACTION_SEND);
+                          i.setType("text/plain");
+                          i.putExtra(Intent.EXTRA_TEXT, text);
+                          startActivity(Intent.createChooser(i, null));
+                      });
+                  }
+
+                  @JavascriptInterface
+                  public void copy(String text) {
+                      runOnUiThread(() -> {
+                          ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                          cm.setPrimaryClip(ClipData.newPlainText("shifts", text));
+                      });
+                  }
+
+                  @JavascriptInterface
+                  public boolean isDark() {
+                      return MainActivity.this.isDark();
+                  }
+
+                  @JavascriptInterface
+                  public void setBars(String color, boolean light) {
+                      runOnUiThread(() -> applyBars(color, light));
+                  }
+
+                  @JavascriptInterface
+                  public void print(String html, String title) {
+                      runOnUiThread(() -> doPrint(html, title));
+                  }
               }
           }
           EOF_FILE
@@ -392,6 +880,9 @@ jobs:
           cat > 'build.gradle' <<'EOF_FILE'
           plugins { id 'com.android.application' version '8.5.2' apply false }
           EOF_FILE
+
+      - name: Create project files (13)
+        run: |
           cat > 'gradle.properties' <<'EOF_FILE'
           org.gradle.jvmargs=-Xmx2048m
           android.useAndroidX=false
@@ -402,6 +893,9 @@ jobs:
           rootProject.name = "Shifts"
           include ':app'
           EOF_FILE
+
+      - name: Prepare signing key
+        run: base64 -d app/ks.b64 > app/shifts.keystore
 
       - uses: actions/setup-java@v4
         with:
@@ -426,5 +920,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: الورديات ${{ github.run_number }}
+          name: Shifts v2.2 build ${{ github.run_number }}
           files: Shifts.apk
