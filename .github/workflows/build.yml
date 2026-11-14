@@ -23,8 +23,8 @@ jobs:
                   applicationId "com.mohamed.shifts"
                   minSdk 26
                   targetSdk 34
-                  versionCode 6
-                  versionName "3.1"
+                  versionCode 7
+                  versionName "3.2"
               }
               signingConfigs {
                   debug {
@@ -259,6 +259,7 @@ jobs:
             <section class="view" id="v-log"></section>
             <section class="view" id="v-rep"></section>
             <section class="view" id="v-set"></section>
+            <section class="view" id="v-setup"></section>
           </main>
           <nav id="nav"></nav>
           <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
@@ -311,17 +312,25 @@ jobs:
           conflict:'تعارض',noConflict:'✓ ما فيه تعارض',restShort:'راحة {h} ساعة فقط (المطلوب {m})',overlap:'عنده وردية في نفس الوقت',withTeam:'مع {t}',onCall:'مناوب مع فريقه',
           availability:'المتاحين',noShiftThatDay:'ما عنده وردية في التاريخ هذا',upConf:'⚠️ تعارضات في الأيام الجاية',saveAnyway:'حفظ رغم التعارض',
           today_s:'اليوم',absentToday:'غايب',coverFor:'يغطي',calledIn:'مستدعى',fileHint:'ملف .json تقدر تبعته لنفسك على واتساب وترجعه وقت ما تبي',
-          tapPerson:'اضغط على أي موظف تفتح ملفه',site:'الموقع',sites:'المواقع',bothSites:'الموقعين',allSites:'كل المواقع',moveSite:'الموقع الجديد'},
-          en:{app:'Shifts',home:'Home',cal:'Calendar',emp:'Staff',log:'Log',rep:'Reports',set:'Settings',
-          D:'Day',N:'Night',O:'Off',first:'1st day',second:'2nd day',onDuty:'On duty now',ends:'ends',
-          yourNext:'Your next shift',nextShift:'Next shift',nextOff:'Next day off',fp:'Fingerprint',work:'Duty',today:'Today',
-          teamOf:'Team',member:'Member',supervisor:'Supervisor',reserve:'Reserve',myTeam:'My team',yours:'yours',role:'Role',
-          tasks:'Shift tasks',cardsRecv:'Cards received',cardsHand:'Cards handed over',cards:'Access cards',received:'Received',handed:'Handed',
+          tapPerson:'اضغط على أي موظف تفتح ملفه',site:'الموقع',sites:'المواقع',bothSites:'الموقعين',allSites:'كل المواقع',moveSite:'الموقع الجديد',
+          me:'ملفي',you:'أنت',teams:'الفرق',teamNameL:'اسم الفريق',teamNamePh:'تلقائي: فريق + اسم المشرف',supName:'اسم المشرف',editTeam:'✏️ تعديل الفريق',addMember:'+ إضافة',membersL:'الأعضاء',removeQ:'شيل الموظف من الفريق؟ لو عنده سجلات يتنقل للسابقين.',
+          mode:'وضع التطبيق',modeMember:'عضو',modeSup:'مشرف',rerunSetup:'🔄 إعادة الإعداد',
           EOF_FILE
 
       - name: Create project files (5)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          wWelcome:'أهلاً 👋',wWelcomeSub:'خلينا نجهز التطبيق في دقيقة',wStart:'ابدأ',wBack:'رجوع',wNext:'التالي',wFinish:'✓ تمام، ابدأ',
+          wRoleQ:'شن صفتك في الشغل؟',wMemberD:'تتابع ورديتك، سجل الوردية، أيامك وزيّك وإنذاراتك',wSupD:'تدير فريقك: الموظفين، الغياب، الاستدعاء، الإنذارات، كشوف الشهر',
+          wAboutQ:'عرّفنا عليك',wYourTeam:'فريقك',wYourSite:'موقعك',wYourRole:'صفتك في الفريق',
+          wTodayQ:'وين أنت اليوم في الدورة؟',wTodaySub:'باش التطبيق يحسب جدولك صح',D1:'نهار — أول يوم',D2:'نهار — ثاني يوم',N1:'ليل — أول يوم',N2:'ليل — ثاني يوم',O1:'راحة — أول يوم',O2:'راحة — ثاني يوم',
+          wTeamsQ:'الفرق والمشرفين',wTeamsSub:'اكتب اسم مشرف كل فريق — اسم الفريق يطلع منه',wMembersQ:'أعضاء فريقك',wMembersSub:'زيد أعضاء فريقك وموقع كل واحد (تقدر تكمّل بعدين)',
+          wDoneQ:'كل شي جاهز ✓',wDoneSub:'تقدر تغيّر أي حاجة بعدين من ⚙️ الإعدادات',step:'خطوة'},
+          en:{app:'Shifts',home:'Home',cal:'Calendar',emp:'Staff',log:'Log',rep:'Reports',set:'Settings',
+          D:'Day',N:'Night',O:'Off',first:'1st day',second:'2nd day',onDuty:'On duty now',ends:'ends',
+          yourNext:'Your next shift',nextShift:'Next shift',nextOff:'Next day off',fp:'Fingerprint',work:'Duty',today:'Today',
+          teamOf:'Team',member:'Member',supervisor:'Supervisor',reserve:'Reserve',myTeam:'My team',yours:'yours',role:'Role',
+          tasks:'Shift tasks',cardsRecv:'Cards received',cardsHand:'Cards handed over',cards:'Access cards',received:'Received',handed:'Handed',
           mismatch:'⚠️ Card count mismatch',mismatchNote:'Reason for difference',logChange:'Log change',visitorsLog:'Visitors log',workersLog:'Workers log',
           done:'Done',notDone:'Not done',handNotes:'Handover notes',handNotesPh:'What the next shift needs to know…',
           incidents:'Incidents',addIncident:'+ Add incident',time:'Time',type:'Type',desc:'Description',action:'Action taken',
@@ -355,7 +364,20 @@ jobs:
           conflict:'Conflict',noConflict:'✓ No conflict',restShort:'Only {h}h rest (needs {m})',overlap:'Already on a shift at that time',withTeam:'with {t}',onCall:'on call with own team',
           availability:'Available',noShiftThatDay:'No shift on that date',upConf:'⚠️ Upcoming conflicts',saveAnyway:'Save despite conflict',
           today_s:'Today',absentToday:'Absent',coverFor:'covers',calledIn:'Called in',fileHint:'A .json file you can send to yourself on WhatsApp and restore any time',
-          tapPerson:'Tap an employee to open their file',site:'Site',sites:'Sites',bothSites:'Both sites',allSites:'All sites',moveSite:'New site'}};
+          EOF_FILE
+
+      - name: Create project files (6)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          tapPerson:'Tap an employee to open their file',site:'Site',sites:'Sites',bothSites:'Both sites',allSites:'All sites',moveSite:'New site',
+          me:'My file',you:'You',teams:'Teams',teamNameL:'Team name',teamNamePh:'Auto: Team + supervisor name',supName:'Supervisor name',editTeam:'✏️ Edit team',addMember:'+ Add',membersL:'Members',removeQ:'Remove from team? If they have records they move to Former.',
+          mode:'App mode',modeMember:'Member',modeSup:'Supervisor',rerunSetup:'🔄 Run setup again',
+          wWelcome:'Welcome 👋',wWelcomeSub:'Let\'s set up the app in a minute',wStart:'Start',wBack:'Back',wNext:'Next',wFinish:'✓ Done, start',
+          wRoleQ:'What is your role?',wMemberD:'Track your shifts, shift log, your days, uniform and warnings',wSupD:'Manage your team: staff, absences, call-ins, warnings, monthly sheets',
+          wAboutQ:'About you',wYourTeam:'Your team',wYourSite:'Your site',wYourRole:'Your role in the team',
+          wTodayQ:'Where are you in the rotation today?',wTodaySub:'So the app calculates your schedule correctly',D1:'Day — 1st',D2:'Day — 2nd',N1:'Night — 1st',N2:'Night — 2nd',O1:'Off — 1st',O2:'Off — 2nd',
+          wTeamsQ:'Teams & supervisors',wTeamsSub:'Enter each team\'s supervisor — the team is named after them',wMembersQ:'Your team members',wMembersSub:'Add your members and their site (you can finish later)',
+          wDoneQ:'All set ✓',wDoneSub:'You can change anything later in ⚙️ Settings',step:'Step'}};
           const DAYS={ar:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
           const SDAYS={ar:['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'],en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
           const MONTHS={ar:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
@@ -365,18 +387,13 @@ jobs:
 
           // ================= state =================
           const KEY='shiftapp_v2';
-          const DEF_CFG={lang:'ar',theme:'auto',myTeam:0,myName:'',start:'08:00',fpStart:'07:30',fpEnd:'07:45',cards:22,logFrom:'05:00',logTo:'06:00',anchor:'2026-11-13',minRest:12,sites:[{id:'compound',name:'Compound'},{id:'chancery',name:'Chancery'}],
+          const DEF_CFG={lang:'ar',theme:'auto',myTeam:0,myName:'',start:'08:00',fpStart:'07:30',fpEnd:'07:45',cards:22,logFrom:'05:00',logTo:'06:00',anchor:'2026-11-13',minRest:12,mode:null,meId:null,teamNames:['','',''],sites:[{id:'compound',name:'Compound'},{id:'chancery',name:'Chancery'}],
             uniItems:[{id:'shirt',name:''},{id:'pants',name:''},{id:'shoes',name:''},{id:'coat',name:''},{id:'cap',name:''}],
             people:[{id:'t0m0',name:'مصعب',team:0,role:'sup',hist:[{team:0,from:'2000-01-01'}]},{id:'t1m0',name:'سالم',team:1,role:'sup',hist:[{team:1,from:'2000-01-01'}]},{id:'t2m0',name:'حاتم',team:2,role:'sup',hist:[{team:2,from:'2000-01-01'}]}]};
           const clone=x=>JSON.parse(JSON.stringify(x));
           let S={cfg:clone(DEF_CFG),logs:{},events:[],uni:[],warns:[],v:3};
           function normalize(x){const st={cfg:Object.assign(clone(DEF_CFG),x.cfg||{}),logs:x.logs||{},events:x.events||[],uni:x.uni||[],warns:x.warns||[],v:3};
             const c=st.cfg;
-          EOF_FILE
-
-      - name: Create project files (6)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(!(x.cfg&&Array.isArray(x.cfg.people))){ // from v2.0/2.1 slot model
               const used=new Set();st.events.forEach(e=>{used.add(e.p1);used.add(e.p2);});st.uni.forEach(u=>used.add(u.p));
               const teams=(x.cfg&&x.cfg.teams)||[{m:['مصعب']},{m:['سالم']},{m:['حاتم']}];const ps=[];
@@ -389,6 +406,8 @@ jobs:
               p.hist=(p.hist&&p.hist.length?p.hist:[{team:p.team,from:'2000-01-01'}]).map(h=>({team:h.team==='res'?(c.myTeam||0):h.team,from:h.from,site:h.site}));
               if(!p.site)p.site='compound';});
             if(!c.sites||!c.sites.length)c.sites=clone(DEF_CFG.sites);
+            if(!Array.isArray(c.teamNames))c.teamNames=['','',''];
+            if(c.meId&&!c.people.some(p=>p.id===c.meId))c.meId=null;
             delete c.teams;delete c.reserve;
             // events v2 → v3
             st.events=st.events.map(e=>{e=Object.assign({},e);
@@ -419,6 +438,11 @@ jobs:
           const utc=d=>Date.UTC(d.getFullYear(),d.getMonth(),d.getDate());
           const mod=(a,n)=>((a%n)+n)%n;
           const fmt=d=>DAYS[L()][d.getDay()]+' '+d.getDate()+' '+MONTHS[L()][d.getMonth()];
+          EOF_FILE
+
+      - name: Create project files (7)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           const fmtS=d=>SDAYS[L()][d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1);
           const fmtK=k=>fmtS(parse(k));
           const PAT=['D','D','N','N','O','O'],OFF=[0,4,2];
@@ -450,12 +474,9 @@ jobs:
           function teamMembers(k){return activePeople().filter(p=>p.team===k).sort((a,b)=>SO(a)-SO(b)||RO[a.role]-RO[b.role]||pName(a.id).localeCompare(pName(b.id)));}
           function personList(){const o=[];[0,1,2].forEach(k=>teamMembers(k).forEach(p=>o.push({id:p.id,name:pName(p.id),team:p.team,role:p.role,site:curSite(p)})));return o;}
           function pName(id){const p=P(id);if(!p)return id||'';return (p.name||'').trim()||(p.role==='res'?t('reserve'):t('member'));}
-          EOF_FILE
-
-      - name: Create project files (7)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-          function teamName(i){const s=activePeople().find(p=>p.team===i&&p.role==='sup');return t('teamOf')+' '+(s?pName(s.id):(i+1));}
+          function teamName(i){const cu=((C().teamNames||[])[i]||'').trim();if(cu)return cu;const s=activePeople().find(p=>p.team===i&&p.role==='sup');return t('teamOf')+' '+(s?pName(s.id):(i+1));}
+          const isMember=()=>C().mode==='member';
+          const meP=()=>C().meId?P(C().meId):null;
           const roleTag=p=>p.role==='sup'?`<span class="tag sup">★ ${t('supervisor')}</span>`:p.role==='res'?`<span class="tag res">${t('reserve')}</span>`:'';
           const initial=id=>(pName(id).trim()[0]||'?');
 
@@ -486,6 +507,11 @@ jobs:
             return out;}
           function candidates(k,type,exclude,forTeam){return personList().filter(p=>!(exclude||[]).includes(p.id)).map(p=>{const pp=P(p.id);
             const busy=pp.role!=='res'&&teamShift(teamAt(pp,k),k)===type&&!absentOn(p.id,k);
+          EOF_FILE
+
+      - name: Create project files (8)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             const c=busy?[t('overlap')]:conflicts(p.id,k,type,null,forTeam);return Object.assign({},p,{conf:c});})
             .sort((a,b)=>(a.conf.length?1:0)-(b.conf.length?1:0)||(a.role==='res'?-1:0)-(b.role==='res'?-1:0));}
 
@@ -515,27 +541,24 @@ jobs:
           const confBox=list=>list.length?`<div class="warnbox">⚠️ ${list.map(esc).join('\n⚠️ ')}</div>`:`<div class="okbox">${t('noConflict')}</div>`;
 
           // ================= navigation =================
-          const TABS=[['home','🏠'],['cal','🗓️'],['emp','👥'],['log','📝'],['rep','📊']];
-          let view='home',prevView='home',empId=null,empTab='info',empMonth=null;
-          EOF_FILE
-
-      - name: Create project files (8)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-          function go(v){if(v==='set'&&view!=='set')prevView=view;view=v;render();window.scrollTo(0,0);}
-          function openPerson(id,tab){empId=id;empTab=tab||'info';go('person');}
+          const tabs=()=>isMember()?[['home','🏠'],['cal','🗓️'],['me','👤'],['log','📝'],['rep','📊']]:[['home','🏠'],['cal','🗓️'],['emp','👥'],['log','📝'],['rep','📊']];
+          let view='home',prevView='home',empId=null,empTab='info',empMonth=null,personFrom='emp';
+          function go(v){if(v==='me'){if(meP()){openPerson(C().meId);return;}v='set';}if(v==='set'&&view!=='set')prevView=view;view=v;render();window.scrollTo(0,0);}
+          function openPerson(id,tab){if(view!=='person')personFrom=view;if(isMember()&&id===C().meId)personFrom='home';empId=id;empTab=tab||(isMember()?'duty':'info');view='person';render();window.scrollTo(0,0);}
           window.handleBack=()=>{if($('sheet').classList.contains('show')){closeSheet();return true;}
-            if(view==='person'){go('emp');return true;}if(view==='set'){go(prevView==='set'?'home':prevView);return true;}if(view!=='home'){go('home');return true;}return false;};
+            if(view==='setup'){if(wz.step>0){wz.step--;rSetup();return true;}return false;}
+            if(view==='person'){go(personFrom||'home');return true;}if(view==='set'){go(prevView==='set'?'home':prevView);return true;}if(view!=='home'){go('home');return true;}return false;};
           $('gear').onclick=()=>{if(view==='set')go(prevView==='set'?'home':prevView);else go('set');};
 
           let now=new Date(),calView=new Date(now.getFullYear(),now.getMonth(),1),logSel=null;
           function render(){now=new Date();applyLang();applyTheme();
-            $('appTitle').textContent=view==='set'?'⚙️ '+t('set'):'🗓️ '+t('app');$('gear').textContent=view==='set'?'✕':'⚙️';
-            const nv=view==='person'?'emp':view;
-            $('nav').innerHTML=TABS.map(([k,i])=>`<button data-v="${k}" class="${nv===k?'on':''}"><span>${i}</span>${t(k)}</button>`).join('');
+            if(!C().mode)view='setup';const su=view==='setup';$('nav').style.display=su?'none':'';$('gear').style.visibility=su?'hidden':'';
+            $('appTitle').textContent=view==='set'?'⚙️ '+t('set'):view==='setup'?'🗓️ '+t('app'):'🗓️ '+t('app');$('gear').textContent=view==='set'?'✕':'⚙️';
+            const nv=view==='person'?(isMember()&&empId===C().meId?'me':(isMember()?personFrom:'emp')):view;
+            $('nav').innerHTML=tabs().map(([k,i])=>`<button data-v="${k}" class="${nv===k?'on':''}"><span>${i}</span>${t(k)}</button>`).join('');
             $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
             document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+view));
-            ({home:rHome,cal:rCal,emp:rEmp,person:rPerson,log:rLog,rep:rRep,set:rSet})[view]();}
+            ({home:rHome,cal:rCal,emp:rEmp,person:rPerson,log:rLog,rep:rRep,set:rSet,setup:rSetup})[view]();}
           function bindCommon(v){v.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>openDay(e.dataset.day));
             v.querySelectorAll('[data-log]').forEach(e=>e.onclick=()=>{closeSheet();logSel=idToShift(e.dataset.log);go('log');});
             v.querySelectorAll('[data-pid]').forEach(e=>e.onclick=()=>{closeSheet();openPerson(e.dataset.pid);});
@@ -546,6 +569,11 @@ jobs:
             const a=new Date(addDays(sh.date,1).getTime()+mins(C().logFrom)*6e4);return now>=a&&now<shiftTimes(sh.date,'N').e;}
           function upcomingConflicts(){const A=ymd(now),B=kAdd(A,7),out=[];
             S.events.forEach(e=>{const chk=(pid,k,ty,ft)=>{if(!pid||!k||k<A||k>B)return;const c=conflicts(pid,k,ty,e.id,ft);if(c.length)out.push({pid,k,ty,c});};
+          EOF_FILE
+
+      - name: Create project files (9)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               if(e.type==='callout')chk(e.p1,e.from,e.st,e.team);if(e.type==='absence'&&e.cov){const ab=P(e.p1);chk(e.cov,e.from,e.st||'D',ab?teamAt(ab,e.from):null);}if(e.type==='swap'){chk(e.p1,e.from,e.st);if(e.back)chk(e.p2,e.back,e.st2);}});return out;}
           function rHome(){const v=$('v-home');const td=shiftOf(now,C().myTeam);const ms=myShiftAround(now);let h='';const on=ms&&ms.s<=now;
             if(on&&logReminderActive(ms))h+=`<div class="alert" data-go="log">${t('logReminder')}</div>`;
@@ -576,11 +604,6 @@ jobs:
           function teamsForDay(k){let h='';const d=parse(k);[['D',t('dayShift')],['N',t('nightShift')],['O',t('O')]].forEach(([ty,lab])=>{const tm=teamOn(d,ty);
             const span=p=>{const s=dayStatus(p.id,k);return `<span data-pid="${p.id}" style="cursor:pointer">${p.role==='sup'?'★':''}${esc(pName(p.id))}${s?' <b class="bad">'+s+'</b>':''}</span>`;};
             const grp=[...C().sites.map(st=>[st.name,teamMembers(tm).filter(p=>p.role!=='res'&&siteAt(p,k)===st.id)]),[t('reserve'),teamMembers(tm).filter(p=>p.role==='res')]].filter(g=>g[1].length);
-          EOF_FILE
-
-      - name: Create project files (9)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             const ms=grp.map(([n,l])=>`<div>📍 <b>${esc(n)}</b>: ${l.map(span).join(' · ')}</div>`).join('');
             h+=`<div class="tl ${tm===C().myTeam?'me':''}" style="flex-wrap:wrap"><span><b>${esc(teamName(tm))}</b></span><span class="pill ${ty}-t ${ty}-b">${ICO[ty]} ${lab}</span><div class="muted" style="width:100%">${ms||t('noMembers')}</div></div>`;});
             const extra=S.events.filter(e=>(e.type==='callout'&&e.from===k)||(e.type==='swap'&&(e.from===k||e.back===k)));
@@ -597,6 +620,11 @@ jobs:
             for(let i=0;i<first;i++)h+='<div class="c empty"></div>';
             for(let d=1;d<=len;d++){const dt=new Date(calView.getFullYear(),calView.getMonth(),d),k=ymd(dt),s=shiftOf(dt,C().myTeam);
               const dot=S.events.some(e=>(e.from<=k&&e.to>=k)||e.back===k)||['D','N'].some(ty=>{const g=S.logs[k+'_'+ty];return g&&(g.notes||(g.inc&&g.inc.length));});
+          EOF_FILE
+
+      - name: Create project files (10)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               h+=`<button class="c ${s.type}-b ${k===ymd(now)?'today':''}" data-day="${k}">${dot?'<span class="dot"></span>':''}${d}<small class="${s.type}-t">${t(s.type)}</small></button>`;}
             h+=`</div><div class="legend"><span><i style="background:var(--day)"></i>${t('D')}</span><span><i style="background:var(--night)"></i>${t('N')}</span><span><i style="background:var(--off)"></i>${t('O')}</span><span><i style="background:var(--danger);border-radius:50%"></i>${t('events')}</span></div><button class="btn full" id="cT">${t('today')}</button></div><p class="muted" style="text-align:center">${esc(teamName(C().myTeam))} · ${t('hint')}</p>`;
             v.innerHTML=h;bindCommon(v);
@@ -609,7 +637,7 @@ jobs:
           function warnsOf(pid){return S.warns.filter(w=>w.p===pid).sort((a,b)=>a.date<b.date?1:-1);}
           function todayStatus(p){const k=ymd(now);if(p.left)return `<span class="muted">${t('leftOn')} ${p.left}</span>`;const ab=absentOn(p.id,k);if(ab)return `<span class="bad">❌ ${t('ev_'+ab.type)}</span>`;
             const sh=shiftsOf(p.id,k,k,{oncall:true});if(!sh.length)return `<span class="O-t">🛋️ ${t('O')}</span>`;const x=sh[0];return `<span class="${x.type}-t">${ICO[x.type]} ${t(x.type)}${x.kind==='oncall'?' ('+t('reserve')+')':x.kind!=='base'?' ('+t('kind_'+x.kind)+')':''}</span>`;}
-          function empCard(p){const w=warnsOf(p.id).length;return `<div class="ecard" data-pid="${p.id}"><div class="av">${esc(initial(p.id))}</div><div class="in"><div class="nm">${esc(pName(p.id))}${roleTag(p)}${w?`<span class="tag warn">⚠️ ${w}</span>`:''}</div><div class="mt">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} · ${todayStatus(p)}</div></div><span class="muted">${L()==='ar'?'‹':'›'}</span></div>`;}
+          function empCard(p){const w=warnsOf(p.id).length;return `<div class="ecard" data-pid="${p.id}"><div class="av">${esc(initial(p.id))}</div><div class="in"><div class="nm">${esc(pName(p.id))}${p.id===C().meId?' <span class="tag">'+t('you')+'</span>':''}${roleTag(p)}${w?`<span class="tag warn">⚠️ ${w}</span>`:''}</div><div class="mt">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} · ${todayStatus(p)}</div></div><span class="muted">${L()==='ar'?'‹':'›'}</span></div>`;}
           function rEmp(){const v=$('v-emp');let h=`<div class="qa"><button id="qA"><span>❌</span>${t('qAbs')}</button><button id="qC"><span>📞</span>${t('qCall')}</button><button id="qW"><span>⚠️</span>${t('qWarn')}</button><button id="qU"><span>👕</span>${t('qUni')}</button></div>`;
             h+=`<div class="tabs">${[['list',t('list')],['events',t('events')],['uni',t('uni')]].map(([k,l])=>`<button data-sub="${k}" class="${empSub===k?'on':''}">${l}</button>`).join('')}</div>`;
             if(empSub==='list'){
@@ -624,14 +652,9 @@ jobs:
                 if(empF==='former')list=people().filter(p=>p.left);else{list=[];[0,1,2].forEach(k=>{if(empF==='all'||String(empF)===String(k))list=list.concat(teamMembers(k));});}
                 if(q)list=list.filter(p=>pName(p.id).toLowerCase().includes(q));
                 if(empSite!=='all')list=list.filter(p=>curSite(p)===empSite||curSite(p)==='both');
-                let out='';if(empF==='all'&&!q&&empSite==='all'){[0,1,2].forEach(k=>{const ms=list.filter(p=>p.team===k);out+=`<div class="sec">${esc(teamName(k))} · ${ms.length}${k===C().myTeam?' ('+t('yours')+')':''}</div>`+(ms.map(empCard).join('')||`<div class="empty-msg">${t('noMembers')}</div>`);});}
+                let out='';if(empF==='all'&&!q&&empSite==='all'){[0,1,2].forEach(k=>{const ms=list.filter(p=>p.team===k);out+=`<div class="sec" style="display:flex;justify-content:space-between;align-items:center"><span>${esc(teamName(k))} · ${ms.length}${k===C().myTeam?' ('+t('yours')+')':''}</span><button class="btn sm" data-tedit="${k}">${t('editTeam')}</button></div>`+(ms.map(empCard).join('')||`<div class="empty-msg">${t('noMembers')}</div>`);});}
                 else out=list.map(empCard).join('')||`<div class="empty-msg">${t('noMembers')}</div>`;
-                $('eList').innerHTML=out;bindCommon($('eList'));};
-          EOF_FILE
-
-      - name: Create project files (10)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+                $('eList').innerHTML=out;bindCommon($('eList'));$('eList').querySelectorAll('[data-tedit]').forEach(b=>b.onclick=()=>teamEditor(+b.dataset.tedit));};
               draw();$('eQ').oninput=e=>{empQ=e.target.value;draw();};
               v.querySelectorAll('[data-ef]').forEach(b=>b.onclick=()=>{empF=b.dataset.ef;rEmp();});
               v.querySelectorAll('[data-esite]').forEach(b=>b.onclick=()=>{empSite=b.dataset.esite;rEmp();});
@@ -641,13 +664,19 @@ jobs:
 
           // ================= PERSON =================
           function rPerson(){const v=$('v-person');const p=P(empId);if(!p){go('emp');return;}const ar=L()==='ar';
-            let h=`<button class="btn sm" id="pBack" style="margin-bottom:8px">${ar?'→':'←'} ${t('emp')}</button>`;
-            h+=`<div class="phead"><div class="av">${esc(initial(p.id))}</div><div style="flex:1"><div class="nm">${esc(pName(p.id))}</div><div class="muted">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} ${roleTag(p)}</div><div style="font-size:13px;margin-top:2px">${todayStatus(p)}</div></div></div>`;
-            if(!p.left)h+=`<div class="qa"><button id="pqA"><span>❌</span>${t('qAbs')}</button><button id="pqC"><span>📞</span>${t('qCall')}</button><button id="pqW"><span>⚠️</span>${t('qWarn')}</button><button id="pqU"><span>👕</span>${t('qUni')}</button></div>`;
-            h+=`<div class="tabs">${[['info',t('info')],['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')]].map(([k,l])=>`<button data-pt="${k}" class="${empTab===k?'on':''}">${l}${k==='warns'&&warnsOf(p.id).length?' ('+warnsOf(p.id).length+')':''}</button>`).join('')}</div>`;
+            const mine=p.id===C().meId,canEdit=!isMember()||mine;
+            let h=(isMember()&&mine)?'':`<button class="btn sm" id="pBack" style="margin-bottom:8px">${ar?'→':'←'} ${t(personFrom==='emp'?'emp':personFrom==='cal'?'cal':'home')}</button>`;
+            h+=`<div class="phead"><div class="av">${esc(initial(p.id))}</div><div style="flex:1"><div class="nm">${esc(pName(p.id))}${mine?' <span class="tag">'+t('you')+'</span>':''}</div><div class="muted">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} ${roleTag(p)}</div><div style="font-size:13px;margin-top:2px">${todayStatus(p)}</div></div></div>`;
+            if(!p.left&&canEdit)h+=`<div class="qa"><button id="pqA"><span>❌</span>${t('qAbs')}</button><button id="pqC"><span>📞</span>${t('qCall')}</button><button id="pqW"><span>⚠️</span>${t('qWarn')}</button><button id="pqU"><span>👕</span>${t('qUni')}</button></div>`;
+            h+=`<div class="tabs">${(isMember()?[['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')],['info',t('info')]]:[['info',t('info')],['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')]]).map(([k,l])=>`<button data-pt="${k}" class="${empTab===k?'on':''}">${l}${k==='warns'&&warnsOf(p.id).length?' ('+warnsOf(p.id).length+')':''}</button>`).join('')}</div>`;
+          EOF_FILE
+
+      - name: Create project files (11)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+='<div id="pBody"></div>';v.innerHTML=h;
-            $('pBack').onclick=()=>go('emp');
-            if(!p.left){$('pqA').onclick=()=>evForm('absence',p.id);$('pqC').onclick=()=>evForm('callout',p.id);$('pqW').onclick=()=>warnForm(p.id);$('pqU').onclick=()=>uniForm([p.id]);}
+            if($('pBack'))$('pBack').onclick=()=>go(personFrom||'home');
+            if(!p.left&&canEdit){$('pqA').onclick=()=>evForm('absence',p.id);$('pqC').onclick=()=>evForm('callout',p.id);$('pqW').onclick=()=>warnForm(p.id);$('pqU').onclick=()=>uniForm([p.id]);}
             v.querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>{empTab=b.dataset.pt;rPerson();});
             const B=$('pBody');
             if(empTab==='info'){let b=`<div class="card"><label>${t('name')}</label><input id="piN" value="${esc(p.name)}"><label>${t('phone')}</label><input id="piP" type="tel" value="${esc(p.phone||'')}">
@@ -656,7 +685,9 @@ jobs:
               <p class="muted" style="margin-top:6px">${t('startDate')}: ${startOf(p)==='2000-01-01'?'—':startOf(p)}</p></div>`;
               const hs=(p.hist||[]).filter(x=>x.from>'2000-01-01');if(hs.length)b+=`<div class="card"><h3>🔀 ${t('move')}</h3>${hs.map(x=>`<div class="b">${x.from} → ${esc(teamName(x.team))}${x.site?' · 📍'+esc(siteName(x.site)):''}</div>`).join('')}</div>`;
               b+=`<div class="btns">`+(p.left?`<button class="btn" id="piBk">${t('restoreEmp')}</button>`:`<button class="btn" id="piM">${t('move')}</button><button class="btn dang" id="piX">${t('resign')}</button>`)+`</div>`;
+              if(!canEdit)b=b.replace(/<input /g,'<input disabled ').replace(/<textarea /g,'<textarea disabled ').replace(/<select /g,'<select disabled ').replace(/<div class="btns">[\s\S]*$/,'');
               B.innerHTML=b;
+              if(!canEdit){bindCommon(B);return;}
               $('piN').onchange=e=>{p.name=e.target.value.trim();save();rPerson();};$('piP').onchange=e=>{p.phone=e.target.value.trim();save();};$('piO').onchange=e=>{p.notes=e.target.value;save();toast(t('saved'));};
               $('piR').onchange=e=>{setRole(p,e.target.value);save();rPerson();};
               if($('piBk'))$('piBk').onclick=()=>{delete p.left;delete p.leftNote;save();rPerson();};if($('piM'))$('piM').onclick=()=>moveForm(p);if($('piX'))$('piX').onclick=()=>resignForm(p);}
@@ -674,11 +705,6 @@ jobs:
               B.querySelectorAll('[data-delu]').forEach(x=>x.onclick=()=>confirmBox(t('confirmDel'),()=>{S.uni=S.uni.filter(u=>u.id!==x.dataset.delu);save();rPerson();}));}
             if(empTab==='warns'){const ws=warnsOf(p.id);const lvl=ws.length?Math.max(...ws.map(w=>WL.indexOf(w.type))):-1;
               let b=`<div class="card"><h3>⚠️ ${t('warns')}${p.left?'':` <button class="btn sm pri" id="pwN">${t('addWarn')}</button>`}</h3><div class="lvl">${WL.map((w,i)=>`<i class="${i<=lvl?'on':''}"></i>`).join('')}</div><div class="muted" style="display:flex;justify-content:space-between">${WL.map(w=>`<span>${t('w_'+w)}</span>`).join('')}</div></div>`;
-          EOF_FILE
-
-      - name: Create project files (11)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               b+=ws.length?ws.map(w=>`<div class="item"><div class="h"><span>${w.date} · ${t('w_'+w.type)}</span><button class="btn sm dang" data-delw="${w.id}">${t('del')}</button></div><div class="b">${esc(w.reason||'')}${w.ded?'\n'+t('deduct')+': '+w.ded+' '+(w.dedType==='amount'?t('dedAmount'):t('dedDays')):''}</div></div>`).join(''):`<div class="empty-msg">${t('noWarns')}</div>`;
               B.innerHTML=b;if($('pwN'))$('pwN').onclick=()=>warnForm(p.id);
               B.querySelectorAll('[data-delw]').forEach(x=>x.onclick=()=>confirmBox(t('confirmDel'),()=>{S.warns=S.warns.filter(w=>w.id!==x.dataset.delw);save();rPerson();}));}
@@ -686,6 +712,11 @@ jobs:
             bindCommon(B);}
           function setRole(p,r){if(r==='sup')activePeople().forEach(x=>{if(x.team===p.team&&x.role==='sup'&&x!==p)x.role='mem';});p.role=r;}
           function moveForm(p){openSheet(`<h3>${t('move')} — ${esc(pName(p.id))}</h3><label>${t('newTeam')}</label><select id="mvT">${teamOpts(p.team)}</select>${p.role==='res'?'':`<label>${t('moveSite')}</label><select id="mvSi">${siteOpts(curSite(p))}</select>`}<label>${t('moveDate')}</label><input type="date" id="mvD" value="${ymd(now)}">
+          EOF_FILE
+
+      - name: Create project files (12)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             <div class="btns"><button class="btn pri" id="mvS">${t('save')}</button><button class="btn" id="mvC">${t('cancel')}</button></div>`);
             $('mvC').onclick=closeSheet;$('mvS').onclick=()=>{const k=+$('mvT').value,d=$('mvD').value||ymd(now),si=$('mvSi')?$('mvSi').value:p.site;if(k===p.team&&si===p.site){closeSheet();return;}
               if(!(p.hist||[]).some(x=>x.site))p.hist=(p.hist||[]).map(x=>Object.assign({},x,{site:p.site||'compound'}));
@@ -703,6 +734,93 @@ jobs:
             $('nwC').onclick=closeSheet;$('nwOk').onclick=()=>{const n=$('nwN').value.trim();if(!n){toast(t('needName'));$('nwN').focus();return;}const k=+$('nwT').value;
               const si=$('nwSi').value;const p={id:'p'+uid(),name:n,team:k,role:'mem',site:si,hist:[{team:k,from:$('nwD').value||ymd(now),site:si}]};people().push(p);setRole(p,$('nwR').value);save();closeSheet();render();toast(t('saved'));};}
 
+          function movePerson(p,k,si,d){if(!(p.hist||[]).some(x=>x.site))p.hist=(p.hist||[]).map(x=>Object.assign({},x,{site:p.site||'compound'}));
+            p.hist=(p.hist||[]).filter(x=>x.from!==d);p.hist.push({team:k,from:d,site:si});p.hist.sort((a,b)=>a.from<b.from?-1:1);if(k!==p.team&&p.role==='sup')p.role='mem';p.team=k;p.site=si;}
+          function hasRecords(id){return S.events.some(e=>e.p1===id||e.p2===id||e.cov===id)||S.uni.some(u=>u.p===id)||S.warns.some(w=>w.p===id);}
+          function teamEditor(k){const c=C();const sup=activePeople().find(p=>p.team===k&&p.role==='sup');const ms=teamMembers(k).filter(p=>p.role!=='sup');
+            let h=`<h3>${t('editTeam')} — ${esc(teamName(k))}</h3>
+            <label>${t('supName')} ★</label><input id="teS" value="${esc(sup?sup.name:'')}">
+            <label>${t('teamNameL')}</label><input id="teN" value="${esc(c.teamNames[k]||'')}" placeholder="${t('teamNamePh')}">
+            <div class="sec" style="margin-top:12px">${t('membersL')} · ${ms.length}</div>`;
+            h+=ms.map(p=>`<div class="item"><div class="row" style="align-items:center"><input data-mn="${p.id}" value="${esc(p.name)}" style="flex:3"><button class="btn sm dang" data-mx="${p.id}" style="flex:0 0 auto">✕</button></div>
+              <div class="row" style="margin-top:6px"><select data-mr="${p.id}"><option value="mem" ${p.role==='mem'?'selected':''}>${t('member')}</option><option value="res" ${p.role==='res'?'selected':''}>${t('reserve')}</option></select>${p.role==='res'?'<span class="muted" style="align-self:center">📍 '+t('bothSites')+'</span>':`<select data-ms="${p.id}">${siteOpts(curSite(p))}</select>`}</div></div>`).join('')||`<div class="empty-msg">${t('noMembers')}</div>`;
+            h+=`<div class="item"><div class="row" style="align-items:center"><input id="teAN" placeholder="${t('name')}" style="flex:3"><select id="teAS" style="flex:2">${siteOpts('compound')}<option value="res">${t('reserve')}</option></select></div><button class="btn pri full" id="teA">${t('addMember')}</button></div>
+            <button class="btn full" id="teC">${t('close')}</button>`;
+            openSheet(h);
+            const re=()=>{save();teamEditor(k);if(view!=='setup')render();};
+            $('teS').onchange=e=>{const n=e.target.value.trim();if(sup){sup.name=n;}else if(n){const p={id:'p'+uid(),name:n,team:k,role:'mem',site:'compound',hist:[{team:k,from:ymd(now),site:'compound'}]};people().push(p);setRole(p,'sup');}save();if(view!=='setup')render();};
+            $('teN').onchange=e=>{c.teamNames[k]=e.target.value.trim();save();if(view!=='setup')render();};
+            $('panel').querySelectorAll('[data-mn]').forEach(i=>i.onchange=()=>{P(i.dataset.mn).name=i.value.trim();save();if(view!=='setup')render();});
+            $('panel').querySelectorAll('[data-mr]').forEach(i=>i.onchange=()=>{P(i.dataset.mr).role=i.value;re();});
+            $('panel').querySelectorAll('[data-ms]').forEach(i=>i.onchange=()=>{const p=P(i.dataset.ms);movePerson(p,p.team,i.value,ymd(now));save();if(view!=='setup')render();});
+            $('panel').querySelectorAll('[data-mx]').forEach(b=>b.onclick=()=>{const p=P(b.dataset.mx);confirmBox(t('removeQ'),()=>{if(hasRecords(p.id)){p.left=ymd(now);}else{C().people=people().filter(x=>x.id!==p.id);if(C().meId===p.id)C().meId=null;}save();teamEditor(k);if(view!=='setup')render();});});
+            $('teA').onclick=()=>{const n=$('teAN').value.trim();if(!n){toast(t('needName'));$('teAN').focus();return;}const sv=$('teAS').value;const si=sv==='res'?'compound':sv;
+              people().push({id:'p'+uid(),name:n,team:k,role:sv==='res'?'res':'mem',site:si,hist:[{team:k,from:ymd(now),site:si}]});re();};
+            $('teC').onclick=()=>{closeSheet();if(view==='setup')rSetup();};}
+
+          EOF_FILE
+
+      - name: Create project files (13)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          // ================= SETUP WIZARD =================
+          let wz=null;
+          const POS=['D1','D2','N1','N2','O1','O2'];
+          function startWizard(){const c=C(),m=meP();const tm=m?m.team:(c.myTeam||0);
+            wz={step:0,mode:c.mode||'member',name:m?m.name:(c.myName||''),team:tm,site:m?curSite(m):'compound',mrole:m&&m.role==='res'?'res':'mem',
+              pos:mod(Math.round((utc(now)-utc(parse(c.anchor)))/864e5)+OFF[tm],6),start:c.start,fpStart:c.fpStart,fpEnd:c.fpEnd};}
+          function rSetup(){if(!wz)startWizard();const v=$('v-setup'),c=C();const N=6;let h=`<div class="muted" style="text-align:center;margin:4px 0 10px">${t('step')} ${wz.step+1} / ${N}</div><div class="lvl" style="margin-bottom:14px">${Array.from({length:N},(_,i)=>`<i class="${i<=wz.step?'on':''}" style="${i<=wz.step?'background:var(--accent)':''}"></i>`).join('')}</div>`;
+            const big=(id,on,ico,title,sub)=>`<button class="ecard" data-${id} style="width:100%;border:2px solid ${on?'var(--accent)':'transparent'};text-align:start;font:inherit;color:var(--text)"><div class="av" style="font-size:24px">${ico}</div><div class="in"><div class="nm">${title}</div>${sub?`<div class="mt">${sub}</div>`:''}</div>${on?'<span style="color:var(--accent);font-size:20px">✓</span>':''}</button>`;
+            if(wz.step===0)h+=`<div class="card" style="text-align:center;padding:26px 16px"><div style="font-size:54px">🗓️</div><h2 style="font-size:22px;margin:6px 0">${t('wWelcome')}</h2><p class="muted">${t('wWelcomeSub')}</p></div>
+              <div class="card"><h3>🌐 ${t('language')}</h3><div class="seg"><button data-wl="ar" class="${c.lang==='ar'?'on':''}">العربية</button><button data-wl="en" class="${c.lang==='en'?'on':''}">English</button></div>
+              <h3>🎨 ${t('theme')}</h3><div class="seg">${['dark','light','auto'].map(k=>`<button data-wth="${k}" class="${c.theme===k?'on':''}">${t(k)}</button>`).join('')}</div></div>`;
+            if(wz.step===1)h+=`<h2 style="font-size:19px;margin-bottom:10px">${t('wRoleQ')}</h2>`+big('wm="member"',wz.mode==='member','🧍',t('modeMember'),t('wMemberD'))+big('wm="sup"',wz.mode==='sup','★',t('modeSup'),t('wSupD'));
+            if(wz.step===2){h+=`<h2 style="font-size:19px;margin-bottom:10px">${t('wAboutQ')}</h2><div class="card"><label>${t('name')}</label><input id="wzN" value="${esc(wz.name)}">
+              <label>${t('wYourTeam')}</label><div class="seg">${[0,1,2].map(i=>`<button data-wt2="${i}" class="${wz.team===i?'on':''}">${esc(teamName(i))}</button>`).join('')}</div>`;
+              if(wz.mode==='member')h+=`<label>${t('wYourRole')}</label><div class="seg"><button data-wr="mem" class="${wz.mrole==='mem'?'on':''}">${t('member')}</button><button data-wr="res" class="${wz.mrole==='res'?'on':''}">${t('reserve')}</button></div>`;
+              if(!(wz.mode==='member'&&wz.mrole==='res'))h+=`<label>${t('wYourSite')}</label><div class="seg">${c.sites.map(x=>`<button data-ws="${x.id}" class="${wz.site===x.id?'on':''}">📍 ${esc(x.name)}</button>`).join('')}</div>`;
+              h+='</div>';}
+            if(wz.step===3){h+=`<h2 style="font-size:19px">${t('wTodayQ')}</h2><p class="muted" style="margin-bottom:10px">${t('wTodaySub')} — ${fmt(now)}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">`+
+              POS.map((k,i)=>{const ty=k[0];return `<button data-wp="${i}" class="btn ${ty}-b" style="padding:14px 6px;border:2px solid ${wz.pos===i?'var(--accent)':'transparent'};color:var(--text)">${ICO[ty]} ${t(k)}</button>`;}).join('')+`</div>
+              <div class="card"><h3>⏰ ${t('times')}</h3><div class="row"><div><label>${t('fpStart')}</label><input type="time" id="wzF1" value="${wz.fpStart}"></div><div><label>${t('fpEnd')}</label><input type="time" id="wzF2" value="${wz.fpEnd}"></div></div><label>${t('startTime')}</label><input type="time" id="wzSt" value="${wz.start}"><p class="muted" style="margin-top:4px">${t('nightNote')}</p></div>`;}
+            if(wz.step===4){h+=`<h2 style="font-size:19px">${t('wTeamsQ')}</h2><p class="muted" style="margin-bottom:10px">${t('wTeamsSub')}</p>`+[0,1,2].map(i=>{const sup=activePeople().find(p=>p.team===i&&p.role==='sup');const meSup=wz.mode==='sup'&&i===wz.team;
+                return `<div class="card"><h3>${t('teamOf')} ${i+1}${i===wz.team?' <span class="tag">'+t('yours')+'</span>':''}</h3><label>${t('supName')} ★</label><input data-wsup="${i}" value="${esc(meSup?wz.name:(sup?sup.name:''))}" ${meSup?'disabled':''}></div>`;}).join('');}
+            if(wz.step===5){if(wz.mode==='sup'){const ms=teamMembers(wz.team).filter(p=>p.role!=='sup');h+=`<h2 style="font-size:19px">${t('wMembersQ')}</h2><p class="muted" style="margin-bottom:10px">${t('wMembersSub')}</p><div class="card">`+
+                (ms.map(p=>`<div class="tl"><span>${esc(pName(p.id))}</span><span class="muted">${p.role==='res'?t('reserve'):'📍'+esc(siteName(curSite(p)))}</span></div>`).join('')||`<div class="empty-msg">${t('noMembers')}</div>`)+`<button class="btn pri full" id="wzEd">${t('editTeam')}</button></div>`;}
+              h+=`<div class="card" style="text-align:center;padding:22px 14px"><div style="font-size:46px">✅</div><h2 style="font-size:20px;margin:6px 0">${t('wDoneQ')}</h2><p class="muted">${t('wDoneSub')}</p>
+                <div class="item" style="text-align:start;margin-top:12px"><div class="b">${esc(wz.name||'—')} · ${wz.mode==='sup'?'★ '+t('modeSup'):(wz.mrole==='res'?t('reserve'):t('modeMember'))}\n${esc(teamName(wz.team))}${wz.mode==='member'&&wz.mrole==='res'?'':' · 📍'+esc(siteName(wz.site))}\n${t('today')}: ${t(POS[wz.pos])}</div></div></div>`;}
+            h+=`<div class="btns" style="margin-top:6px">${wz.step>0?`<button class="btn" id="wzB">${t('wBack')}</button>`:''}<button class="btn pri" id="wzX" style="flex:2">${wz.step===0?t('wStart'):wz.step===5?t('wFinish'):t('wNext')}</button></div>`;
+            v.innerHTML=h;
+            const q=(sel,fn)=>v.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
+            q('[data-wl]',b=>{c.lang=b.dataset.wl;save();render();});q('[data-wth]',b=>{c.theme=b.dataset.wth;save();render();});
+            q('[data-wm]',b=>{wz.mode=b.dataset.wm;rSetup();});
+            if($('wzN'))$('wzN').oninput=e=>{wz.name=e.target.value;};
+            q('[data-wt2]',b=>{const nt=+b.dataset.wt2;const cur=mod(Math.round((utc(now)-utc(parse(c.anchor)))/864e5)+OFF[nt],6);wz.team=nt;wz.pos=cur;rSetup();});
+            q('[data-wr]',b=>{wz.mrole=b.dataset.wr;rSetup();});q('[data-ws]',b=>{wz.site=b.dataset.ws;rSetup();});
+            q('[data-wp]',b=>{wz.pos=+b.dataset.wp;rSetup();});
+            ['wzF1:fpStart','wzF2:fpEnd','wzSt:start'].forEach(x=>{const[id,k]=x.split(':');if($(id))$(id).onchange=e=>{if(e.target.value)wz[k]=e.target.value;};});
+          EOF_FILE
+
+      - name: Create project files (14)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            v.querySelectorAll('[data-wsup]').forEach(i=>i.onchange=()=>{const k=+i.dataset.wsup,n=i.value.trim();const sup=activePeople().find(p=>p.team===k&&p.role==='sup');
+              if(sup){if(n)sup.name=n;}else if(n){const p={id:'p'+uid(),name:n,team:k,role:'mem',site:'compound',hist:[{team:k,from:ymd(now),site:'compound'}]};people().push(p);setRole(p,'sup');}save();});
+            if($('wzEd'))$('wzEd').onclick=()=>teamEditor(wz.team);
+            if($('wzB'))$('wzB').onclick=()=>{wz.step--;rSetup();window.scrollTo(0,0);};
+            $('wzX').onclick=()=>{if(wz.step===2&&!wz.name.trim()){toast(t('needName'));$('wzN').focus();return;}
+              if(wz.step===3){const diff=mod(wz.pos-OFF[wz.team],6);c.anchor=ymd(addDays(dayStart(now),-diff));c.start=wz.start;c.fpStart=wz.fpStart;c.fpEnd=wz.fpEnd;save();}
+              if(wz.step===2||wz.step===4)applyMe();
+              if(wz.step===5){applyMe();c.mode=wz.mode;save();wz=null;view='home';render();window.scrollTo(0,0);return;}
+              wz.step++;rSetup();window.scrollTo(0,0);};}
+          function applyMe(){const c=C();const nm=wz.name.trim();if(!nm)return;c.myName=nm;c.myTeam=wz.team;
+            let m=meP();if(!m)m=activePeople().find(p=>p.team===wz.team&&(p.name||'').trim()===nm);
+            if(!m&&wz.mode==='sup')m=activePeople().find(p=>p.team===wz.team&&p.role==='sup');
+            const role=wz.mode==='sup'?'sup':wz.mrole,si=role==='res'?'compound':wz.site;
+            if(!m){m={id:'p'+uid(),name:nm,team:wz.team,role:'mem',site:si,hist:[{team:wz.team,from:'2000-01-01',site:si}]};people().push(m);}
+            else{m.name=nm;if(m.team!==wz.team||(m.site||'compound')!==si)movePerson(m,wz.team,si,ymd(now));}
+            setRole(m,role);c.meId=m.id;save();}
+
           // ================= EVENTS =================
           function evText(e){const n=pName(e.p1);
             if(e.type==='absence'){const ab=P(e.p1);return `❌ ${t('ev_absence')}: ${n}`+(ab&&ab.role!=='res'?` 📍${siteName(siteAt(ab,e.from))}`:'')+(e.cov?` — ${pName(e.cov)} ${t('covers')} ${ICO[e.st||'D']}`:'');}
@@ -716,15 +834,10 @@ jobs:
             h+=`<div class="card">`+(l.length?l.map(e=>`<div class="item"><div class="h"><span>${esc(evText(e))}</span><button class="btn sm dang" data-delev="${e.id}">${t('del')}</button></div><div class="b">${evDates(e)}${e.note?'\n'+esc(e.note):''}</div></div>`).join(''):`<div class="empty-msg">${t('noEvents')}</div>`)+'</div>';return h;}
           function bindEvents(v,re){v.querySelectorAll('[data-evf]').forEach(b=>b.onclick=()=>{evFilter=b.dataset.evf;re();});
             v.querySelectorAll('[data-delev]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{S.events=S.events.filter(e=>e.id!==b.dataset.delev);save();re();}));}
-          function evForm(type,pid,dateK){type=type||'absence';const k0=dateK||ymd(now);
+          function evForm(type,pid,dateK){type=type||'absence';const k0=dateK||ymd(now);if(isMember()&&meP())pid=C().meId;const p1list=isMember()&&meP()?personList().filter(x=>x.id===C().meId):null;
             const h=`<h3 id="efH"></h3><div class="tabs">${['absence','leave','callout','swap'].map(k=>`<button data-eft="${k}" class="${type===k?'on':''}">${t('ev_'+k)}</button>`).join('')}</div>
-            <label id="efPl">${t('person')}</label><select id="efP">${personOpts(pid)}</select>
+            <label id="efPl">${t('person')}</label><select id="efP">${personOpts(pid,p1list)}</select>
             <div class="row"><div><label id="efFl">${t('date')}</label><input type="date" id="efF" value="${k0}"></div><div id="efTw"><label>${t('to')}</label><input type="date" id="efT" value="${k0}"></div></div>
-          EOF_FILE
-
-      - name: Create project files (12)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             <div id="efCall"><div class="row"><div><label>${t('shiftT')}</label><select id="efS"><option value="D">☀️ ${t('D')}</option><option value="N">🌙 ${t('N')}</option></select></div><div><label>${t('forTeam')}</label><select id="efTm">${teamOpts(0)}</select></div></div><label>${t('site')}</label><select id="efSite">${siteOpts('compound')}</select></div>
             <div id="efSw"><label>${t('swapWith')}</label><select id="efP2">${personOpts()}</select><label>${t('backDate')}</label><input type="date" id="efB"></div>
             <div id="efCovW"><label>${t('coveredBy')}</label><select id="efCov"></select></div>
@@ -741,6 +854,11 @@ jobs:
                 else{const prev=$('efCov').value;const p=P(pidv);const ft=p?teamAt(p,k):null;const cs=candidates(k,s,[pidv],ft);
                   $('efCov').innerHTML=`<option value="">${t('noCover')}</option>`+cs.map(c=>`<option value="${c.id}">${c.conf.length?'⚠️ ':'✓ '}${esc(c.name)}${c.role==='res'?' ('+t('reserve')+')':''} — ${esc(teamName(c.team))} · ${esc(siteName(c.site))}</option>`).join('');
                   if(prev&&cs.some(c=>c.id===prev))$('efCov').value=prev;else{const r=cs.find(c=>c.role==='res'&&p&&c.team===p.team&&!c.conf.length);if(r&&!$('efCov').dataset.touched)$('efCov').value=r.id;}
+          EOF_FILE
+
+      - name: Create project files (15)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
                   info=`<div class="muted" style="margin-top:6px">${ICO[s]} ${t(s)} — ${fmtK(k)}${p&&p.role!=='res'?' · 📍'+esc(siteName(siteAt(p,k))):''}</div>`;const cv=$('efCov').value;if(cv)info+=confBox(conflicts(cv,k,s,null,ft));}}
               if(ty==='callout'){const s=$('efS').value;info=confBox(conflicts(pidv,k,s,null,+$('efTm').value));}
               if(ty==='swap'){const p1=P(pidv),p2=P($('efP2').value);if(p1&&p2&&k){const s=teamShift(teamAt(p2,k),k);
@@ -761,7 +879,7 @@ jobs:
 
           // ================= WARNINGS =================
           function warnForm(pid){const sug=p=>{const ws=warnsOf(p);if(!ws.length)return 'verbal';const lv=Math.max(...ws.map(w=>WL.indexOf(w.type)));return WL[Math.min(3,lv+1)];};
-            openSheet(`<h3>⚠️ ${t('addWarn').replace('+ ','')}</h3><label>${t('person')}</label><select id="wP">${personOpts(pid)}</select><div id="wSug" class="muted" style="margin-top:6px"></div>
+            openSheet(`<h3>⚠️ ${t('addWarn').replace('+ ','')}</h3><label>${t('person')}</label><select id="wP">${personOpts(isMember()&&meP()?C().meId:pid,isMember()&&meP()?personList().filter(x=>x.id===C().meId):null)}</select><div id="wSug" class="muted" style="margin-top:6px"></div>
             <label>${t('type')}</label><div class="tabs" id="wTy">${WL.map(w=>`<button data-wt="${w}">${t('w_'+w)}</button>`).join('')}</div>
             <label>${t('date')}</label><input type="date" id="wD" value="${ymd(now)}"><label>${t('reason')}</label><textarea id="wR" style="min-height:60px"></textarea>
             <div id="wDed"><label>${t('deduct')}</label><div class="row"><input type="number" inputmode="decimal" id="wV" placeholder="${t('value')}"><select id="wU"><option value="days">${t('dedDays')}</option><option value="amount">${t('dedAmount')}</option></select></div></div>
@@ -773,11 +891,6 @@ jobs:
 
           // ================= UNIFORM =================
           function itemName(it){return (it.name||'').trim()||t('u_'+it.id);}
-          EOF_FILE
-
-      - name: Create project files (13)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function itemById(id){return C().uniItems.find(i=>i.id===id)||{id,name:id};}
           function uniOf(p){return S.uni.filter(u=>u.p===p).sort((a,b)=>a.date<b.date?1:-1);}
           function lastSize(p,it){for(const u of uniOf(p)){const x=u.items[it];if(x&&x.size)return x.size;}return '';}
@@ -785,11 +898,16 @@ jobs:
           function uniLine(u){return Object.keys(u.items).map(k=>{const x=u.items[k];return itemName(itemById(k))+(x.size?' ('+x.size+')':'')+(x.qty>1?' ×'+x.qty:'');}).join('، ');}
           function uniList(){let h=`<div class="card"><h3>👕 ${t('uni')} <button class="btn sm pri" id="uAdd">${t('uniNew')}</button></h3><p class="muted">${t('tapPerson')}</p>`;
             h+=personList().map(p=>{const lg=lastGot(p.id);return `<div class="tl" data-pid="${p.id}" style="cursor:pointer"><span>${esc(p.name)}</span><span class="muted">${lg?t('lastGot')+': '+lg:t('never')}</span></div>`;}).join('');return h+'</div>';}
-          function uniForm(pre){const ppl=personList();pre=pre||[];
+          function uniForm(pre){let ppl=personList();pre=pre||[];if(isMember()&&meP()){ppl=ppl.filter(x=>x.id===C().meId);pre=[C().meId];}
             let h=`<h3>👕 ${t('uniNew').replace('+ ','')}</h3><label>${t('date')}</label><input type="date" id="uD" value="${ymd(now)}"><div class="sec" style="margin-top:10px">${t('items')}</div>`+
             C().uniItems.map(it=>`<div class="row" style="align-items:center"><label class="chk" style="flex:2"><input type="checkbox" data-ui="${it.id}">${esc(itemName(it))}</label><input type="number" inputmode="numeric" min="1" value="1" data-uq="${it.id}" style="flex:1"></div>`).join('');
             h+=`<div class="sec" style="margin-top:10px">${t('people')}</div><div class="btns" style="margin-bottom:6px"><button class="btn sm" data-pq="all">${t('all')}</button>${[0,1,2].map(i=>`<button class="btn sm" data-pq="${i}">${esc(teamName(i))}</button>`).join('')}<button class="btn sm" data-pq="none">${t('none')}</button></div>`;
             h+=ppl.map(p=>`<label class="chk"><input type="checkbox" data-pp="${p.id}" data-tx="${p.team}" ${pre.includes(p.id)?'checked':''}>${esc(p.name)}</label>`).join('');
+          EOF_FILE
+
+      - name: Create project files (16)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<label>${t('note')}</label><input id="uN"><div class="btns"><button class="btn pri" id="uNx">${t('nextStep')}</button><button class="btn" id="uC">${t('cancel')}</button></div>`;
             openSheet(h);$('uC').onclick=closeSheet;
             $('panel').querySelectorAll('[data-pq]').forEach(b=>b.onclick=()=>{const q=b.dataset.pq;$('panel').querySelectorAll('[data-pp]').forEach(c=>{c.checked=q==='all'?true:q==='none'?false:(c.dataset.tx===q||c.checked);});});
@@ -814,11 +932,6 @@ jobs:
               <div id="mmBox" style="display:${mmF()?'block':'none'}"><div class="alert" style="margin:10px 0 0">${t('mismatch')}</div><label>${t('mismatchNote')}</label><input id="fCN" value="${esc(g.cardNote)}"></div></div>`;
             if(logSel.type==='N')h+=`<div class="card"><h3>📒 ${t('logChange')} <span class="muted">${C().logFrom}–${C().logTo}</span></h3><label class="chk"><input type="checkbox" id="fVis" ${g.vis?'checked':''}>${t('visitorsLog')}</label><label class="chk"><input type="checkbox" id="fWrk" ${g.wrk?'checked':''}>${t('workersLog')}</label></div>`;
             h+=`<div class="card"><h3>📝 ${t('handNotes')}</h3><textarea id="fNotes" placeholder="${t('handNotesPh')}">${esc(g.notes)}</textarea></div>`;
-          EOF_FILE
-
-      - name: Create project files (14)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="card"><h3>🚨 ${t('incidents')} <button class="btn sm pri" id="fInc">${t('addIncident')}</button></h3>`+(g.inc.length?g.inc.map(x=>`<div class="item"><div class="h"><span>${esc(x.time)} · ${t('inc_'+x.type)}</span><button class="btn sm dang" data-delinc="${x.id}">${t('del')}</button></div><div class="b">${esc(x.desc)}${x.action?'\n↳ '+esc(x.action):''}</div></div>`).join(''):`<div class="empty-msg">${t('nothing')}</div>`)+'</div>';
             v.innerHTML=h;
             $('lP').onclick=()=>{logSel=myShiftStep(logSel.date,logSel.type,-1);rLog();};$('lN').onclick=()=>{logSel=myShiftStep(logSel.date,logSel.type,1);rLog();};
@@ -831,6 +944,11 @@ jobs:
             v.querySelectorAll('[data-delinc]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{g.inc=g.inc.filter(x=>x.id!==b.dataset.delinc);save();rLog();}));}
           function incForm(g){const n=new Date();openSheet(`<h3>🚨 ${t('addIncident').replace('+ ','')}</h3><div class="row"><div><label>${t('time')}</label><input type="time" id="iT" value="${pad(n.getHours())}:${pad(n.getMinutes())}"></div><div><label>${t('type')}</label><select id="iY">${INC.map(k=>`<option value="${k}">${t('inc_'+k)}</option>`).join('')}</select></div></div>
             <label>${t('desc')}</label><textarea id="iD"></textarea><label>${t('action')}</label><textarea id="iA" style="min-height:60px"></textarea><div class="btns"><button class="btn pri" id="iS">${t('save')}</button><button class="btn" id="iC">${t('cancel')}</button></div>`);
+          EOF_FILE
+
+      - name: Create project files (17)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('iC').onclick=closeSheet;$('iS').onclick=()=>{const d=$('iD').value.trim();if(!d){$('iD').focus();return;}g.inc.push({id:uid(),time:$('iT').value,type:$('iY').value,desc:d,action:$('iA').value.trim()});g.inc.sort((a,b)=>a.time<b.time?-1:1);save();closeSheet();rLog();toast(t('saved'));};}
 
           // ================= REPORTS =================
@@ -839,12 +957,12 @@ jobs:
           function monthRow(p,A,B){const td=ymd(now);if(B>td)B=td;if(B<A)return{list:[],d:0,n:0,total:0,abs:0,leave:0,extra:0,w:0};const list=shiftsOf(p.id,A,B);const d=list.filter(x=>x.type==='D').length,n=list.filter(x=>x.type==='N').length;
             let abs=0,leave=0;kRange(A,B).forEach(k=>{if(!employedOn(p,k))return;const a=absentOn(p.id,k);if(!a)return;if(a.type==='leave')leave++;else if(p.role!=='res'&&teamShift(teamAt(p,k),k)!=='O')abs++;});
             const extra=list.filter(x=>x.kind!=='base').length;const w=S.warns.filter(x=>x.p===p.id&&x.date>=A&&x.date<=B).length;return{list,d,n,total:d+n,abs,leave,extra,w};}
-          function sheetPeople(A,B){return people().filter(p=>startOf(p)<=B&&!(p.left&&p.left<A)&&(sheetTeam==='all'||teamAt(p,B)===+sheetTeam)&&(sheetSite==='all'||siteAt(p,B)===sheetSite||siteAt(p,B)==='both')).sort((a,b)=>teamAt(a,B)-teamAt(b,B)||SO(a)-SO(b)||RO[a.role]-RO[b.role]);}
+          function sheetPeople(A,B){if(isMember()&&meP())return [meP()];return people().filter(p=>startOf(p)<=B&&!(p.left&&p.left<A)&&(sheetTeam==='all'||teamAt(p,B)===+sheetTeam)&&(sheetSite==='all'||siteAt(p,B)===sheetSite||siteAt(p,B)==='both')).sort((a,b)=>teamAt(a,B)-teamAt(b,B)||SO(a)-SO(b)||RO[a.role]-RO[b.role]);}
           function rRep(){const v=$('v-rep');const ar=L()==='ar';let h=`<div class="tabs">${[['sheet','📅 '+t('sheet')],['text','📄 '+t('textRep')]].map(([k,l])=>`<button data-rs="${k}" class="${repSub===k?'on':''}">${l}</button>`).join('')}</div>`;
             if(repSub==='sheet'){if(!repMonth)repMonth=new Date(now.getFullYear(),now.getMonth(),1);const A=ymd(repMonth),B=ymd(new Date(repMonth.getFullYear(),repMonth.getMonth()+1,0));
               h+=`<div class="card"><div class="mnav"><button class="btn" id="smP">${ar?'›':'‹'}</button><b>${t('actual')} — ${MONTHS[L()][repMonth.getMonth()]} ${repMonth.getFullYear()}</b><button class="btn" id="smN">${ar?'‹':'›'}</button></div>
-              <div class="tabs">${[['all',t('all')],['0',teamName(0)],['1',teamName(1)],['2',teamName(2)]].map(([k,l])=>`<button data-st="${k}" class="${sheetTeam===k?'on':''}">${esc(l)}</button>`).join('')}</div>
-              <div class="tabs">${[['all','📍 '+t('allSites')],...C().sites.map(x=>[x.id,'📍 '+x.name])].map(([k,l])=>`<button data-ss="${k}" class="${sheetSite===k?'on':''}">${esc(l)}</button>`).join('')}</div>
+              <div class="tabs" style="${isMember()?'display:none':''}">${[['all',t('all')],['0',teamName(0)],['1',teamName(1)],['2',teamName(2)]].map(([k,l])=>`<button data-st="${k}" class="${sheetTeam===k?'on':''}">${esc(l)}</button>`).join('')}</div>
+              <div class="tabs" style="${isMember()?'display:none':''}">${[['all','📍 '+t('allSites')],...C().sites.map(x=>[x.id,'📍 '+x.name])].map(([k,l])=>`<button data-ss="${k}" class="${sheetSite===k?'on':''}">${esc(l)}</button>`).join('')}</div>
               <div class="scrollx"><table class="tbl"><tr><th>${t('name')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
               let tot=0;sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);tot+=r.total;h+=`<tr data-pid="${p.id}"><td>${esc(pName(p.id))}${p.role==='res'?' <span class="tag res">'+t('reserve')+'</span>':''}</td><td>${esc(siteName(siteAt(p,B)))}</td><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs||''}</td><td>${r.leave||''}</td><td>${r.extra||''}</td><td>${r.w||''}</td></tr>`;});
               h+=`</table></div><div class="btns"><button class="btn pri" id="smPr">${t('print')}</button><button class="btn" id="smSh">${t('share')}</button></div></div>`;
@@ -854,11 +972,6 @@ jobs:
               $('smPr').onclick=()=>printHtml(sheetHtml(A,B),t('sheet'));$('smSh').onclick=()=>shareText(sheetText(A,B));}
             else{if(!rp.from){rp.from=ymd(new Date(now.getFullYear(),now.getMonth(),1));rp.to=ymd(now);}
               h+=`<div class="card"><label>${t('period')}</label><div class="seg">${[['this',t('thisMonth')],['last',t('lastMonth')],['custom',t('custom')]].map(([k,l])=>`<button data-per="${k}" class="${rp.per===k?'on':''}">${l}</button>`).join('')}</div>
-          EOF_FILE
-
-      - name: Create project files (15)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               <div class="row" style="display:${rp.per==='custom'?'flex':'none'}"><div><label>${t('from')}</label><input type="date" id="rF" value="${rp.from}"></div><div><label>${t('to')}</label><input type="date" id="rT" value="${rp.to}"></div></div>
               <label>${t('include')}</label>${[['shifts','secShifts'],['inc','secIncidents'],['cards','secCards'],['logs','secLogs'],['notes','secNotes'],['team','secTeam'],['warn','secWarn'],['uni','secUni']].map(([k,l])=>`<label class="chk"><input type="checkbox" data-sec="${k}" ${rp.sec[k]?'checked':''}>${t(l)}</label>`).join('')}
               <button class="btn pri full" id="rG">${t('generate')}</button></div>`;
@@ -869,6 +982,11 @@ jobs:
               $('rG').onclick=()=>{repOut=buildReport();rRep();setTimeout(()=>{const p=v.querySelector('pre');if(p)p.scrollIntoView({behavior:'smooth'});},50);};
               if(repOut){$('rC').onclick=()=>copyText(repOut);$('rS').onclick=()=>shareText(repOut);$('rPr').onclick=()=>printHtml(textHtml(repOut),t('report'));}}
             v.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{repSub=b.dataset.rs;rRep();});}
+          EOF_FILE
+
+      - name: Create project files (18)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           const docHead=title=>`<!DOCTYPE html><html lang="${L()}" dir="${L()==='ar'?'rtl':'ltr'}"><head><meta charset="utf-8"><title>${esc(title)}</title><style>@page{size:A4;margin:14mm}body{font-family:'Noto Naskh Arabic','Noto Sans Arabic',Arial,sans-serif;color:#000;font-size:12px}h1{font-size:17px;margin:0 0 4px;text-align:center}.sub{text-align:center;color:#444;margin-bottom:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #444;padding:5px 4px;text-align:center}th{background:#e5e7eb}td:first-child,th:first-child{text-align:start}.sig{display:flex;justify-content:space-between;margin-top:40px}.sig div{width:40%;border-top:1px solid #000;text-align:center;padding-top:4px}pre{white-space:pre-wrap;font-family:inherit;font-size:12px;line-height:1.8}.tot td{font-weight:bold;background:#f3f4f6}</style></head><body>`;
           function sheetHtml(A,B){const ps=sheetPeople(A,B);const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();
             let h=docHead(t('sheet'))+`<h1>${t('actual')} — ${m}</h1><div class="sub">${sheetTeam==='all'?t('all'):esc(teamName(+sheetTeam))} · 📍${sheetSite==='all'?t('allSites'):esc(siteName(sheetSite))} · ${t('generated')}: ${fmt(now)}</div><table><tr><th>#</th><th>${t('name')}</th><th>${t('teamOf')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
@@ -886,16 +1004,16 @@ jobs:
             const my=[];kRange(A,B).forEach(k=>{const s=teamShift(C().myTeam,k);if(s!=='O')my.push({date:parse(k),type:s,id:k+'_'+s});});
             const started=x=>shiftTimes(x.date,x.type).s<=now;
             if(rp.sec.shifts){const dn=my.filter(x=>x.type==='D').length,nn=my.filter(x=>x.type==='N').length;o+=`\n■ ${t('secShifts')}\n${t('D')}: ${dn} · ${t('N')}: ${nn} · ${t('total')}: ${dn+nn} ${t('shifts')} (${(dn+nn)*12} ${t('hours')})\n`;}
-          EOF_FILE
-
-      - name: Create project files (16)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(rp.sec.inc){o+=`\n■ ${t('secIncidents')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.inc)g.inc.forEach(i=>{n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${i.time} [${t('inc_'+i.type)}] ${i.desc}${i.action?' ↳ '+i.action:''}\n`;});});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.cards){o+=`\n■ ${t('secCards')} (${t('total')} ${C().cards})\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&(g.recv!=null||g.hand!=null)){n++;const bad=(g.recv!=null&&g.recv!==+C().cards)||(g.recv!=null&&g.hand!=null&&g.recv!==g.hand);o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${t('received')} ${g.recv==null?'—':g.recv} / ${t('handed')} ${g.hand==null?'—':g.hand}${bad?' ⚠️'+(g.cardNote?' '+g.cardNote:''):''}\n`;}});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.logs){const ns=my.filter(x=>x.type==='N'&&started(x));if(ns.length){o+=`\n■ ${t('secLogs')}\n`;ns.forEach(x=>{const g=S.logs[x.id]||{};o+=`- ${fmtS(x.date)}: ${t('visitorsLog')} ${g.vis?'✓':'✗'} · ${t('workersLog')} ${g.wrk?'✓':'✗'}\n`;});}}
             if(rp.sec.notes){o+=`\n■ ${t('secNotes')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.notes){n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]}: ${g.notes.replace(/\n/g,' / ')}\n`;}});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.team){o+=`\n■ ${t('secTeam')}\n`;const ev=S.events.filter(e=>(e.from<=B&&e.to>=A)||(e.back&&e.back>=A&&e.back<=B)).sort((x,y)=>x.from<y.from?-1:1);o+=ev.length?ev.map(e=>`- ${evDates(e)}: ${evText(e)}${e.note?' ('+e.note+')':''}`).join('\n')+'\n':t('nothing')+'\n';}
+          EOF_FILE
+
+      - name: Create project files (19)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(rp.sec.warn){o+=`\n■ ${t('secWarn')}\n`;const ws=S.warns.filter(w=>w.date>=A&&w.date<=B).sort((x,y)=>x.date<y.date?-1:1);o+=ws.length?ws.map(w=>`- ${w.date} ${pName(w.p)}: ${t('w_'+w.type)}${w.reason?' — '+w.reason:''}${w.ded?' ('+t('deduct')+' '+w.ded+' '+(w.dedType==='amount'?t('dedAmount'):t('dedDays'))+')':''}`).join('\n')+'\n':t('nothing')+'\n';}
             if(rp.sec.uni){o+=`\n■ ${t('secUni')}\n`;const us=S.uni.filter(u=>u.date>=A&&u.date<=B).sort((x,y)=>x.date<y.date?-1:1);if(!us.length)o+=t('nothing')+'\n';else{us.forEach(u=>o+=`- ${u.date} ${pName(u.p)}: ${uniLine(u)}${u.note?' ('+u.note+')':''}\n`);const got=new Set(us.map(u=>u.p));const miss=personList().filter(p=>!got.has(p.id));if(miss.length)o+=`${t('notReceived')}: ${miss.map(p=>p.name).join('، ')}\n`;}}
             return o+`\n${t('generated')}: ${fmt(now)} ${pad(now.getHours())}:${pad(now.getMinutes())}`;}
@@ -904,7 +1022,10 @@ jobs:
           function doRestore(text){let x;try{x=JSON.parse(text);if(!x||!x.cfg)throw 0;}catch(e){toast(t('bad'));return;}confirmBox(t('restoreQ'),()=>{S=normalize(x);save();toast(t('restored'));render();});}
           function rSet(){const v=$('v-set'),c=C();let h=`<div class="card"><h3>🌐 ${t('language')}</h3><div class="seg"><button data-lang="ar" class="${c.lang==='ar'?'on':''}">العربية</button><button data-lang="en" class="${c.lang==='en'?'on':''}">English</button></div>
             <h3>🎨 ${t('theme')}</h3><div class="seg">${['dark','light','auto'].map(k=>`<button data-th="${k}" class="${c.theme===k?'on':''}">${k==='dark'?'🌙 ':k==='light'?'☀️ ':'⚙️ '}${t(k)}</button>`).join('')}</div></div>`;
-            h+=`<div class="card"><h3>👤 ${t('myTeam')}</h3><div class="seg">${[0,1,2].map(i=>`<button data-mt="${i}" class="${c.myTeam===i?'on':''}">${esc(teamName(i))}</button>`).join('')}</div><label>${t('myName')}</label><input id="sMe" value="${esc(c.myName)}"></div>`;
+            h+=`<div class="card"><h3>🧑‍✈️ ${t('mode')}</h3><div class="seg"><button data-mode="member" class="${c.mode==='member'?'on':''}">${t('modeMember')}</button><button data-mode="sup" class="${c.mode==='sup'?'on':''}">★ ${t('modeSup')}</button></div>
+              <h3>👤 ${t('myTeam')}</h3><div class="seg">${[0,1,2].map(i=>`<button data-mt="${i}" class="${c.myTeam===i?'on':''}">${esc(teamName(i))}</button>`).join('')}</div><label>${t('myName')}</label><input id="sMe" value="${esc(c.myName)}">
+              <button class="btn full" id="sSetup">${t('rerunSetup')}</button></div>`;
+            h+=`<div class="card"><h3>👥 ${t('teams')}</h3>`+[0,1,2].map(i=>`<div class="tl"><span><b>${esc(teamName(i))}</b> <span class="muted">· ${teamMembers(i).length}</span></span><button class="btn sm pri" data-tedit="${i}">${t('editTeam')}</button></div>`).join('')+`</div>`;
             h+=`<div class="card"><h3>⏰ ${t('times')}</h3><div class="row"><div><label>${t('fpStart')}</label><input type="time" data-k="fpStart" value="${c.fpStart}"></div><div><label>${t('fpEnd')}</label><input type="time" data-k="fpEnd" value="${c.fpEnd}"></div></div>
               <label>${t('startTime')}</label><input type="time" data-k="start" value="${c.start}"><p class="muted" style="margin-top:4px">${t('nightNote')}</p>
               <div class="row"><div><label>${t('logFrom')}</label><input type="time" data-k="logFrom" value="${c.logFrom}"></div><div><label>${t('logTo')}</label><input type="time" data-k="logTo" value="${c.logTo}"></div></div>
@@ -915,23 +1036,26 @@ jobs:
             h+=`<div class="card"><h3>💾 ${t('backup')}</h3><p class="muted">${t('fileHint')}</p><button class="btn pri full" id="bF">${t('shareFile')}</button>
               <label class="btn full" style="margin-top:8px;color:var(--text)">${t('restoreFile')}<input type="file" id="bI" accept=".json,application/json,text/plain,*/*" style="display:none"></label>
               <button class="btn full" id="bC">${t('copyText')}</button><label>${t('pasteText')}</label><textarea id="bT" style="min-height:50px"></textarea><button class="btn full" id="bR">${t('restore')}</button>
-              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v3.1</p>`;
+              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v3.2</p>`;
             v.innerHTML=h;
             v.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{c.lang=b.dataset.lang;repOut='';save();render();});
             v.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{c.theme=b.dataset.th;save();render();});
-            v.querySelectorAll('[data-mt]').forEach(b=>b.onclick=()=>{c.myTeam=+b.dataset.mt;logSel=null;save();render();});
-            $('sMe').oninput=e=>{c.myName=e.target.value;save();};
+            v.querySelectorAll('[data-mt]').forEach(b=>b.onclick=()=>{const k=+b.dataset.mt;c.myTeam=k;logSel=null;const m=meP();if(m&&m.team!==k)movePerson(m,k,m.site||'compound',ymd(now));save();render();});
+            $('sMe').onchange=e=>{c.myName=e.target.value.trim();const m=meP();if(m&&c.myName){m.name=c.myName;}save();render();};
+            v.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{c.mode=b.dataset.mode;const m=meP();if(m){if(c.mode==='sup')setRole(m,'sup');else if(m.role==='sup')m.role='mem';}save();render();});
+            $('sSetup').onclick=()=>{startWizard();view='setup';render();};
+            v.querySelectorAll('[data-tedit]').forEach(b=>b.onclick=()=>teamEditor(+b.dataset.tedit));
             v.querySelectorAll('[data-k]').forEach(i=>i.onchange=()=>{if(i.value){c[i.dataset.k]=i.value;save();toast(t('saved'));}});
             $('sCards').onchange=e=>{const n=parseInt(e.target.value,10);if(n>0){c.cards=n;save();toast(t('saved'));}};
             $('sRest').onchange=e=>{const n=parseInt(e.target.value,10);if(n>=0){c.minRest=n;save();toast(t('saved'));}};
-          EOF_FILE
-
-      - name: Create project files (17)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('sAnc').onchange=e=>{if(e.target.value){c.anchor=e.target.value;save();toast(t('saved'));}};
             v.querySelectorAll('[data-itn]').forEach(i=>i.onchange=()=>{const it=c.uniItems[+i.dataset.itn];const val=i.value.trim();it.name=(val===t('u_'+it.id))?'':val;save();toast(t('saved'));});
             v.querySelectorAll('[data-itd]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{c.uniItems.splice(+b.dataset.itd,1);save();rSet();}));
+          EOF_FILE
+
+      - name: Create project files (20)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             v.querySelectorAll('[data-site]').forEach(i=>i.onchange=()=>{const v2=i.value.trim();if(v2){c.sites[+i.dataset.site].name=v2;save();toast(t('saved'));}});
             $('itA').onclick=()=>{c.uniItems.push({id:'i'+uid(),name:t('itemName')});save();rSet();};
             $('bF').onclick=()=>shareFile('shifts-backup-'+ymd(now)+'.json','application/json',JSON.stringify(S));
@@ -942,6 +1066,7 @@ jobs:
           try{const raw=localStorage.getItem(KEY);if(raw)S=normalize(JSON.parse(raw));
             else{const o=JSON.parse(localStorage.getItem('shiftcfg')||'null');if(o){if(o.team)S.cfg.myTeam=o.team-1;if(o.anchor)S.cfg.anchor=o.anchor;}}}catch(e){console.error('load failed',e);}
           save();
+          if(!S.cfg.mode)view='setup';
           render();
           setInterval(()=>{const n=new Date();if(n.getMinutes()!==now.getMinutes()&&(view==='home'||view==='cal')&&!$('sheet').classList.contains('show')&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))render();},30000);
           document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(view==='home'||view==='cal')&&!$('sheet').classList.contains('show'))render();});
@@ -952,7 +1077,7 @@ jobs:
           </html>
           EOF_FILE
 
-      - name: Create project files (18)
+      - name: Create project files (21)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
@@ -1141,7 +1266,7 @@ jobs:
           }
           EOF_FILE
 
-      - name: Create project files (19)
+      - name: Create project files (22)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/ShareProvider.java' <<'EOF_FILE'
@@ -1285,5 +1410,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Shifts v3.1 build ${{ github.run_number }}
+          name: Shifts v3.2 build ${{ github.run_number }}
           files: Shifts.apk
