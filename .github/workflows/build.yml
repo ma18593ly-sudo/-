@@ -23,8 +23,8 @@ jobs:
                   applicationId "com.mohamed.shifts"
                   minSdk 26
                   targetSdk 34
-                  versionCode 7
-                  versionName "3.2"
+                  versionCode 8
+                  versionName "3.3"
               }
               signingConfigs {
                   debug {
@@ -325,7 +325,11 @@ jobs:
           wAboutQ:'عرّفنا عليك',wYourTeam:'فريقك',wYourSite:'موقعك',wYourRole:'صفتك في الفريق',
           wTodayQ:'وين أنت اليوم في الدورة؟',wTodaySub:'باش التطبيق يحسب جدولك صح',D1:'نهار — أول يوم',D2:'نهار — ثاني يوم',N1:'ليل — أول يوم',N2:'ليل — ثاني يوم',O1:'راحة — أول يوم',O2:'راحة — ثاني يوم',
           wTeamsQ:'الفرق والمشرفين',wTeamsSub:'اكتب اسم مشرف كل فريق — اسم الفريق يطلع منه',wMembersQ:'أعضاء فريقك',wMembersSub:'زيد أعضاء فريقك وموقع كل واحد (تقدر تكمّل بعدين)',
-          wDoneQ:'كل شي جاهز ✓',wDoneSub:'تقدر تغيّر أي حاجة بعدين من ⚙️ الإعدادات',step:'خطوة'},
+          wDoneQ:'كل شي جاهز ✓',wDoneSub:'تقدر تغيّر أي حاجة بعدين من ⚙️ الإعدادات',step:'خطوة',
+          cover:'غطّي',covered:'مغطّى',uncovered:'غير مغطّى',coveredByX:'يغطيه',short:'نقص',full:'كامل',staffing:'الطاقم',extraCall:'📞 استدعاء إضافي',
+          pickTitle:'مين يغطي؟',pickSub:'مرتبين من الأنسب — المرتاحين أول',restB:'راحة قبلها',restA:'بعدها',hS:'س',chooseSlot:'اختار الوردية',choosePerson:'اختار الشخص ←',
+          upShort:'⚠️ نقص في الأيام الجاية',needs:'ينقص',leaveSlots:'ورديات الغياب',coverAll:'غطّي الورديات اللي تحت',inPlaceOf:'مكان',onCallRes:'مناوب',assignedTo:'مستدعى لـ',
+          absentL:'غايب',swapIn:'تبديل',delAsgQ:'نلغي التغطية/الاستدعاء؟',noSlots:'ما عنده ورديات في الفترة هذي',assignDone:'تم التسجيل'},
           en:{app:'Shifts',home:'Home',cal:'Calendar',emp:'Staff',log:'Log',rep:'Reports',set:'Settings',
           D:'Day',N:'Night',O:'Off',first:'1st day',second:'2nd day',onDuty:'On duty now',ends:'ends',
           yourNext:'Your next shift',nextShift:'Next shift',nextOff:'Next day off',fp:'Fingerprint',work:'Duty',today:'Today',
@@ -358,17 +362,17 @@ jobs:
           searchPh:'🔍 Search by name…',list:'List',info:'Info',duty:'Duty',warns:'Warnings',
           w_verbal:'Verbal',w_written:'Written',w_deduct:'With deduction',w_final:'Final warning',addWarn:'+ Warning',suggested:'Suggested level',deduct:'Deduction',dedDays:'days',dedAmount:'LYD',value:'Value',noWarns:'No warnings',
           qAbs:'Absence',qCall:'Call-in',qWarn:'Warning',qUni:'Uniform',
+          EOF_FILE
+
+      - name: Create project files (6)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           actual:'Actual working days',sheet:'Monthly sheet',textRep:'Text report',dayC:'Day',nightC:'Night',absC:'Absent',leaveC:'Leave',extraC:'Extra',warnC:'Warnings',
           workedDays:'Days worked',printMonth:'🖨️ Print month PDF',sign1:'Supervisor signature',sign2:'Management signature',
           kind_base:'Roster',kind_cover:'Cover',kind_callout:'Call-in',kind_swap:'Swap',
           conflict:'Conflict',noConflict:'✓ No conflict',restShort:'Only {h}h rest (needs {m})',overlap:'Already on a shift at that time',withTeam:'with {t}',onCall:'on call with own team',
           availability:'Available',noShiftThatDay:'No shift on that date',upConf:'⚠️ Upcoming conflicts',saveAnyway:'Save despite conflict',
           today_s:'Today',absentToday:'Absent',coverFor:'covers',calledIn:'Called in',fileHint:'A .json file you can send to yourself on WhatsApp and restore any time',
-          EOF_FILE
-
-      - name: Create project files (6)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           tapPerson:'Tap an employee to open their file',site:'Site',sites:'Sites',bothSites:'Both sites',allSites:'All sites',moveSite:'New site',
           me:'My file',you:'You',teams:'Teams',teamNameL:'Team name',teamNamePh:'Auto: Team + supervisor name',supName:'Supervisor name',editTeam:'✏️ Edit team',addMember:'+ Add',membersL:'Members',removeQ:'Remove from team? If they have records they move to Former.',
           mode:'App mode',modeMember:'Member',modeSup:'Supervisor',rerunSetup:'🔄 Run setup again',
@@ -377,7 +381,11 @@ jobs:
           wAboutQ:'About you',wYourTeam:'Your team',wYourSite:'Your site',wYourRole:'Your role in the team',
           wTodayQ:'Where are you in the rotation today?',wTodaySub:'So the app calculates your schedule correctly',D1:'Day — 1st',D2:'Day — 2nd',N1:'Night — 1st',N2:'Night — 2nd',O1:'Off — 1st',O2:'Off — 2nd',
           wTeamsQ:'Teams & supervisors',wTeamsSub:'Enter each team\'s supervisor — the team is named after them',wMembersQ:'Your team members',wMembersSub:'Add your members and their site (you can finish later)',
-          wDoneQ:'All set ✓',wDoneSub:'You can change anything later in ⚙️ Settings',step:'Step'}};
+          wDoneQ:'All set ✓',wDoneSub:'You can change anything later in ⚙️ Settings',step:'Step',
+          cover:'Cover',covered:'Covered',uncovered:'Not covered',coveredByX:'covered by',short:'Short',full:'Full',staffing:'Staffing',extraCall:'📞 Extra call-in',
+          pickTitle:'Who covers?',pickSub:'Best options first — rested people on top',restB:'rest before',restA:'after',hS:'h',chooseSlot:'Choose the shift',choosePerson:'Choose person →',
+          upShort:'⚠️ Shortages in the coming days',needs:'short',leaveSlots:'Shifts during absence',coverAll:'Cover the shifts below',inPlaceOf:'for',onCallRes:'on call',assignedTo:'called to',
+          absentL:'Absent',swapIn:'Swap',delAsgQ:'Remove this cover/call-in?',noSlots:'No shifts in this period',assignDone:'Recorded'}};
           const DAYS={ar:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
           const SDAYS={ar:['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'],en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
           const MONTHS={ar:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
@@ -391,8 +399,8 @@ jobs:
             uniItems:[{id:'shirt',name:''},{id:'pants',name:''},{id:'shoes',name:''},{id:'coat',name:''},{id:'cap',name:''}],
             people:[{id:'t0m0',name:'مصعب',team:0,role:'sup',hist:[{team:0,from:'2000-01-01'}]},{id:'t1m0',name:'سالم',team:1,role:'sup',hist:[{team:1,from:'2000-01-01'}]},{id:'t2m0',name:'حاتم',team:2,role:'sup',hist:[{team:2,from:'2000-01-01'}]}]};
           const clone=x=>JSON.parse(JSON.stringify(x));
-          let S={cfg:clone(DEF_CFG),logs:{},events:[],uni:[],warns:[],v:3};
-          function normalize(x){const st={cfg:Object.assign(clone(DEF_CFG),x.cfg||{}),logs:x.logs||{},events:x.events||[],uni:x.uni||[],warns:x.warns||[],v:3};
+          let S={cfg:clone(DEF_CFG),logs:{},events:[],uni:[],warns:[],asg:[],v:3};
+          function normalize(x){const st={cfg:Object.assign(clone(DEF_CFG),x.cfg||{}),logs:x.logs||{},events:x.events||[],uni:x.uni||[],warns:x.warns||[],asg:x.asg||[],v:3};
             const c=st.cfg;
             if(!(x.cfg&&Array.isArray(x.cfg.people))){ // from v2.0/2.1 slot model
               const used=new Set();st.events.forEach(e=>{used.add(e.p1);used.add(e.p2);});st.uni.forEach(u=>used.add(u.p));
@@ -414,8 +422,23 @@ jobs:
               if(e.type==='coverage'){const ab=findP(st,e.p2);const tm=ab?teamAtP(ab,e.from):0;let ty=shiftOfC(c,parseD(e.from),tm).type;if(ty==='O')ty='D';
                 return {id:e.id,type:'absence',p1:e.p2,from:e.from,to:e.from,cov:e.p1,st:ty,note:e.note||''};}
               if(e.type==='swap'&&!e.st){const b=findP(st,e.p2);const tm=b?teamAtP(b,e.from):0;let ty=shiftOfC(c,parseD(e.from),tm).type;if(ty==='O')ty='D';e.st=ty;}
+          EOF_FILE
+
+      - name: Create project files (7)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               if(!e.to)e.to=e.from;return e;});
+            // v3.2 → v3.3: covers & call-ins become assignments
+            const ev2=[];st.events.forEach(e=>{
+              if(e.type==='callout'){st.asg.push({id:e.id,k:e.from,type:e.st||'D',team:e.team!=null?+e.team:0,site:e.site||'compound',pid:e.p1,for:null,note:e.note||''});return;}
+              if(e.type==='absence'&&e.cov){const ab=findP(st,e.p1);let k=e.from;while(k<=e.to){const tm=ab?teamAtP(ab,k):0;let ty=e.from===e.to&&e.st?e.st:shiftOfC(st.cfg,parseD(k),tm).type;
+                  if(ty!=='O'){let si=ab?(ab.role==='res'?'compound':siteOfP(ab,k)):'compound';st.asg.push({id:e.id+'_'+k,k,type:ty,team:tm,site:si,pid:e.cov,for:e.p1,note:''});}
+                  const d=parseD(k);d.setDate(d.getDate()+1);k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+                delete e.cov;delete e.st;}
+              ev2.push(e);});
+            st.events=ev2;
             return st;}
+          function siteOfP(p,k){let st=p.site||'compound';const h=(p.hist||[]).filter(x=>x.site).sort((a,b)=>a.from<b.from?-1:1);if(h.length){st=h[0].site;h.forEach(x=>{if(x.from<=k)st=x.site;});}return st;}
           function findP(st,id){return st.cfg.people.find(p=>p.id===id);}
           function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
           const C=()=>S.cfg;
@@ -438,11 +461,6 @@ jobs:
           const utc=d=>Date.UTC(d.getFullYear(),d.getMonth(),d.getDate());
           const mod=(a,n)=>((a%n)+n)%n;
           const fmt=d=>DAYS[L()][d.getDay()]+' '+d.getDate()+' '+MONTHS[L()][d.getMonth()];
-          EOF_FILE
-
-      - name: Create project files (7)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           const fmtS=d=>SDAYS[L()][d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1);
           const fmtK=k=>fmtS(parse(k));
           const PAT=['D','D','N','N','O','O'],OFF=[0,4,2];
@@ -482,20 +500,24 @@ jobs:
 
           // ================= schedule engine =================
           function kRange(A,B){const o=[];for(let k=A;k<=B;k=kAdd(k,1))o.push(k);return o;}
+          EOF_FILE
+
+      - name: Create project files (8)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function teamShift(team,k){return shiftOf(parse(k),team).type;}
           function absentOn(pid,k){return S.events.find(e=>(e.type==='absence'||e.type==='leave')&&e.p1===pid&&e.from<=k&&e.to>=k);}
           function swappedOut(pid,k){return S.events.some(e=>e.type==='swap'&&((e.p2===pid&&e.from===k)||(e.p1===pid&&e.back===k)));}
-          function extras(pid,A,B){const o=[];S.events.forEach(e=>{
-            if(e.type==='absence'&&e.cov===pid){const ab=P(e.p1);kRange(e.from<A?A:e.from,e.to>B?B:e.to).forEach(k=>{const ty=e.st&&e.from===e.to?e.st:(ab?teamShift(teamAt(ab,k),k):'O');if(ty!=='O')o.push({k,type:ty,kind:'cover',ev:e});});}
-            if(e.type==='callout'&&e.p1===pid&&e.from>=A&&e.from<=B)o.push({k:e.from,type:e.st,kind:'callout',ev:e});
-            if(e.type==='swap'){if(e.p1===pid&&e.from>=A&&e.from<=B)o.push({k:e.from,type:e.st,kind:'swap',ev:e});if(e.back&&e.p2===pid&&e.back>=A&&e.back<=B)o.push({k:e.back,type:e.st2,kind:'swap',ev:e});}});
+          function extras(pid,A,B){const o=[];
+            S.asg.forEach(a=>{if(a.pid===pid&&a.k>=A&&a.k<=B)o.push({k:a.k,type:a.type,kind:a.for?'cover':'callout',team:a.team,ev:a});});
+            S.events.forEach(e=>{if(e.type==='swap'){if(e.p1===pid&&e.from>=A&&e.from<=B)o.push({k:e.from,type:e.st,kind:'swap',ev:e});if(e.back&&e.p2===pid&&e.back>=A&&e.back<=B)o.push({k:e.back,type:e.st2,kind:'swap',ev:e});}});
             return o;}
           // worked: actual shifts. planned (for conflicts): includes reserve on-call with team
           function shiftsOf(pid,A,B,opt){opt=opt||{};const p=P(pid);if(!p)return[];const o=[];
             kRange(A,B).forEach(k=>{if(!employedOn(p,k))return;const tm=teamAt(p,k),ty=teamShift(tm,k);if(ty==='O')return;
               if(p.role==='res'&&!opt.oncall)return;if(absentOn(pid,k)||swappedOut(pid,k))return;
               o.push({k,type:ty,kind:p.role==='res'?'oncall':'base',team:tm});});
-            extras(pid,A,B).forEach(x=>{if(opt.skip&&x.ev.id===opt.skip)return;if(!o.some(y=>y.k===x.k&&y.type===x.type))o.push(x);});
+            extras(pid,A,B).forEach(x=>{if(opt.skip&&x.ev.id===opt.skip)return;const i=o.findIndex(y=>y.k===x.k&&y.type===x.type);if(i<0)o.push(x);else if(o[i].kind==='oncall')o[i]=x;});
             return o.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:(a.type==='D'?-1:1));}
           function conflicts(pid,k,type,skipEv,forTeam){const out=[];const s0=sStart(k,type),e0=sEnd(k,type);const minR=(+C().minRest||12)*36e5;
             shiftsOf(pid,kAdd(k,-2),kAdd(k,2),{oncall:true,skip:skipEv}).forEach(x=>{const s=sStart(x.k,x.type),e=sEnd(x.k,x.type);
@@ -505,16 +527,26 @@ jobs:
               if(s<e0&&e>s0){out.push(lab+' — '+t('overlap'));return;}
               const gap=e<=s0?s0-e:s-e0;if(gap<minR)out.push(lab+' — '+t('restShort',{h:Math.round(gap/36e5),m:C().minRest}));});
             return out;}
-          function candidates(k,type,exclude,forTeam){return personList().filter(p=>!(exclude||[]).includes(p.id)).map(p=>{const pp=P(p.id);
-            const busy=pp.role!=='res'&&teamShift(teamAt(pp,k),k)===type&&!absentOn(p.id,k);
-          EOF_FILE
-
-      - name: Create project files (8)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-            const c=busy?[t('overlap')]:conflicts(p.id,k,type,null,forTeam);return Object.assign({},p,{conf:c});})
-            .sort((a,b)=>(a.conf.length?1:0)-(b.conf.length?1:0)||(a.role==='res'?-1:0)-(b.role==='res'?-1:0));}
-
+          function candidates(k,type,exclude,forTeam){return personList().filter(p=>!(exclude||[]).includes(p.id)).map(p=>{const pp=P(p.id);const conf=[];
+            const ab=absentOn(p.id,k);if(ab)conf.push(t('ev_'+ab.type));
+            const busy=!ab&&pp.role!=='res'&&teamShift(teamAt(pp,k),k)===type&&!swappedOut(p.id,k);
+            if(busy)conf.push(t('overlap'));else if(!ab)conf.push(...conflicts(p.id,k,type,null,forTeam));
+            const r=restInfo(p.id,k,type);return Object.assign({},p,{conf,bef:r.bef,aft:r.aft});})
+            .sort((a,b)=>(a.conf.length?1:0)-(b.conf.length?1:0)||rank(a,forTeam)-rank(b,forTeam)||(b.bef==null?999:b.bef)-(a.bef==null?999:a.bef));}
+          function rank(c,forTeam){if(c.role==='res'&&c.team===forTeam)return 0;if(c.role==='res')return 1;return 2;}
+          function restInfo(pid,k,type){const s0=sStart(k,type),e0=sEnd(k,type);let bef=null,aft=null;
+            shiftsOf(pid,kAdd(k,-3),kAdd(k,3),{oncall:true}).forEach(x=>{if(x.k===k&&x.type===type)return;const s=sStart(x.k,x.type),e=sEnd(x.k,x.type);
+              if(e<=s0){const g=(s0-e)/36e5;if(bef===null||g<bef)bef=g;}if(s>=e0){const g=(s-e0)/36e5;if(aft===null||g<aft)aft=g;}});return{bef,aft};}
+          // staffing of one slot: who should be there, who is, who is missing
+          function slotInfo(k,type){const tm=teamOn(parse(k),type);const out={k,type,team:tm,sites:[],short:0};
+            C().sites.forEach(st=>{const regs=people().filter(p=>employedOn(p,k)&&p.role!=='res'&&teamAt(p,k)===tm&&siteAt(p,k)===st.id);
+              const off=p=>absentOn(p.id,k)||swappedOut(p.id,k);const absent=regs.filter(off),present=regs.filter(p=>!off(p));
+              const asg=S.asg.filter(a=>a.k===k&&a.type===type&&a.team===tm&&a.site===st.id);
+              const swIn=S.events.filter(e=>e.type==='swap'&&((e.from===k&&e.st===type&&P(e.p2)&&teamAt(P(e.p2),k)===tm&&siteAt(P(e.p2),k)===st.id)||(e.back===k&&e.st2===type&&P(e.p1)&&teamAt(P(e.p1),k)===tm&&siteAt(P(e.p1),k)===st.id))).map(e=>e.from===k?e.p1:e.p2);
+              const need=regs.length,have=present.length+asg.length+swIn.length,short=Math.max(0,need-have);
+              out.sites.push({site:st.id,need,have,short,present,absent,asg,swIn});out.short+=short;});
+            out.res=people().filter(p=>employedOn(p,k)&&p.role==='res'&&teamAt(p,k)===tm);return out;}
+          function shortDays(A,B){const o=[];kRange(A,B).forEach(k=>['D','N'].forEach(ty=>{const si=slotInfo(k,ty);if(si.short)o.push(si);}));return o;}
           // ================= platform =================
           const AB=window.AndroidBridge;
           function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),1700);}
@@ -531,6 +563,11 @@ jobs:
           window.onSysTheme=()=>applyTheme();
           function applyLang(){document.documentElement.lang=L();document.documentElement.dir=L()==='ar'?'rtl':'ltr';document.title=t('app');}
 
+          EOF_FILE
+
+      - name: Create project files (9)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           // ================= sheet =================
           function openSheet(html){$('panel').innerHTML=html;$('sheet').classList.add('show');$('panel').scrollTop=0;}
           function closeSheet(){$('sheet').classList.remove('show');}
@@ -568,13 +605,9 @@ jobs:
           function logReminderActive(sh){if(!sh||sh.type!=='N')return false;const g=S.logs[shiftId(sh.date,'N')];if(g&&g.vis&&g.wrk)return false;
             const a=new Date(addDays(sh.date,1).getTime()+mins(C().logFrom)*6e4);return now>=a&&now<shiftTimes(sh.date,'N').e;}
           function upcomingConflicts(){const A=ymd(now),B=kAdd(A,7),out=[];
-            S.events.forEach(e=>{const chk=(pid,k,ty,ft)=>{if(!pid||!k||k<A||k>B)return;const c=conflicts(pid,k,ty,e.id,ft);if(c.length)out.push({pid,k,ty,c});};
-          EOF_FILE
-
-      - name: Create project files (9)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-              if(e.type==='callout')chk(e.p1,e.from,e.st,e.team);if(e.type==='absence'&&e.cov){const ab=P(e.p1);chk(e.cov,e.from,e.st||'D',ab?teamAt(ab,e.from):null);}if(e.type==='swap'){chk(e.p1,e.from,e.st);if(e.back)chk(e.p2,e.back,e.st2);}});return out;}
+            S.asg.forEach(a=>{if(a.k<A||a.k>B)return;const c=conflicts(a.pid,a.k,a.type,a.id,a.team);if(c.length)out.push({pid:a.pid,k:a.k,ty:a.type,c});});
+            S.events.forEach(e=>{if(e.type!=='swap')return;const chk=(pid,k,ty)=>{if(!pid||!k||k<A||k>B)return;const c=conflicts(pid,k,ty,e.id);if(c.length)out.push({pid,k,ty,c});};chk(e.p1,e.from,e.st);if(e.back)chk(e.p2,e.back,e.st2);});
+            return out;}
           function rHome(){const v=$('v-home');const td=shiftOf(now,C().myTeam);const ms=myShiftAround(now);let h='';const on=ms&&ms.s<=now;
             if(on&&logReminderActive(ms))h+=`<div class="alert" data-go="log">${t('logReminder')}</div>`;
             if(ms){const ty=ms.type,ht=on?ty:td.type;
@@ -585,6 +618,13 @@ jobs:
             let off=null;for(let k=0;k<14;k++){const d=addDays(now,k),s=shiftOf(d,C().myTeam);if(s.type==='O'&&s.pos===1&&(k>0||td.type!=='O')){off=d;break;}}
             const nx=ms&&on?myShiftStep(ms.date,ms.type,1):ms;
             h+=`<div class="row"><div class="stat"><div class="k">${t('nextShift')}</div><div class="v">${nx?ICO[nx.type]+' '+t(nx.type)+' — '+fmtS(nx.date):'—'}</div></div><div class="stat"><div class="k">${t('nextOff')}</div><div class="v">${off?'🛋️ '+fmtS(off):'—'}</div></div></div>`;
+            const sd=shortDays(ymd(now),kAdd(ymd(now),7));if(sd.length)h+=`<div class="card"><h3>${t('upShort')}</h3>`+sd.map(x=>{const miss=[].concat(...x.sites.map(s=>s.absent.filter(p=>!s.asg.some(a=>a.for===p.id)).map(p=>pName(p.id))));
+              return `<div class="item" data-day="${x.k}" style="cursor:pointer"><div class="h"><span>${ICO[x.type]} ${fmtK(x.k)} — ${esc(teamName(x.team))}</span><span class="pill bad" style="background:var(--dangerBg)">${t('needs')} ${x.short}</span></div>${miss.length?`<div class="b">❌ ${miss.map(esc).join('، ')}</div>`:''}</div>`;}).join('')+'</div>';
+          EOF_FILE
+
+      - name: Create project files (10)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             const uc=upcomingConflicts();if(uc.length)h+=`<div class="card"><h3>${t('upConf')}</h3>`+uc.map(x=>`<div class="item" data-pid="${x.pid}"><div class="h">${esc(pName(x.pid))} — ${ICO[x.ty]} ${fmtK(x.k)}</div><div class="b">${x.c.map(esc).join('\n')}</div></div>`).join('')+'</div>';
             const cur=lastOrCurrentMyShift(now);
             if(cur){const id=shiftId(cur.date,cur.type),g=S.logs[id]||{};
@@ -598,34 +638,42 @@ jobs:
             h+=`<div class="sec">${t('upcoming')}</div><div class="week">`;
             for(let k=0;k<14;k++){const d=addDays(now,k),s=shiftOf(d,C().myTeam);h+=`<div class="wd ${k===0?'today':''}" data-day="${ymd(d)}"><div class="n">${k===0?t('today'):SDAYS[L()][d.getDay()]}</div><div class="d">${d.getDate()}</div><div class="s ${s.type}-t ${s.type}-b">${ICO[s.type]} ${t(s.type)}</div></div>`;}
             h+='</div>';
-            h+=`<div class="card"><h3>${t('today')}</h3>${teamsForDay(ymd(now))}</div>`;
-            v.innerHTML=h;bindCommon(v);}
-          function dayStatus(pid,k){const ab=absentOn(pid,k);if(ab)return '❌ '+t('ev_'+ab.type);const ex=extras(pid,k,k);if(ex.length)return '➕ '+t('kind_'+ex[0].kind)+' '+ICO[ex[0].type];return '';}
-          function teamsForDay(k){let h='';const d=parse(k);[['D',t('dayShift')],['N',t('nightShift')],['O',t('O')]].forEach(([ty,lab])=>{const tm=teamOn(d,ty);
-            const span=p=>{const s=dayStatus(p.id,k);return `<span data-pid="${p.id}" style="cursor:pointer">${p.role==='sup'?'★':''}${esc(pName(p.id))}${s?' <b class="bad">'+s+'</b>':''}</span>`;};
-            const grp=[...C().sites.map(st=>[st.name,teamMembers(tm).filter(p=>p.role!=='res'&&siteAt(p,k)===st.id)]),[t('reserve'),teamMembers(tm).filter(p=>p.role==='res')]].filter(g=>g[1].length);
-            const ms=grp.map(([n,l])=>`<div>📍 <b>${esc(n)}</b>: ${l.map(span).join(' · ')}</div>`).join('');
-            h+=`<div class="tl ${tm===C().myTeam?'me':''}" style="flex-wrap:wrap"><span><b>${esc(teamName(tm))}</b></span><span class="pill ${ty}-t ${ty}-b">${ICO[ty]} ${lab}</span><div class="muted" style="width:100%">${ms||t('noMembers')}</div></div>`;});
-            const extra=S.events.filter(e=>(e.type==='callout'&&e.from===k)||(e.type==='swap'&&(e.from===k||e.back===k)));
-            if(extra.length)h+=extra.map(e=>`<div class="item"><div class="h">${esc(evText(e))}</div></div>`).join('');return h;}
+            h+=`<div class="sec">${t('today')} — ${t('staffing')}</div>${teamsForDay(ymd(now))}`;
+            v.innerHTML=h;bindCommon(v);bindSlots(v,null);}
+          function slotCard(si){const k=si.k,ty=si.type;let h=`<div class="card" style="padding:12px"><h3><span>${ICO[ty]} ${t(ty)} — ${esc(teamName(si.team))}${si.team===C().myTeam?' <span class="muted">('+t('yours')+')</span>':''}</span>${si.short?`<span class="pill" style="background:var(--dangerBg);color:var(--danger)">⚠️ ${t('short')} ${si.short}</span>`:`<span class="pill O-t O-b">✅ ${t('full')}</span>`}</h3>`;
+            si.sites.forEach(st=>{if(!st.need&&!st.asg.length)return;h+=`<div class="sec" style="margin:6px 0 4px">📍 ${esc(siteName(st.site))} <span class="muted">${st.have}/${st.need}</span></div>`;
+              h+=st.present.map(p=>`<div class="tl" data-pid="${p.id}" style="cursor:pointer;padding:6px 10px;margin-bottom:4px"><span>${p.role==='sup'?'★ ':''}${esc(pName(p.id))}</span><span class="O-t">✓</span></div>`).join('');
+              h+=st.absent.map(p=>{const ab=absentOn(p.id,k);const cv=st.asg.find(a=>a.for===p.id);const why=ab?t('ev_'+ab.type):t('swapIn');
+                return `<div class="tl" style="padding:6px 10px;margin-bottom:4px;flex-wrap:wrap"><span class="bad">❌ ${esc(pName(p.id))} <span class="muted">(${why})</span></span>`+(cv?`<span>↳ ${esc(pName(cv.pid))} <button class="btn sm dang" data-delasg="${cv.id}">✕</button></span>`:(swappedOut(p.id,k)?'':`<button class="btn sm pri" data-cover="${k}|${ty}|${si.team}|${st.site}|${p.id}">${t('cover')}</button>`))+`</div>`;}).join('');
+              h+=st.asg.filter(a=>!a.for).map(a=>`<div class="tl" style="padding:6px 10px;margin-bottom:4px"><span>📞 ${esc(pName(a.pid))} <span class="muted">(${esc(teamName(P(a.pid)?P(a.pid).team:0))})</span></span><button class="btn sm dang" data-delasg="${a.id}">✕</button></div>`).join('');
+              h+=st.swIn.map(id=>`<div class="tl" style="padding:6px 10px;margin-bottom:4px"><span>🔁 ${esc(pName(id))}</span></div>`).join('');});
+            if(si.res.length)h+=`<div class="muted" style="margin-top:6px">🔁 ${t('reserve')}: ${si.res.map(r=>{const a=S.asg.find(x=>x.pid===r.id&&x.k===k&&x.type===ty);return esc(pName(r.id))+(a?` → ${a.for?t('inPlaceOf')+' '+esc(pName(a.for)):esc(teamName(a.team))}`:` (${t('onCallRes')})`);}).join(' · ')}</div>`;
+            h+=`<button class="btn sm full" data-xcall="${k}|${ty}|${si.team}">${t('extraCall')}</button></div>`;return h;}
+          function teamsForDay(k){const d=parse(k);let h=slotCard(slotInfo(k,'D'))+slotCard(slotInfo(k,'N'));const ot=teamOn(d,'O');
+            h+=`<div class="tl"><span>🛋️ ${t('O')} — ${esc(teamName(ot))}</span><span class="muted">${teamMembers(ot).length}</span></div>`;return h;}
+          function bindSlots(v,back){v.querySelectorAll('[data-cover]').forEach(b=>b.onclick=()=>{const[k,ty,tm,si,f]=b.dataset.cover.split('|');pickCover(k,ty,+tm,si,f,back);});
+            v.querySelectorAll('[data-xcall]').forEach(b=>b.onclick=()=>{const[k,ty,tm]=b.dataset.xcall.split('|');slotForm(null,k,ty,+tm,back);});
+            v.querySelectorAll('[data-delasg]').forEach(b=>b.onclick=()=>confirmBox(t('delAsgQ'),()=>{S.asg=S.asg.filter(a=>a.id!==b.dataset.delasg);save();if(back)back();else render();}));}
           function openDay(k){const d=parse(k);let h=`<h3>${fmt(d)}</h3>`+teamsForDay(k);
-            ['D','N'].forEach(ty=>{if(shiftOf(d,C().myTeam).type===ty){const id=shiftId(d,ty),g=S.logs[id];h+=`<div class="item"><div class="h">${ICO[ty]} ${t(ty)} — ${t('log')}<button class="btn sm pri" data-log="${id}">${t('openLog')}</button></div>${g&&g.notes?`<div class="b">${esc(g.notes)}</div>`:''}</div>`;}});
-            h+=`<div class="btns"><button class="btn" id="dCall">📞 ${t('qCall')}</button><button class="btn pri" id="dClose">${t('close')}</button></div>`;
-            openSheet(h);$('dClose').onclick=closeSheet;$('dCall').onclick=()=>evForm('callout',null,k);bindCommon($('panel'));}
-
+            const ev=S.events.filter(e=>e.type==='swap'&&(e.from===k||e.back===k));if(ev.length)h+=ev.map(e=>`<div class="item"><div class="h">${esc(evText(e))}</div></div>`).join('');
+            ['D','N'].forEach(ty=>{if(shiftOf(d,C().myTeam).type===ty){const id=shiftId(d,ty),g=S.logs[id];h+=`<div class="item"><div class="h">📝 ${t('log')} ${ICO[ty]}<button class="btn sm pri" data-log="${id}">${t('openLog')}</button></div>${g&&g.notes?`<div class="b">${esc(g.notes)}</div>`:''}</div>`;}});
+            h+=`<div class="btns"><button class="btn" id="dAbs">❌ ${t('qAbs')}</button><button class="btn pri" id="dClose">${t('close')}</button></div>`;
+            openSheet(h);$('dClose').onclick=()=>{closeSheet();render();};$('dAbs').onclick=()=>evForm('absence',null,k);
+            bindCommon($('panel'));bindSlots($('panel'),()=>openDay(k));}
           // ================= CALENDAR =================
           function rCal(){const v=$('v-cal');const ar=L()==='ar';let h=`<div class="card"><div class="calhead"><button class="btn" id="cP">${ar?'›':'‹'}</button><b>${MONTHS[L()][calView.getMonth()]} ${calView.getFullYear()}</b><button class="btn" id="cN">${ar?'‹':'›'}</button></div><div class="grid">`;
             SDAYS[L()].forEach(n=>h+=`<div class="dn">${n}</div>`);
             const first=calView.getDay(),len=new Date(calView.getFullYear(),calView.getMonth()+1,0).getDate();
             for(let i=0;i<first;i++)h+='<div class="c empty"></div>';
-            for(let d=1;d<=len;d++){const dt=new Date(calView.getFullYear(),calView.getMonth(),d),k=ymd(dt),s=shiftOf(dt,C().myTeam);
-              const dot=S.events.some(e=>(e.from<=k&&e.to>=k)||e.back===k)||['D','N'].some(ty=>{const g=S.logs[k+'_'+ty];return g&&(g.notes||(g.inc&&g.inc.length));});
           EOF_FILE
 
-      - name: Create project files (10)
+      - name: Create project files (11)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-              h+=`<button class="c ${s.type}-b ${k===ymd(now)?'today':''}" data-day="${k}">${dot?'<span class="dot"></span>':''}${d}<small class="${s.type}-t">${t(s.type)}</small></button>`;}
+            for(let d=1;d<=len;d++){const dt=new Date(calView.getFullYear(),calView.getMonth(),d),k=ymd(dt),s=shiftOf(dt,C().myTeam);
+              const dot=S.events.some(e=>(e.from<=k&&e.to>=k)||e.back===k)||S.asg.some(a=>a.k===k)||['D','N'].some(ty=>{const g=S.logs[k+'_'+ty];return g&&(g.notes||(g.inc&&g.inc.length));});
+              const sh=k>=kAdd(ymd(now),-31)&&(slotInfo(k,'D').short||slotInfo(k,'N').short);
+              h+=`<button class="c ${s.type}-b ${k===ymd(now)?'today':''}" data-day="${k}">${sh?'<span style="position:absolute;top:1px;inset-inline-end:3px;font-size:10px">⚠️</span>':''}${dot?'<span class="dot"></span>':''}${d}<small class="${s.type}-t">${t(s.type)}</small></button>`;}
             h+=`</div><div class="legend"><span><i style="background:var(--day)"></i>${t('D')}</span><span><i style="background:var(--night)"></i>${t('N')}</span><span><i style="background:var(--off)"></i>${t('O')}</span><span><i style="background:var(--danger);border-radius:50%"></i>${t('events')}</span></div><button class="btn full" id="cT">${t('today')}</button></div><p class="muted" style="text-align:center">${esc(teamName(C().myTeam))} · ${t('hint')}</p>`;
             v.innerHTML=h;bindCommon(v);
             $('cP').onclick=()=>{calView=new Date(calView.getFullYear(),calView.getMonth()-1,1);rCal();};
@@ -646,7 +694,7 @@ jobs:
             else if(empSub==='events')h+=eventsList(S.events,true);
             else h+=uniList();
             v.innerHTML=h;
-            $('qA').onclick=()=>evForm('absence');$('qC').onclick=()=>evForm('callout');$('qW').onclick=()=>warnForm();$('qU').onclick=()=>uniForm();
+            $('qA').onclick=()=>evForm('absence');$('qC').onclick=()=>slotForm();$('qW').onclick=()=>warnForm();$('qU').onclick=()=>uniForm();
             v.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{empSub=b.dataset.sub;rEmp();});
             if(empSub==='list'){const draw=()=>{const q=empQ.trim().toLowerCase();let list;
                 if(empF==='former')list=people().filter(p=>p.left);else{list=[];[0,1,2].forEach(k=>{if(empF==='all'||String(empF)===String(k))list=list.concat(teamMembers(k));});}
@@ -667,16 +715,16 @@ jobs:
             const mine=p.id===C().meId,canEdit=!isMember()||mine;
             let h=(isMember()&&mine)?'':`<button class="btn sm" id="pBack" style="margin-bottom:8px">${ar?'→':'←'} ${t(personFrom==='emp'?'emp':personFrom==='cal'?'cal':'home')}</button>`;
             h+=`<div class="phead"><div class="av">${esc(initial(p.id))}</div><div style="flex:1"><div class="nm">${esc(pName(p.id))}${mine?' <span class="tag">'+t('you')+'</span>':''}</div><div class="muted">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} ${roleTag(p)}</div><div style="font-size:13px;margin-top:2px">${todayStatus(p)}</div></div></div>`;
-            if(!p.left&&canEdit)h+=`<div class="qa"><button id="pqA"><span>❌</span>${t('qAbs')}</button><button id="pqC"><span>📞</span>${t('qCall')}</button><button id="pqW"><span>⚠️</span>${t('qWarn')}</button><button id="pqU"><span>👕</span>${t('qUni')}</button></div>`;
-            h+=`<div class="tabs">${(isMember()?[['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')],['info',t('info')]]:[['info',t('info')],['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')]]).map(([k,l])=>`<button data-pt="${k}" class="${empTab===k?'on':''}">${l}${k==='warns'&&warnsOf(p.id).length?' ('+warnsOf(p.id).length+')':''}</button>`).join('')}</div>`;
           EOF_FILE
 
-      - name: Create project files (11)
+      - name: Create project files (12)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            if(!p.left&&canEdit)h+=`<div class="qa"><button id="pqA"><span>❌</span>${t('qAbs')}</button><button id="pqC"><span>📞</span>${t('qCall')}</button><button id="pqW"><span>⚠️</span>${t('qWarn')}</button><button id="pqU"><span>👕</span>${t('qUni')}</button></div>`;
+            h+=`<div class="tabs">${(isMember()?[['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')],['info',t('info')]]:[['info',t('info')],['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')]]).map(([k,l])=>`<button data-pt="${k}" class="${empTab===k?'on':''}">${l}${k==='warns'&&warnsOf(p.id).length?' ('+warnsOf(p.id).length+')':''}</button>`).join('')}</div>`;
             h+='<div id="pBody"></div>';v.innerHTML=h;
             if($('pBack'))$('pBack').onclick=()=>go(personFrom||'home');
-            if(!p.left&&canEdit){$('pqA').onclick=()=>evForm('absence',p.id);$('pqC').onclick=()=>evForm('callout',p.id);$('pqW').onclick=()=>warnForm(p.id);$('pqU').onclick=()=>uniForm([p.id]);}
+            if(!p.left&&canEdit){$('pqA').onclick=()=>evForm('absence',p.id);$('pqC').onclick=()=>slotForm(p.id);$('pqW').onclick=()=>warnForm(p.id);$('pqU').onclick=()=>uniForm([p.id]);}
             v.querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>{empTab=b.dataset.pt;rPerson();});
             const B=$('pBody');
             if(empTab==='info'){let b=`<div class="card"><label>${t('name')}</label><input id="piN" value="${esc(p.name)}"><label>${t('phone')}</label><input id="piP" type="tel" value="${esc(p.phone||'')}">
@@ -708,15 +756,15 @@ jobs:
               b+=ws.length?ws.map(w=>`<div class="item"><div class="h"><span>${w.date} · ${t('w_'+w.type)}</span><button class="btn sm dang" data-delw="${w.id}">${t('del')}</button></div><div class="b">${esc(w.reason||'')}${w.ded?'\n'+t('deduct')+': '+w.ded+' '+(w.dedType==='amount'?t('dedAmount'):t('dedDays')):''}</div></div>`).join(''):`<div class="empty-msg">${t('noWarns')}</div>`;
               B.innerHTML=b;if($('pwN'))$('pwN').onclick=()=>warnForm(p.id);
               B.querySelectorAll('[data-delw]').forEach(x=>x.onclick=()=>confirmBox(t('confirmDel'),()=>{S.warns=S.warns.filter(w=>w.id!==x.dataset.delw);save();rPerson();}));}
-            if(empTab==='events'){B.innerHTML=eventsList(S.events.filter(e=>e.p1===p.id||e.p2===p.id||e.cov===p.id),false);bindEvents(B,rPerson);}
+          EOF_FILE
+
+      - name: Create project files (13)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            if(empTab==='events'){B.innerHTML=eventsList(S.events.filter(e=>e.p1===p.id||e.p2===p.id),false,S.asg.filter(a=>a.pid===p.id||a.for===p.id));bindEvents(B,rPerson);}
             bindCommon(B);}
           function setRole(p,r){if(r==='sup')activePeople().forEach(x=>{if(x.team===p.team&&x.role==='sup'&&x!==p)x.role='mem';});p.role=r;}
           function moveForm(p){openSheet(`<h3>${t('move')} — ${esc(pName(p.id))}</h3><label>${t('newTeam')}</label><select id="mvT">${teamOpts(p.team)}</select>${p.role==='res'?'':`<label>${t('moveSite')}</label><select id="mvSi">${siteOpts(curSite(p))}</select>`}<label>${t('moveDate')}</label><input type="date" id="mvD" value="${ymd(now)}">
-          EOF_FILE
-
-      - name: Create project files (12)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             <div class="btns"><button class="btn pri" id="mvS">${t('save')}</button><button class="btn" id="mvC">${t('cancel')}</button></div>`);
             $('mvC').onclick=closeSheet;$('mvS').onclick=()=>{const k=+$('mvT').value,d=$('mvD').value||ymd(now),si=$('mvSi')?$('mvSi').value:p.site;if(k===p.team&&si===p.site){closeSheet();return;}
               if(!(p.hist||[]).some(x=>x.site))p.hist=(p.hist||[]).map(x=>Object.assign({},x,{site:p.site||'compound'}));
@@ -753,16 +801,16 @@ jobs:
             $('panel').querySelectorAll('[data-mn]').forEach(i=>i.onchange=()=>{P(i.dataset.mn).name=i.value.trim();save();if(view!=='setup')render();});
             $('panel').querySelectorAll('[data-mr]').forEach(i=>i.onchange=()=>{P(i.dataset.mr).role=i.value;re();});
             $('panel').querySelectorAll('[data-ms]').forEach(i=>i.onchange=()=>{const p=P(i.dataset.ms);movePerson(p,p.team,i.value,ymd(now));save();if(view!=='setup')render();});
+          EOF_FILE
+
+      - name: Create project files (14)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('panel').querySelectorAll('[data-mx]').forEach(b=>b.onclick=()=>{const p=P(b.dataset.mx);confirmBox(t('removeQ'),()=>{if(hasRecords(p.id)){p.left=ymd(now);}else{C().people=people().filter(x=>x.id!==p.id);if(C().meId===p.id)C().meId=null;}save();teamEditor(k);if(view!=='setup')render();});});
             $('teA').onclick=()=>{const n=$('teAN').value.trim();if(!n){toast(t('needName'));$('teAN').focus();return;}const sv=$('teAS').value;const si=sv==='res'?'compound':sv;
               people().push({id:'p'+uid(),name:n,team:k,role:sv==='res'?'res':'mem',site:si,hist:[{team:k,from:ymd(now),site:si}]});re();};
             $('teC').onclick=()=>{closeSheet();if(view==='setup')rSetup();};}
 
-          EOF_FILE
-
-      - name: Create project files (13)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           // ================= SETUP WIZARD =================
           let wz=null;
           const POS=['D1','D2','N1','N2','O1','O2'];
@@ -792,6 +840,11 @@ jobs:
             h+=`<div class="btns" style="margin-top:6px">${wz.step>0?`<button class="btn" id="wzB">${t('wBack')}</button>`:''}<button class="btn pri" id="wzX" style="flex:2">${wz.step===0?t('wStart'):wz.step===5?t('wFinish'):t('wNext')}</button></div>`;
             v.innerHTML=h;
             const q=(sel,fn)=>v.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
+          EOF_FILE
+
+      - name: Create project files (15)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             q('[data-wl]',b=>{c.lang=b.dataset.wl;save();render();});q('[data-wth]',b=>{c.theme=b.dataset.wth;save();render();});
             q('[data-wm]',b=>{wz.mode=b.dataset.wm;rSetup();});
             if($('wzN'))$('wzN').oninput=e=>{wz.name=e.target.value;};
@@ -799,11 +852,6 @@ jobs:
             q('[data-wr]',b=>{wz.mrole=b.dataset.wr;rSetup();});q('[data-ws]',b=>{wz.site=b.dataset.ws;rSetup();});
             q('[data-wp]',b=>{wz.pos=+b.dataset.wp;rSetup();});
             ['wzF1:fpStart','wzF2:fpEnd','wzSt:start'].forEach(x=>{const[id,k]=x.split(':');if($(id))$(id).onchange=e=>{if(e.target.value)wz[k]=e.target.value;};});
-          EOF_FILE
-
-      - name: Create project files (14)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             v.querySelectorAll('[data-wsup]').forEach(i=>i.onchange=()=>{const k=+i.dataset.wsup,n=i.value.trim();const sup=activePeople().find(p=>p.team===k&&p.role==='sup');
               if(sup){if(n)sup.name=n;}else if(n){const p={id:'p'+uid(),name:n,team:k,role:'mem',site:'compound',hist:[{team:k,from:ymd(now),site:'compound'}]};people().push(p);setRole(p,'sup');}save();});
             if($('wzEd'))$('wzEd').onclick=()=>teamEditor(wz.team);
@@ -823,60 +871,81 @@ jobs:
 
           // ================= EVENTS =================
           function evText(e){const n=pName(e.p1);
-            if(e.type==='absence'){const ab=P(e.p1);return `❌ ${t('ev_absence')}: ${n}`+(ab&&ab.role!=='res'?` 📍${siteName(siteAt(ab,e.from))}`:'')+(e.cov?` — ${pName(e.cov)} ${t('covers')} ${ICO[e.st||'D']}`:'');}
-            if(e.type==='leave')return `🏖️ ${t('ev_leave')}: ${n}`;
-            if(e.type==='callout')return `📞 ${t('ev_callout')}: ${n} — ${ICO[e.st]} ${t(e.st)} · ${t('forTeam')} ${teamName(e.team)}${e.site?' 📍'+siteName(e.site):''}`;
+            if(e.type==='absence'||e.type==='leave'){const ab=P(e.p1);const slots=absSlots(e);const cv=slots.filter(x=>x.cov).length;
+              return `${e.type==='leave'?'🏖️':'❌'} ${t('ev_'+e.type)}: ${n}`+(ab&&ab.role!=='res'?` 📍${siteName(siteAt(ab,e.from))}`:'')+(slots.length?` — ${t('covered')} ${cv}/${slots.length}`:'');}
             if(e.type==='swap')return `🔁 ${t('ev_swap')}: ${n} ${t('swapWith')} ${pName(e.p2)}`;return e.type;}
+          function asgText(a){return a.for?`➕ ${pName(a.pid)} ${t('covers')} ${pName(a.for)} — ${ICO[a.type]} ${fmtK(a.k)}`:`📞 ${t('ev_callout')}: ${pName(a.pid)} — ${ICO[a.type]} ${t(a.type)} ${fmtK(a.k)} · ${t('forTeam')} ${teamName(a.team)} 📍${siteName(a.site)}`;}
+          function absSlots(e){const p=P(e.p1);if(!p||p.role==='res')return[];const o=[];kRange(e.from,e.to).forEach(k=>{if(!employedOn(p,k))return;const tm=teamAt(p,k),ty=teamShift(tm,k);if(ty==='O')return;
+            o.push({k,type:ty,team:tm,site:siteAt(p,k),cov:S.asg.find(a=>a.for===p.id&&a.k===k&&a.type===ty)});});return o;}
           function evDates(e){return e.type==='swap'?e.from+(e.back?' ↔ '+e.back:''):e.from+(e.to&&e.to!==e.from?' → '+e.to:'');}
           let evFilter='all';
-          function eventsList(list,withFilter){let h='';if(withFilter)h+=`<div class="tabs">${['all','absence','leave','callout','swap'].map(k=>`<button data-evf="${k}" class="${evFilter===k?'on':''}">${k==='all'?t('all'):t('ev_'+k)}</button>`).join('')}</div>`;
-            const l=list.filter(e=>!withFilter||evFilter==='all'||e.type===evFilter).sort((a,b)=>a.from<b.from?1:-1);
-            h+=`<div class="card">`+(l.length?l.map(e=>`<div class="item"><div class="h"><span>${esc(evText(e))}</span><button class="btn sm dang" data-delev="${e.id}">${t('del')}</button></div><div class="b">${evDates(e)}${e.note?'\n'+esc(e.note):''}</div></div>`).join(''):`<div class="empty-msg">${t('noEvents')}</div>`)+'</div>';return h;}
+          function eventsList(list,withFilter,asgList){let h='';if(withFilter)h+=`<div class="tabs">${['all','absence','leave','callout','swap'].map(k=>`<button data-evf="${k}" class="${evFilter===k?'on':''}">${k==='all'?t('all'):t('ev_'+k)}</button>`).join('')}</div>`;
+            const items=[];if(evFilter!=='callout'||!withFilter)list.filter(e=>!withFilter||evFilter==='all'||e.type===evFilter).forEach(e=>items.push({d:e.from,h:`<div class="item" ${e.type!=='swap'?`data-abs="${e.id}" style="cursor:pointer"`:''}><div class="h"><span>${esc(evText(e))}</span><button class="btn sm dang" data-delev="${e.id}">${t('del')}</button></div><div class="b">${evDates(e)}${e.note?'\n'+esc(e.note):''}</div></div>`}));
+            if(!withFilter||evFilter==='all'||evFilter==='callout')(asgList||S.asg).filter(a=>!withFilter||evFilter!=='callout'||!a.for).forEach(a=>items.push({d:a.k,h:`<div class="item"><div class="h"><span>${esc(asgText(a))}</span><button class="btn sm dang" data-delasg="${a.id}">${t('del')}</button></div>${a.note?`<div class="b">${esc(a.note)}</div>`:''}</div>`}));
+            items.sort((a,b)=>a.d<b.d?1:-1);h+=`<div class="card">`+(items.length?items.map(x=>x.h).join(''):`<div class="empty-msg">${t('noEvents')}</div>`)+'</div>';return h;}
           function bindEvents(v,re){v.querySelectorAll('[data-evf]').forEach(b=>b.onclick=()=>{evFilter=b.dataset.evf;re();});
-            v.querySelectorAll('[data-delev]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{S.events=S.events.filter(e=>e.id!==b.dataset.delev);save();re();}));}
-          function evForm(type,pid,dateK){type=type||'absence';const k0=dateK||ymd(now);if(isMember()&&meP())pid=C().meId;const p1list=isMember()&&meP()?personList().filter(x=>x.id===C().meId):null;
-            const h=`<h3 id="efH"></h3><div class="tabs">${['absence','leave','callout','swap'].map(k=>`<button data-eft="${k}" class="${type===k?'on':''}">${t('ev_'+k)}</button>`).join('')}</div>
-            <label id="efPl">${t('person')}</label><select id="efP">${personOpts(pid,p1list)}</select>
+            v.querySelectorAll('[data-delev]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();confirmBox(t('confirmDel'),()=>{const e=S.events.find(x=>x.id===b.dataset.delev);if(e&&(e.type==='absence'||e.type==='leave'))S.asg=S.asg.filter(a=>!(a.for===e.p1&&a.k>=e.from&&a.k<=e.to));S.events=S.events.filter(x=>x.id!==b.dataset.delev);save();re();});});
+            v.querySelectorAll('[data-delasg]').forEach(b=>b.onclick=()=>confirmBox(t('delAsgQ'),()=>{S.asg=S.asg.filter(a=>a.id!==b.dataset.delasg);save();re();}));
+            v.querySelectorAll('[data-abs]').forEach(b=>b.onclick=()=>{const e=S.events.find(x=>x.id===b.dataset.abs);if(e)absCoverage(e);});}
+          function evForm(type,pid,dateK){type=type||'absence';if(type==='callout')return slotForm(pid,dateK);const k0=dateK||ymd(now);if(!pid&&isMember()&&meP())pid=C().meId;
+            openSheet(`<h3 id="efH"></h3><div class="tabs">${['absence','leave','swap'].map(k=>`<button data-eft="${k}" class="${type===k?'on':''}">${t('ev_'+k)}</button>`).join('')}<button data-eft="callout">📞 ${t('ev_callout')}</button></div>
+            <label>${t('person')}</label><select id="efP">${personOpts(pid)}</select>
             <div class="row"><div><label id="efFl">${t('date')}</label><input type="date" id="efF" value="${k0}"></div><div id="efTw"><label>${t('to')}</label><input type="date" id="efT" value="${k0}"></div></div>
-            <div id="efCall"><div class="row"><div><label>${t('shiftT')}</label><select id="efS"><option value="D">☀️ ${t('D')}</option><option value="N">🌙 ${t('N')}</option></select></div><div><label>${t('forTeam')}</label><select id="efTm">${teamOpts(0)}</select></div></div><label>${t('site')}</label><select id="efSite">${siteOpts('compound')}</select></div>
             <div id="efSw"><label>${t('swapWith')}</label><select id="efP2">${personOpts()}</select><label>${t('backDate')}</label><input type="date" id="efB"></div>
-            <div id="efCovW"><label>${t('coveredBy')}</label><select id="efCov"></select></div>
             <div id="efInfo"></div><label>${t('note')}</label><input id="efN">
-            <div class="btns"><button class="btn pri" id="efOk">${t('save')}</button><button class="btn" id="efC">${t('cancel')}</button></div>`;
-            openSheet(h);let ty=type;
-            const show=(id,on)=>$(id).style.display=on?'block':'none';
-            const absShift=()=>{const p=P($('efP').value),k=$('efF').value;if(!p||!k)return 'O';return teamShift(teamAt(p,k),k);};
-            const upd=()=>{$('efH').textContent=t('ev_'+ty);show('efTw',ty==='absence'||ty==='leave');show('efCall',ty==='callout');show('efSw',ty==='swap');show('efCovW',ty==='absence');
-              $('efFl').textContent=(ty==='absence'||ty==='leave')?t('from'):t('date');
-              if(ty==='callout'&&!$('efTm').dataset.touched){const k=$('efF').value,s=$('efS').value;const tm=teamOn(parse(k),s);if(tm>=0)$('efTm').value=tm;}
-              let info='';const k=$('efF').value,pidv=$('efP').value;
-              if(ty==='absence'){const s=absShift();if(s==='O'){info=`<div class="muted" style="margin-top:6px">${t('noShiftThatDay')}</div>`;$('efCov').innerHTML=`<option value="">${t('noCover')}</option>`;}
-                else{const prev=$('efCov').value;const p=P(pidv);const ft=p?teamAt(p,k):null;const cs=candidates(k,s,[pidv],ft);
-                  $('efCov').innerHTML=`<option value="">${t('noCover')}</option>`+cs.map(c=>`<option value="${c.id}">${c.conf.length?'⚠️ ':'✓ '}${esc(c.name)}${c.role==='res'?' ('+t('reserve')+')':''} — ${esc(teamName(c.team))} · ${esc(siteName(c.site))}</option>`).join('');
-                  if(prev&&cs.some(c=>c.id===prev))$('efCov').value=prev;else{const r=cs.find(c=>c.role==='res'&&p&&c.team===p.team&&!c.conf.length);if(r&&!$('efCov').dataset.touched)$('efCov').value=r.id;}
           EOF_FILE
 
-      - name: Create project files (15)
+      - name: Create project files (16)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-                  info=`<div class="muted" style="margin-top:6px">${ICO[s]} ${t(s)} — ${fmtK(k)}${p&&p.role!=='res'?' · 📍'+esc(siteName(siteAt(p,k))):''}</div>`;const cv=$('efCov').value;if(cv)info+=confBox(conflicts(cv,k,s,null,ft));}}
-              if(ty==='callout'){const s=$('efS').value;info=confBox(conflicts(pidv,k,s,null,+$('efTm').value));}
+            <div class="btns"><button class="btn pri" id="efOk">${t('save')}</button><button class="btn" id="efC">${t('cancel')}</button></div>`);let ty=type;
+            const show=(id,on)=>$(id).style.display=on?'block':'none';
+            const upd=()=>{$('efH').textContent=t('ev_'+ty);show('efTw',ty!=='swap');show('efSw',ty==='swap');$('efFl').textContent=ty==='swap'?t('date'):t('from');
+              let info='';const k=$('efF').value,pidv=$('efP').value;
+              if(ty!=='swap'&&k){const to=$('efT').value&&$('efT').value>=k?$('efT').value:k;const n=absSlots({p1:pidv,from:k,to}).length;info=`<div class="muted" style="margin-top:6px">${n?`${t('leaveSlots')}: ${n}`:t('noSlots')}</div>`;}
               if(ty==='swap'){const p1=P(pidv),p2=P($('efP2').value);if(p1&&p2&&k){const s=teamShift(teamAt(p2,k),k);
-                if(s==='O')info=`<div class="muted" style="margin-top:6px">${esc(pName(p2.id))}: ${t('noShiftThatDay')}</div>`;else{info=`<div class="muted" style="margin-top:6px">${esc(pName(p1.id))} → ${ICO[s]} ${t(s)} ${fmtK(k)}</div>`+confBox(conflicts(p1.id,k,s));}
+                if(s==='O')info=`<div class="muted" style="margin-top:6px">${esc(pName(p2.id))}: ${t('noShiftThatDay')}</div>`;else info=`<div class="muted" style="margin-top:6px">${esc(pName(p1.id))} → ${ICO[s]} ${t(s)} ${fmtK(k)}</div>`+confBox(conflicts(p1.id,k,s));
                 const b=$('efB').value;if(b){const s2=teamShift(teamAt(p1,b),b);if(s2!=='O')info+=`<div class="muted" style="margin-top:6px">${esc(pName(p2.id))} → ${ICO[s2]} ${t(s2)} ${fmtK(b)}</div>`+confBox(conflicts(p2.id,b,s2));}}}
               $('efInfo').innerHTML=info;};
-            $('panel').querySelectorAll('[data-eft]').forEach(b=>b.onclick=()=>{ty=b.dataset.eft;$('panel').querySelectorAll('[data-eft]').forEach(x=>x.classList.toggle('on',x===b));upd();});
-            ['efP','efF','efS','efP2','efB'].forEach(id=>$(id).addEventListener('change',upd));
-            $('efTm').addEventListener('change',e=>{e.target.dataset.touched='1';upd();});$('efCov').addEventListener('change',e=>{e.target.dataset.touched='1';upd();});
-            $('efC').onclick=closeSheet;
+            $('panel').querySelectorAll('[data-eft]').forEach(b=>b.onclick=()=>{if(b.dataset.eft==='callout'){slotForm(null,$('efF').value);return;}ty=b.dataset.eft;$('panel').querySelectorAll('[data-eft]').forEach(x=>x.classList.toggle('on',x===b));upd();});
+            ['efP','efF','efT','efP2','efB'].forEach(id=>$(id).addEventListener('change',upd));$('efC').onclick=closeSheet;
             $('efOk').onclick=()=>{const p1=$('efP').value,f=$('efF').value;if(!p1||!f)return;const note=$('efN').value.trim();let e;
-              if(ty==='absence'||ty==='leave'){let to=$('efT').value||f;if(to<f)to=f;e={id:uid(),type:ty,p1,from:f,to,note};if(ty==='absence'){const cv=$('efCov').value;if(cv){e.cov=cv;e.st=absShift();}}}
-              if(ty==='callout')e={id:uid(),type:'callout',p1,from:f,to:f,st:$('efS').value,team:+$('efTm').value,site:$('efSite').value,note};
-              if(ty==='swap'){const p2=$('efP2').value;if(!p2||p2===p1)return;const st=teamShift(teamAt(P(p2),f),f);if(st==='O'){toast(t('noShiftThatDay'));return;}e={id:uid(),type:'swap',p1,p2,from:f,to:f,st,note};
+              if(ty!=='swap'){let to=$('efT').value||f;if(to<f)to=f;e={id:uid(),type:ty,p1,from:f,to,note};}
+              else{const p2=$('efP2').value;if(!p2||p2===p1)return;const st=teamShift(teamAt(P(p2),f),f);if(st==='O'){toast(t('noShiftThatDay'));return;}e={id:uid(),type:'swap',p1,p2,from:f,to:f,st,note};
                 const b=$('efB').value;if(b){const s2=teamShift(teamAt(P(p1),b),b);if(s2!=='O'){e.back=b;e.st2=s2;}}}
-              if(!e)return;S.events.push(e);save();closeSheet();render();toast(t('saved'));};
+              S.events.push(e);save();toast(t('saved'));if(e.type!=='swap'&&absSlots(e).length)absCoverage(e);else{closeSheet();render();}};
             upd();}
+          function absCoverage(e){const slots=absSlots(e);const p=P(e.p1);
+            let h=`<h3>${esc(evText(e))}</h3><div class="muted" style="margin-bottom:8px">${evDates(e)}</div>`;
+            if(!slots.length)h+=`<div class="empty-msg">${t('noSlots')}</div>`;else h+=`<div class="sec">${t('coverAll')}</div>`+slots.map(x=>`<div class="tl" style="flex-wrap:wrap"><span>${ICO[x.type]} ${fmtK(x.k)} <span class="muted">📍${esc(siteName(x.site))}</span></span>`+
+              (x.cov?`<span class="O-t">✓ ${esc(pName(x.cov.pid))} <button class="btn sm dang" data-delasg="${x.cov.id}">✕</button></span>`:`<button class="btn sm pri" data-cover="${x.k}|${x.type}|${x.team}|${x.site}|${e.p1}">${t('cover')}</button>`)+`</div>`).join('');
+            h+=`<button class="btn pri full" id="acC">${t('close')}</button>`;openSheet(h);$('acC').onclick=()=>{closeSheet();render();};bindSlots($('panel'),()=>absCoverage(e));}
+          function candList(k,ty,tm,exclude){return candidates(k,ty,exclude,tm).map(c=>{const fh=h=>h===null?'72+':Math.round(h);
+            return `<div class="item" data-cand="${c.id}" style="cursor:pointer;${c.conf.length?'opacity:.55':''}"><div class="h"><span>${c.conf.length?'⚠️':'✅'} ${esc(c.name)}${c.role==='res'?' <span class="tag res">'+t('reserve')+'</span>':''}</span><span class="muted">${esc(teamName(c.team))}</span></div>
+              <div class="b">⏮ ${t('restB')} ${fh(c.bef)}${t('hS')} · ⏭ ${t('restA')} ${fh(c.aft)}${t('hS')}${c.conf.length?'\n⚠️ '+c.conf.map(esc).join('\n⚠️ '):''}</div></div>`;}).join('');}
+          function pickCover(k,ty,tm,site,forPid,back){const si=slotInfo(k,ty);const inSlot=[].concat(...si.sites.map(s=>s.present.map(p=>p.id).concat(s.asg.map(a=>a.pid),s.swIn)));
+            const excl=inSlot.concat(forPid?[forPid]:[]).concat(S.asg.filter(a=>a.k===k&&a.type===ty).map(a=>a.pid));
+            openSheet(`<h3>${t('pickTitle')}</h3><div class="item"><div class="b" style="color:var(--text)">${ICO[ty]} ${t(ty)} — ${fmt(parse(k))}\n${esc(teamName(tm))} · 📍${esc(siteName(site))}${forPid?'\n'+t('inPlaceOf')+': '+esc(pName(forPid)):''}</div></div><p class="muted" style="margin:6px 0">${t('pickSub')}</p>${candList(k,ty,tm,excl)}<button class="btn full" id="pcC">${t('cancel')}</button>`);
+            $('pcC').onclick=()=>{if(back)back();else closeSheet();};
+            $('panel').querySelectorAll('[data-cand]').forEach(b=>b.onclick=()=>{S.asg.push({id:uid(),k,type:ty,team:tm,site,pid:b.dataset.cand,for:forPid||null,note:''});save();toast(t('assignDone'));if(back)back();else{closeSheet();render();}});}
+          function slotForm(pid,k0,ty0,tm0,back){k0=k0||ymd(now);const ty=ty0||'N';const tm=tm0!=null?tm0:teamOn(parse(k0),ty);
+            openSheet(`<h3>📞 ${t('ev_callout')}</h3><div class="sec">${t('chooseSlot')}</div><div class="row"><div><label>${t('date')}</label><input type="date" id="sfD" value="${k0}"></div><div><label>${t('shiftT')}</label><select id="sfS"><option value="D" ${ty==='D'?'selected':''}>☀️ ${t('D')}</option><option value="N" ${ty==='N'?'selected':''}>🌙 ${t('N')}</option></select></div></div>
+            <div class="row"><div><label>${t('forTeam')}</label><select id="sfT">${teamOpts(tm)}</select></div><div><label>${t('site')}</label><select id="sfSi">${siteOpts('compound')}</select></div></div>
+            <div id="sfInfo"></div><div class="btns"><button class="btn pri" id="sfOk">${pid?t('save'):t('choosePerson')}</button>${pid?`<button class="btn" id="sfAlt">${t('availability')}</button>`:''}<button class="btn" id="sfC">${t('cancel')}</button></div>`);
+            let touched=tm0!=null;const val=()=>({k:$('sfD').value||ymd(now),ty:$('sfS').value,tm:+$('sfT').value,si:$('sfSi').value});
+            const upd=()=>{const v=val();if(!touched){const x=teamOn(parse(v.k),v.ty);if(x>=0)$('sfT').value=x;}const v2=val();
+              $('sfInfo').innerHTML=pid?`<div class="muted" style="margin-top:6px">${esc(pName(pid))}</div>`+confBox(conflicts(pid,v2.k,v2.ty,null,v2.tm)):'';};
+            ['sfD','sfS','sfSi'].forEach(id=>$(id).addEventListener('change',upd));$('sfT').addEventListener('change',()=>{touched=true;upd();});upd();
+            $('sfC').onclick=()=>{if(back)back();else closeSheet();};
+            const again=()=>{const v=val();slotForm(pid,v.k,v.ty,v.tm,back);};
+          EOF_FILE
 
+      - name: Create project files (17)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            if($('sfAlt'))$('sfAlt').onclick=()=>{const v=val();pickCover(v.k,v.ty,v.tm,v.si,null,back||(()=>{closeSheet();render();}));};
+            $('sfOk').onclick=()=>{const v=val();if(pid){S.asg.push({id:uid(),k:v.k,type:v.ty,team:v.tm,site:v.si,pid,for:null,note:''});save();toast(t('assignDone'));if(back)back();else{closeSheet();render();}}
+              else pickCover(v.k,v.ty,v.tm,v.si,null,back||again);};}
           // ================= WARNINGS =================
           function warnForm(pid){const sug=p=>{const ws=warnsOf(p);if(!ws.length)return 'verbal';const lv=Math.max(...ws.map(w=>WL.indexOf(w.type)));return WL[Math.min(3,lv+1)];};
             openSheet(`<h3>⚠️ ${t('addWarn').replace('+ ','')}</h3><label>${t('person')}</label><select id="wP">${personOpts(isMember()&&meP()?C().meId:pid,isMember()&&meP()?personList().filter(x=>x.id===C().meId):null)}</select><div id="wSug" class="muted" style="margin-top:6px"></div>
@@ -903,11 +972,6 @@ jobs:
             C().uniItems.map(it=>`<div class="row" style="align-items:center"><label class="chk" style="flex:2"><input type="checkbox" data-ui="${it.id}">${esc(itemName(it))}</label><input type="number" inputmode="numeric" min="1" value="1" data-uq="${it.id}" style="flex:1"></div>`).join('');
             h+=`<div class="sec" style="margin-top:10px">${t('people')}</div><div class="btns" style="margin-bottom:6px"><button class="btn sm" data-pq="all">${t('all')}</button>${[0,1,2].map(i=>`<button class="btn sm" data-pq="${i}">${esc(teamName(i))}</button>`).join('')}<button class="btn sm" data-pq="none">${t('none')}</button></div>`;
             h+=ppl.map(p=>`<label class="chk"><input type="checkbox" data-pp="${p.id}" data-tx="${p.team}" ${pre.includes(p.id)?'checked':''}>${esc(p.name)}</label>`).join('');
-          EOF_FILE
-
-      - name: Create project files (16)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<label>${t('note')}</label><input id="uN"><div class="btns"><button class="btn pri" id="uNx">${t('nextStep')}</button><button class="btn" id="uC">${t('cancel')}</button></div>`;
             openSheet(h);$('uC').onclick=closeSheet;
             $('panel').querySelectorAll('[data-pq]').forEach(b=>b.onclick=()=>{const q=b.dataset.pq;$('panel').querySelectorAll('[data-pp]').forEach(c=>{c.checked=q==='all'?true:q==='none'?false:(c.dataset.tx===q||c.checked);});});
@@ -921,6 +985,11 @@ jobs:
 
           // ================= LOG =================
           function rLog(){const v=$('v-log');if(!logSel||shiftOf(logSel.date,C().myTeam).type!==logSel.type)logSel=lastOrCurrentMyShift(now);
+          EOF_FILE
+
+      - name: Create project files (18)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(!logSel){v.innerHTML=`<div class="empty-msg">${t('nothing')}</div>`;return;}const ar=L()==='ar';
             const id=shiftId(logSel.date,logSel.type);if(!S.logs[id])S.logs[id]={recv:null,hand:null,cardNote:'',vis:false,wrk:false,notes:'',inc:[]};const g=S.logs[id];
             const tm=shiftTimes(logSel.date,logSel.type),isCur=now>=tm.s&&now<tm.e;
@@ -944,11 +1013,6 @@ jobs:
             v.querySelectorAll('[data-delinc]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{g.inc=g.inc.filter(x=>x.id!==b.dataset.delinc);save();rLog();}));}
           function incForm(g){const n=new Date();openSheet(`<h3>🚨 ${t('addIncident').replace('+ ','')}</h3><div class="row"><div><label>${t('time')}</label><input type="time" id="iT" value="${pad(n.getHours())}:${pad(n.getMinutes())}"></div><div><label>${t('type')}</label><select id="iY">${INC.map(k=>`<option value="${k}">${t('inc_'+k)}</option>`).join('')}</select></div></div>
             <label>${t('desc')}</label><textarea id="iD"></textarea><label>${t('action')}</label><textarea id="iA" style="min-height:60px"></textarea><div class="btns"><button class="btn pri" id="iS">${t('save')}</button><button class="btn" id="iC">${t('cancel')}</button></div>`);
-          EOF_FILE
-
-      - name: Create project files (17)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('iC').onclick=closeSheet;$('iS').onclick=()=>{const d=$('iD').value.trim();if(!d){$('iD').focus();return;}g.inc.push({id:uid(),time:$('iT').value,type:$('iY').value,desc:d,action:$('iA').value.trim()});g.inc.sort((a,b)=>a.time<b.time?-1:1);save();closeSheet();rLog();toast(t('saved'));};}
 
           // ================= REPORTS =================
@@ -961,6 +1025,11 @@ jobs:
           function rRep(){const v=$('v-rep');const ar=L()==='ar';let h=`<div class="tabs">${[['sheet','📅 '+t('sheet')],['text','📄 '+t('textRep')]].map(([k,l])=>`<button data-rs="${k}" class="${repSub===k?'on':''}">${l}</button>`).join('')}</div>`;
             if(repSub==='sheet'){if(!repMonth)repMonth=new Date(now.getFullYear(),now.getMonth(),1);const A=ymd(repMonth),B=ymd(new Date(repMonth.getFullYear(),repMonth.getMonth()+1,0));
               h+=`<div class="card"><div class="mnav"><button class="btn" id="smP">${ar?'›':'‹'}</button><b>${t('actual')} — ${MONTHS[L()][repMonth.getMonth()]} ${repMonth.getFullYear()}</b><button class="btn" id="smN">${ar?'‹':'›'}</button></div>
+          EOF_FILE
+
+      - name: Create project files (19)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               <div class="tabs" style="${isMember()?'display:none':''}">${[['all',t('all')],['0',teamName(0)],['1',teamName(1)],['2',teamName(2)]].map(([k,l])=>`<button data-st="${k}" class="${sheetTeam===k?'on':''}">${esc(l)}</button>`).join('')}</div>
               <div class="tabs" style="${isMember()?'display:none':''}">${[['all','📍 '+t('allSites')],...C().sites.map(x=>[x.id,'📍 '+x.name])].map(([k,l])=>`<button data-ss="${k}" class="${sheetSite===k?'on':''}">${esc(l)}</button>`).join('')}</div>
               <div class="scrollx"><table class="tbl"><tr><th>${t('name')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
@@ -982,11 +1051,6 @@ jobs:
               $('rG').onclick=()=>{repOut=buildReport();rRep();setTimeout(()=>{const p=v.querySelector('pre');if(p)p.scrollIntoView({behavior:'smooth'});},50);};
               if(repOut){$('rC').onclick=()=>copyText(repOut);$('rS').onclick=()=>shareText(repOut);$('rPr').onclick=()=>printHtml(textHtml(repOut),t('report'));}}
             v.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{repSub=b.dataset.rs;rRep();});}
-          EOF_FILE
-
-      - name: Create project files (18)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           const docHead=title=>`<!DOCTYPE html><html lang="${L()}" dir="${L()==='ar'?'rtl':'ltr'}"><head><meta charset="utf-8"><title>${esc(title)}</title><style>@page{size:A4;margin:14mm}body{font-family:'Noto Naskh Arabic','Noto Sans Arabic',Arial,sans-serif;color:#000;font-size:12px}h1{font-size:17px;margin:0 0 4px;text-align:center}.sub{text-align:center;color:#444;margin-bottom:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #444;padding:5px 4px;text-align:center}th{background:#e5e7eb}td:first-child,th:first-child{text-align:start}.sig{display:flex;justify-content:space-between;margin-top:40px}.sig div{width:40%;border-top:1px solid #000;text-align:center;padding-top:4px}pre{white-space:pre-wrap;font-family:inherit;font-size:12px;line-height:1.8}.tot td{font-weight:bold;background:#f3f4f6}</style></head><body>`;
           function sheetHtml(A,B){const ps=sheetPeople(A,B);const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();
             let h=docHead(t('sheet'))+`<h1>${t('actual')} — ${m}</h1><div class="sub">${sheetTeam==='all'?t('all'):esc(teamName(+sheetTeam))} · 📍${sheetSite==='all'?t('allSites'):esc(siteName(sheetSite))} · ${t('generated')}: ${fmt(now)}</div><table><tr><th>#</th><th>${t('name')}</th><th>${t('teamOf')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
@@ -994,6 +1058,11 @@ jobs:
               h+=`<tr><td>${i+1}</td><td>${esc(pName(p.id))}${p.role==='sup'?' ★':p.role==='res'?' ('+t('reserve')+')':''}${p.left?' — '+t('leftOn')+' '+p.left:''}</td><td>${esc(teamName(teamAt(p,B)))}</td><td>${esc(siteName(siteAt(p,B)))}</td><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs}</td><td>${r.leave}</td><td>${r.extra}</td><td>${r.w}</td></tr>`;});
             h+=`<tr class="tot"><td></td><td>${t('total')}</td><td></td><td></td><td>${T0.d}</td><td>${T0.n}</td><td>${T0.t}</td><td>${T0.t*12}</td><td>${T0.a}</td><td>${T0.l}</td><td>${T0.x}</td><td>${T0.w}</td></tr></table><div class="sig"><div>${t('sign1')}</div><div>${t('sign2')}</div></div></body></html>`;return h;}
           function sheetText(A,B){const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();let o=`${t('actual')} — ${m}\n${'─'.repeat(20)}\n`;
+          EOF_FILE
+
+      - name: Create project files (20)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);o+=`${pName(p.id)} (${siteName(siteAt(p,B))}): ${r.total} (${t('dayC')} ${r.d} · ${t('nightC')} ${r.n})${r.abs?' · '+t('absC')+' '+r.abs:''}${r.leave?' · '+t('leaveC')+' '+r.leave:''}${r.extra?' · '+t('extraC')+' '+r.extra:''}${r.w?' · ⚠️'+r.w:''}\n`;});return o;}
           function personMonthHtml(p,A,B,r){const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();
             let h=docHead(pName(p.id))+`<h1>${esc(pName(p.id))} — ${t('actual')}</h1><div class="sub">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} · ${m}</div><table><tr><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th></tr><tr><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs}</td><td>${r.leave}</td><td>${r.extra}</td></tr></table><br>
@@ -1008,12 +1077,7 @@ jobs:
             if(rp.sec.cards){o+=`\n■ ${t('secCards')} (${t('total')} ${C().cards})\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&(g.recv!=null||g.hand!=null)){n++;const bad=(g.recv!=null&&g.recv!==+C().cards)||(g.recv!=null&&g.hand!=null&&g.recv!==g.hand);o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${t('received')} ${g.recv==null?'—':g.recv} / ${t('handed')} ${g.hand==null?'—':g.hand}${bad?' ⚠️'+(g.cardNote?' '+g.cardNote:''):''}\n`;}});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.logs){const ns=my.filter(x=>x.type==='N'&&started(x));if(ns.length){o+=`\n■ ${t('secLogs')}\n`;ns.forEach(x=>{const g=S.logs[x.id]||{};o+=`- ${fmtS(x.date)}: ${t('visitorsLog')} ${g.vis?'✓':'✗'} · ${t('workersLog')} ${g.wrk?'✓':'✗'}\n`;});}}
             if(rp.sec.notes){o+=`\n■ ${t('secNotes')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.notes){n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]}: ${g.notes.replace(/\n/g,' / ')}\n`;}});if(!n)o+=t('nothing')+'\n';}
-            if(rp.sec.team){o+=`\n■ ${t('secTeam')}\n`;const ev=S.events.filter(e=>(e.from<=B&&e.to>=A)||(e.back&&e.back>=A&&e.back<=B)).sort((x,y)=>x.from<y.from?-1:1);o+=ev.length?ev.map(e=>`- ${evDates(e)}: ${evText(e)}${e.note?' ('+e.note+')':''}`).join('\n')+'\n':t('nothing')+'\n';}
-          EOF_FILE
-
-      - name: Create project files (19)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            if(rp.sec.team){o+=`\n■ ${t('secTeam')}\n`;const ev=S.events.filter(e=>(e.from<=B&&e.to>=A)||(e.back&&e.back>=A&&e.back<=B)).sort((x,y)=>x.from<y.from?-1:1);const as=S.asg.filter(x=>x.k>=A&&x.k<=B).sort((x,y)=>x.k<y.k?-1:1);o+=(ev.length||as.length)?ev.map(e=>`- ${evDates(e)}: ${evText(e)}${e.note?' ('+e.note+')':''}`).concat(as.map(x=>`- ${x.k}: ${asgText(x)}`)).join('\n')+'\n':t('nothing')+'\n';}
             if(rp.sec.warn){o+=`\n■ ${t('secWarn')}\n`;const ws=S.warns.filter(w=>w.date>=A&&w.date<=B).sort((x,y)=>x.date<y.date?-1:1);o+=ws.length?ws.map(w=>`- ${w.date} ${pName(w.p)}: ${t('w_'+w.type)}${w.reason?' — '+w.reason:''}${w.ded?' ('+t('deduct')+' '+w.ded+' '+(w.dedType==='amount'?t('dedAmount'):t('dedDays'))+')':''}`).join('\n')+'\n':t('nothing')+'\n';}
             if(rp.sec.uni){o+=`\n■ ${t('secUni')}\n`;const us=S.uni.filter(u=>u.date>=A&&u.date<=B).sort((x,y)=>x.date<y.date?-1:1);if(!us.length)o+=t('nothing')+'\n';else{us.forEach(u=>o+=`- ${u.date} ${pName(u.p)}: ${uniLine(u)}${u.note?' ('+u.note+')':''}\n`);const got=new Set(us.map(u=>u.p));const miss=personList().filter(p=>!got.has(p.id));if(miss.length)o+=`${t('notReceived')}: ${miss.map(p=>p.name).join('، ')}\n`;}}
             return o+`\n${t('generated')}: ${fmt(now)} ${pad(now.getHours())}:${pad(now.getMinutes())}`;}
@@ -1026,6 +1090,11 @@ jobs:
               <h3>👤 ${t('myTeam')}</h3><div class="seg">${[0,1,2].map(i=>`<button data-mt="${i}" class="${c.myTeam===i?'on':''}">${esc(teamName(i))}</button>`).join('')}</div><label>${t('myName')}</label><input id="sMe" value="${esc(c.myName)}">
               <button class="btn full" id="sSetup">${t('rerunSetup')}</button></div>`;
             h+=`<div class="card"><h3>👥 ${t('teams')}</h3>`+[0,1,2].map(i=>`<div class="tl"><span><b>${esc(teamName(i))}</b> <span class="muted">· ${teamMembers(i).length}</span></span><button class="btn sm pri" data-tedit="${i}">${t('editTeam')}</button></div>`).join('')+`</div>`;
+          EOF_FILE
+
+      - name: Create project files (21)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="card"><h3>⏰ ${t('times')}</h3><div class="row"><div><label>${t('fpStart')}</label><input type="time" data-k="fpStart" value="${c.fpStart}"></div><div><label>${t('fpEnd')}</label><input type="time" data-k="fpEnd" value="${c.fpEnd}"></div></div>
               <label>${t('startTime')}</label><input type="time" data-k="start" value="${c.start}"><p class="muted" style="margin-top:4px">${t('nightNote')}</p>
               <div class="row"><div><label>${t('logFrom')}</label><input type="time" data-k="logFrom" value="${c.logFrom}"></div><div><label>${t('logTo')}</label><input type="time" data-k="logTo" value="${c.logTo}"></div></div>
@@ -1036,7 +1105,7 @@ jobs:
             h+=`<div class="card"><h3>💾 ${t('backup')}</h3><p class="muted">${t('fileHint')}</p><button class="btn pri full" id="bF">${t('shareFile')}</button>
               <label class="btn full" style="margin-top:8px;color:var(--text)">${t('restoreFile')}<input type="file" id="bI" accept=".json,application/json,text/plain,*/*" style="display:none"></label>
               <button class="btn full" id="bC">${t('copyText')}</button><label>${t('pasteText')}</label><textarea id="bT" style="min-height:50px"></textarea><button class="btn full" id="bR">${t('restore')}</button>
-              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v3.2</p>`;
+              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v3.3</p>`;
             v.innerHTML=h;
             v.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{c.lang=b.dataset.lang;repOut='';save();render();});
             v.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{c.theme=b.dataset.th;save();render();});
@@ -1051,17 +1120,12 @@ jobs:
             $('sAnc').onchange=e=>{if(e.target.value){c.anchor=e.target.value;save();toast(t('saved'));}};
             v.querySelectorAll('[data-itn]').forEach(i=>i.onchange=()=>{const it=c.uniItems[+i.dataset.itn];const val=i.value.trim();it.name=(val===t('u_'+it.id))?'':val;save();toast(t('saved'));});
             v.querySelectorAll('[data-itd]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{c.uniItems.splice(+b.dataset.itd,1);save();rSet();}));
-          EOF_FILE
-
-      - name: Create project files (20)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             v.querySelectorAll('[data-site]').forEach(i=>i.onchange=()=>{const v2=i.value.trim();if(v2){c.sites[+i.dataset.site].name=v2;save();toast(t('saved'));}});
             $('itA').onclick=()=>{c.uniItems.push({id:'i'+uid(),name:t('itemName')});save();rSet();};
             $('bF').onclick=()=>shareFile('shifts-backup-'+ymd(now)+'.json','application/json',JSON.stringify(S));
             $('bI').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>doRestore(String(r.result));r.readAsText(f);e.target.value='';};
             $('bC').onclick=()=>copyText(JSON.stringify(S));$('bR').onclick=()=>doRestore($('bT').value);
-            $('bX').onclick=()=>confirmBox(t('resetQ'),()=>{S={cfg:S.cfg,logs:{},events:[],uni:[],warns:[],v:3};save();render();});}
+            $('bX').onclick=()=>confirmBox(t('resetQ'),()=>{S={cfg:S.cfg,logs:{},events:[],uni:[],warns:[],asg:[],v:3};save();render();});}
 
           try{const raw=localStorage.getItem(KEY);if(raw)S=normalize(JSON.parse(raw));
             else{const o=JSON.parse(localStorage.getItem('shiftcfg')||'null');if(o){if(o.team)S.cfg.myTeam=o.team-1;if(o.anchor)S.cfg.anchor=o.anchor;}}}catch(e){console.error('load failed',e);}
@@ -1077,7 +1141,7 @@ jobs:
           </html>
           EOF_FILE
 
-      - name: Create project files (21)
+      - name: Create project files (22)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
@@ -1266,7 +1330,7 @@ jobs:
           }
           EOF_FILE
 
-      - name: Create project files (22)
+      - name: Create project files (23)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/ShareProvider.java' <<'EOF_FILE'
@@ -1410,5 +1474,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Shifts v3.2 build ${{ github.run_number }}
+          name: Shifts v3.3 build ${{ github.run_number }}
           files: Shifts.apk
