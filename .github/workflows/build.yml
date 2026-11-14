@@ -1,0 +1,430 @@
+name: Build APK
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create project files
+        run: |
+          mkdir -p 'app'
+          cat > 'app/build.gradle' <<'EOF_FILE'
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.mohamed.shifts'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.mohamed.shifts"
+                  minSdk 26
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+          }
+          EOF_FILE
+          mkdir -p 'app/src/main'
+          cat > 'app/src/main/AndroidManifest.xml' <<'EOF_FILE'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <application
+                  android:label="@string/app_name"
+                  android:icon="@mipmap/ic_launcher"
+                  android:roundIcon="@mipmap/ic_launcher"
+                  android:supportsRtl="true"
+                  android:theme="@android:style/Theme.Material.NoActionBar">
+                  <activity android:name=".MainActivity" android:exported="true"
+                      android:configChanges="orientation|screenSize|keyboardHidden">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF_FILE
+          mkdir -p 'app/src/main/assets'
+          cat > 'app/src/main/assets/index.html' <<'EOF_FILE'
+          <!DOCTYPE html>
+          <html lang="ar" dir="rtl">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+          <meta name="theme-color" content="#0f172a">
+          <meta name="apple-mobile-web-app-capable" content="yes">
+          <meta name="mobile-web-app-capable" content="yes">
+          <title>جدول الورديات</title>
+          <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+          <style>
+            :root{
+              --bg:#0f172a; --card:#1e293b; --card2:#273449; --text:#f1f5f9; --muted:#94a3b8;
+              --day:#f59e0b; --dayBg:rgba(245,158,11,.16);
+              --night:#818cf8; --nightBg:rgba(129,140,248,.18);
+              --off:#34d399; --offBg:rgba(52,211,153,.15);
+              --accent:#38bdf8;
+            }
+            *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+            body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--text);
+              padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 24px);
+              max-width:520px;margin:0 auto;min-height:100vh}
+            h1{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
+            .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+            .gear{background:var(--card);border:0;color:var(--text);width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer}
+            .teams{display:flex;gap:8px;margin-bottom:14px}
+            .teams button{flex:1;padding:10px 0;border-radius:12px;border:2px solid transparent;background:var(--card);
+              color:var(--muted);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+            .teams button.on{border-color:var(--accent);color:var(--text);background:var(--card2)}
+            .hero{border-radius:22px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+            .hero.D{background:linear-gradient(135deg,#b45309,#f59e0b)}
+            .hero.N{background:linear-gradient(135deg,#312e81,#6366f1)}
+            .hero.O{background:linear-gradient(135deg,#065f46,#10b981)}
+            .hero .lbl{font-size:14px;opacity:.9}
+            .hero .big{font-size:38px;font-weight:800;line-height:1.3;display:flex;align-items:center;gap:10px}
+            .hero .sub{font-size:15px;opacity:.95;margin-top:2px}
+            .hero .ico{position:absolute;left:14px;top:10px;font-size:64px;opacity:.25}
+            .row{display:flex;gap:10px;margin-bottom:14px}
+            .stat{flex:1;background:var(--card);border-radius:16px;padding:12px}
+            .stat .k{font-size:12px;color:var(--muted)}
+            .stat .v{font-size:17px;font-weight:700}
+            .sec{font-size:15px;font-weight:700;color:var(--muted);margin:6px 2px 8px}
+            .week{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+            .week::-webkit-scrollbar{display:none}
+            .wd{min-width:62px;flex:0 0 auto;background:var(--card);border-radius:14px;padding:8px 4px;text-align:center}
+            .wd .n{font-size:11px;color:var(--muted)}
+            .wd .d{font-size:18px;font-weight:800}
+            .wd .s{font-size:12px;font-weight:700;margin-top:2px;border-radius:8px;padding:2px 0}
+            .wd.today{outline:2px solid var(--accent)}
+            .cal{background:var(--card);border-radius:20px;padding:12px}
+            .calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+            .calhead b{font-size:17px}
+            .calhead button{background:var(--card2);border:0;color:var(--text);width:38px;height:38px;border-radius:10px;font-size:18px;cursor:pointer}
+            .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+            .dn{text-align:center;font-size:11px;color:var(--muted);padding:4px 0}
+            .c{aspect-ratio:1/1.1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+              font-weight:700;font-size:15px;cursor:pointer;border:0;font-family:inherit;color:var(--text)}
+            .c small{font-size:11px;line-height:1}
+            .c.D{background:var(--dayBg)} .c.D small{color:var(--day)}
+            .c.N{background:var(--nightBg)} .c.N small{color:var(--night)}
+            .c.O{background:var(--offBg)} .c.O small{color:var(--off)}
+            .c.today{outline:2px solid var(--accent)}
+            .c.empty{background:transparent;cursor:default}
+            .legend{display:flex;justify-content:center;gap:14px;margin-top:10px;font-size:12px;color:var(--muted)}
+            .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:4px;vertical-align:middle}
+            .todaybtn{display:block;margin:10px auto 0;background:none;border:0;color:var(--accent);font:inherit;font-weight:700;cursor:pointer}
+            .sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:9}
+            .sheet.show{display:flex}
+            .panel{background:var(--card);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom) + 18px)}
+            .panel h3{font-size:18px;margin-bottom:12px}
+            .tl{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+            .tl.me{outline:2px solid var(--accent)}
+            .pill{font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px}
+            .pill.D{background:var(--dayBg);color:var(--day)} .pill.N{background:var(--nightBg);color:var(--night)} .pill.O{background:var(--offBg);color:var(--off)}
+            .close{width:100%;margin-top:8px;padding:12px;border-radius:12px;border:0;background:var(--accent);color:#04263a;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+            label{display:block;font-size:14px;color:var(--muted);margin:10px 0 6px}
+            select,input{width:100%;padding:10px;border-radius:10px;border:1px solid #334155;background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+            .hint{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7}
+          </style>
+          </head>
+          <body>
+            <div class="top">
+              <h1>🗓️ جدول الورديات</h1>
+              <button class="gear" id="gear" aria-label="الإعدادات">⚙️</button>
+            </div>
+
+            <div class="teams" id="teams"></div>
+
+            <div class="hero" id="hero">
+              <div class="ico" id="heroIco"></div>
+              <div class="lbl" id="heroLbl"></div>
+              <div class="big" id="heroBig"></div>
+              <div class="sub" id="heroSub"></div>
+            </div>
+
+            <div class="row">
+              <div class="stat"><div class="k">الوردية الجاية</div><div class="v" id="next"></div></div>
+              <div class="stat"><div class="k">الراحة الجاية</div><div class="v" id="nextOff"></div></div>
+            </div>
+
+            <div class="sec">الأيام الجاية</div>
+            <div class="week" id="week"></div>
+
+            <div class="cal">
+              <div class="calhead">
+                <button id="prev" aria-label="الشهر السابق">›</button>
+                <b id="month"></b>
+                <button id="nextM" aria-label="الشهر التالي">‹</button>
+              </div>
+              <div class="grid" id="grid"></div>
+              <div class="legend">
+                <span><i style="background:var(--day)"></i>نهار</span>
+                <span><i style="background:var(--night)"></i>ليل</span>
+                <span><i style="background:var(--off)"></i>راحة</span>
+              </div>
+              <button class="todaybtn" id="goToday">الرجوع لليوم</button>
+            </div>
+
+            <div class="sheet" id="daySheet"><div class="panel">
+              <h3 id="dayTitle"></h3>
+              <div id="dayList"></div>
+              <button class="close" data-close>تمام</button>
+            </div></div>
+
+            <div class="sheet" id="setSheet"><div class="panel">
+              <h3>⚙️ الإعدادات</h3>
+              <label for="startHour">بداية وردية النهار</label>
+              <select id="startHour"></select>
+              <label for="anchor">تاريخ أول يوم نهار لفريق 1 (مرجع الحساب)</label>
+              <input type="date" id="anchor">
+              <div class="hint">النظام: 12 ساعة، يومين نهار، يومين ليل، يومين راحة. 3 فرق، كل فريق 4 أشخاص، والخامس احتياط.<br>
+              لو صار تغيير في الدورة، غيّر التاريخ المرجعي وكل الجدول يتعدّل تلقائياً.</div>
+              <button class="close" data-close>حفظ</button>
+            </div></div>
+
+          <script>
+          (function(){
+            const DEF = {team:1, anchor:'2026-11-13', hour:7};
+            const S = Object.assign({}, DEF);
+            try{ const s = JSON.parse(localStorage.getItem('shiftcfg')||'null'); if(s) Object.assign(S,s); }catch(e){}
+            const save = () => { try{ localStorage.setItem('shiftcfg', JSON.stringify(S)); }catch(e){} };
+
+            const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+            const SHORT = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+            const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+            const NAME = {D:'نهار', N:'ليل', O:'راحة'};
+            const ICO = {D:'☀️', N:'🌙', O:'🛋️'};
+            const PAT = ['D','D','N','N','O','O'];
+            const OFFSET = {1:0, 2:4, 3:2};
+
+            const ymd = d => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+            const anchorUTC = () => { const [y,m,d] = S.anchor.split('-').map(Number); return Date.UTC(y,m-1,d); };
+            const mod = (a,n) => ((a%n)+n)%n;
+            function shift(date, team){
+              const diff = Math.round((ymd(date) - anchorUTC())/86400000);
+              const i = mod(diff + OFFSET[team], 6);
+              return {type:PAT[i], pos: i%2===0 ? 1 : 2};
+            }
+            const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+            const pad = n => String(n).padStart(2,'0');
+            const hours = t => {
+              const a = S.hour, b = (S.hour+12)%24;
+              if(t==='D') return `من ${pad(a)}:00 لين ${pad(b)}:00`;
+              if(t==='N') return `من ${pad(b)}:00 لين ${pad(a)}:00 الصبح`;
+              return 'يوم راحة';
+            };
+            const fmt = d => `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+            const same = (a,b) => ymd(a)===ymd(b);
+
+            let today = new Date();
+            let view = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            function renderTeams(){
+              const el = document.getElementById('teams'); el.innerHTML='';
+              [1,2,3].forEach(t=>{
+                const b = document.createElement('button');
+                b.textContent = 'فريق '+t; if(t===S.team) b.className='on';
+                b.onclick = ()=>{ S.team=t; save(); render(); };
+                el.appendChild(b);
+              });
+            }
+
+            function renderHero(){
+              const s = shift(today, S.team);
+              const h = document.getElementById('hero'); h.className = 'hero '+s.type;
+              document.getElementById('heroIco').textContent = ICO[s.type];
+              document.getElementById('heroLbl').textContent = 'اليوم — '+fmt(today);
+              document.getElementById('heroBig').textContent = (s.type==='O' ? 'راحة' : NAME[s.type]) + (s.pos===1 ? ' (اليوم الأول)' : ' (اليوم الثاني)');
+              document.getElementById('heroSub').textContent = hours(s.type);
+              let n=null, o=null;
+              for(let k=1;k<14 && (!n||!o);k++){
+                const d = addDays(today,k), x = shift(d,S.team);
+                if(!n && x.type!=='O' && !(x.type===s.type && k===1 && s.pos===1)) n = {d,x};
+                if(!o && x.type==='O' && s.type!=='O') o = d;
+                if(!o && s.type==='O' && x.type==='O' && k>1 && shift(addDays(d,-1),S.team).type!=='O') o = d;
+              }
+              document.getElementById('next').textContent = n ? `${ICO[n.x.type]} ${NAME[n.x.type]} — ${SHORT[n.d.getDay()]} ${n.d.getDate()}` : '—';
+              document.getElementById('nextOff').textContent = o ? `🛋️ ${SHORT[o.getDay()]} ${o.getDate()} ${MONTHS[o.getMonth()]}` : '—';
+            }
+
+            function renderWeek(){
+              const el = document.getElementById('week'); el.innerHTML='';
+              for(let k=0;k<14;k++){
+                const d = addDays(today,k), s = shift(d,S.team);
+                const c = document.createElement('div'); c.className='wd'+(k===0?' today':'');
+                const col = s.type==='D'?'var(--day)':s.type==='N'?'var(--night)':'var(--off)';
+                const bg = s.type==='D'?'var(--dayBg)':s.type==='N'?'var(--nightBg)':'var(--offBg)';
+                c.innerHTML = `<div class="n">${k===0?'اليوم':SHORT[d.getDay()]}</div><div class="d">${d.getDate()}</div><div class="s" style="color:${col};background:${bg}">${ICO[s.type]} ${NAME[s.type]}</div>`;
+                c.onclick = ()=>openDay(d);
+                el.appendChild(c);
+              }
+            }
+
+            function renderCal(){
+              document.getElementById('month').textContent = MONTHS[view.getMonth()]+' '+view.getFullYear();
+              const g = document.getElementById('grid'); g.innerHTML='';
+              SHORT.forEach(n=>{ const e=document.createElement('div'); e.className='dn'; e.textContent=n; g.appendChild(e); });
+              const first = view.getDay();
+              const len = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
+              for(let i=0;i<first;i++){ const e=document.createElement('div'); e.className='c empty'; g.appendChild(e); }
+              for(let d=1; d<=len; d++){
+                const dt = new Date(view.getFullYear(), view.getMonth(), d), s = shift(dt,S.team);
+                const b = document.createElement('button');
+                b.className = 'c '+s.type+(same(dt,today)?' today':'');
+                b.innerHTML = `${d}<small>${NAME[s.type]}</small>`;
+                b.onclick = ()=>openDay(dt);
+                g.appendChild(b);
+              }
+            }
+
+            function openDay(d){
+              document.getElementById('dayTitle').textContent = fmt(d);
+              const L = document.getElementById('dayList'); L.innerHTML='';
+              [1,2,3].forEach(t=>{
+                const s = shift(d,t);
+                const r = document.createElement('div'); r.className='tl'+(t===S.team?' me':'');
+                r.innerHTML = `<span>فريق ${t}${t===S.team?' (فريقك)':''}</span><span class="pill ${s.type}">${ICO[s.type]} ${NAME[s.type]}${s.type!=='O'?' · '+(s.pos===1?'أول':'ثاني'):''}</span>`;
+                L.appendChild(r);
+              });
+              document.getElementById('daySheet').classList.add('show');
+            }
+
+            function render(){ today = new Date(); renderTeams(); renderHero(); renderWeek(); renderCal(); }
+
+            document.getElementById('prev').onclick = ()=>{ view = new Date(view.getFullYear(), view.getMonth()-1, 1); renderCal(); };
+            document.getElementById('nextM').onclick = ()=>{ view = new Date(view.getFullYear(), view.getMonth()+1, 1); renderCal(); };
+            document.getElementById('goToday').onclick = ()=>{ view = new Date(today.getFullYear(), today.getMonth(), 1); renderCal(); };
+
+            const hs = document.getElementById('startHour');
+            for(let h=0;h<24;h++){ const o=document.createElement('option'); o.value=h; o.textContent=pad(h)+':00'; hs.appendChild(o); }
+            const an = document.getElementById('anchor');
+            document.getElementById('gear').onclick = ()=>{ hs.value=S.hour; an.value=S.anchor; document.getElementById('setSheet').classList.add('show'); };
+            hs.onchange = ()=>{ S.hour=+hs.value; save(); render(); };
+            an.onchange = ()=>{ if(an.value){ S.anchor=an.value; save(); render(); } };
+
+            document.querySelectorAll('.sheet').forEach(sh=>{
+              sh.addEventListener('click', e=>{ if(e.target===sh || e.target.hasAttribute('data-close')) sh.classList.remove('show'); });
+            });
+
+            window.addEventListener('focus', ()=>{ if(!same(today,new Date())) render(); });
+            render();
+            setInterval(()=>{ if(!same(today,new Date())) render(); }, 60000);
+          })();
+          </script>
+          </body>
+          </html>
+          EOF_FILE
+          mkdir -p 'app/src/main/java/com/mohamed/shifts'
+          cat > 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
+          package com.mohamed.shifts;
+
+          import android.app.Activity;
+          import android.graphics.Color;
+          import android.os.Bundle;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+
+          public class MainActivity extends Activity {
+              private WebView web;
+
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  int bg = Color.parseColor("#0f172a");
+                  getWindow().setStatusBarColor(bg);
+                  getWindow().setNavigationBarColor(bg);
+                  web = new WebView(this);
+                  web.setBackgroundColor(bg);
+                  WebSettings s = web.getSettings();
+                  s.setJavaScriptEnabled(true);
+                  s.setDomStorageEnabled(true);
+                  web.loadUrl("file:///android_asset/index.html");
+                  setContentView(web);
+              }
+
+              @Override
+              protected void onResume() {
+                  super.onResume();
+                  if (web != null) web.evaluateJavascript("window.dispatchEvent(new Event('focus'))", null);
+              }
+          }
+          EOF_FILE
+          mkdir -p 'app/src/main/res/drawable'
+          cat > 'app/src/main/res/drawable/ic_fg.xml' <<'EOF_FILE'
+          <?xml version="1.0" encoding="utf-8"?>
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp" android:height="108dp"
+              android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#F1F5F9" android:pathData="M30,36h48a4,4 0,0 1,4 4v34a4,4 0,0 1,-4 4h-48a4,4 0,0 1,-4 -4v-34a4,4 0,0 1,4 -4z"/>
+              <path android:fillColor="#F59E0B" android:pathData="M30,36h48a4,4 0,0 1,4 4v8h-56v-8a4,4 0,0 1,4 -4z"/>
+              <path android:fillColor="#94A3B8" android:pathData="M38,30h4v10h-4z M66,30h4v10h-4z"/>
+              <path android:fillColor="#F59E0B" android:pathData="M34,54h11v8h-11z M34,66h11v7h-11z"/>
+              <path android:fillColor="#818CF8" android:pathData="M48.5,54h11v8h-11z M48.5,66h11v7h-11z"/>
+              <path android:fillColor="#34D399" android:pathData="M63,54h11v8h-11z M63,66h11v7h-11z"/>
+          </vector>
+          EOF_FILE
+          mkdir -p 'app/src/main/res/mipmap-anydpi-v26'
+          cat > 'app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml' <<'EOF_FILE'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/ic_bg" />
+              <foreground android:drawable="@drawable/ic_fg" />
+          </adaptive-icon>
+          EOF_FILE
+          mkdir -p 'app/src/main/res/values'
+          cat > 'app/src/main/res/values/colors.xml' <<'EOF_FILE'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources><color name="ic_bg">#0F172A</color></resources>
+          EOF_FILE
+          mkdir -p 'app/src/main/res/values'
+          cat > 'app/src/main/res/values/strings.xml' <<'EOF_FILE'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources><string name="app_name">الورديات</string></resources>
+          EOF_FILE
+          cat > 'build.gradle' <<'EOF_FILE'
+          plugins { id 'com.android.application' version '8.5.2' apply false }
+          EOF_FILE
+          cat > 'gradle.properties' <<'EOF_FILE'
+          org.gradle.jvmargs=-Xmx2048m
+          android.useAndroidX=false
+          EOF_FILE
+          cat > 'settings.gradle' <<'EOF_FILE'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositories { google(); mavenCentral() } }
+          rootProject.name = "Shifts"
+          include ':app'
+          EOF_FILE
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Build
+        run: gradle assembleDebug --no-daemon
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Shifts.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Shifts-APK
+          path: Shifts.apk
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: الورديات ${{ github.run_number }}
+          files: Shifts.apk
