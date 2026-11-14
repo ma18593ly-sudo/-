@@ -23,8 +23,8 @@ jobs:
                   applicationId "com.mohamed.shifts"
                   minSdk 26
                   targetSdk 34
-                  versionCode 5
-                  versionName "3.0"
+                  versionCode 6
+                  versionName "3.1"
               }
               signingConfigs {
                   debug {
@@ -311,18 +311,18 @@ jobs:
           conflict:'تعارض',noConflict:'✓ ما فيه تعارض',restShort:'راحة {h} ساعة فقط (المطلوب {m})',overlap:'عنده وردية في نفس الوقت',withTeam:'مع {t}',onCall:'مناوب مع فريقه',
           availability:'المتاحين',noShiftThatDay:'ما عنده وردية في التاريخ هذا',upConf:'⚠️ تعارضات في الأيام الجاية',saveAnyway:'حفظ رغم التعارض',
           today_s:'اليوم',absentToday:'غايب',coverFor:'يغطي',calledIn:'مستدعى',fileHint:'ملف .json تقدر تبعته لنفسك على واتساب وترجعه وقت ما تبي',
-          tapPerson:'اضغط على أي موظف تفتح ملفه'},
+          tapPerson:'اضغط على أي موظف تفتح ملفه',site:'الموقع',sites:'المواقع',bothSites:'الموقعين',allSites:'كل المواقع',moveSite:'الموقع الجديد'},
           en:{app:'Shifts',home:'Home',cal:'Calendar',emp:'Staff',log:'Log',rep:'Reports',set:'Settings',
           D:'Day',N:'Night',O:'Off',first:'1st day',second:'2nd day',onDuty:'On duty now',ends:'ends',
           yourNext:'Your next shift',nextShift:'Next shift',nextOff:'Next day off',fp:'Fingerprint',work:'Duty',today:'Today',
           teamOf:'Team',member:'Member',supervisor:'Supervisor',reserve:'Reserve',myTeam:'My team',yours:'yours',role:'Role',
           tasks:'Shift tasks',cardsRecv:'Cards received',cardsHand:'Cards handed over',cards:'Access cards',received:'Received',handed:'Handed',
-          mismatch:'⚠️ Card count mismatch',mismatchNote:'Reason for difference',logChange:'Log change',visitorsLog:'Visitors log',workersLog:'Workers log',
           EOF_FILE
 
       - name: Create project files (5)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          mismatch:'⚠️ Card count mismatch',mismatchNote:'Reason for difference',logChange:'Log change',visitorsLog:'Visitors log',workersLog:'Workers log',
           done:'Done',notDone:'Not done',handNotes:'Handover notes',handNotesPh:'What the next shift needs to know…',
           incidents:'Incidents',addIncident:'+ Add incident',time:'Time',type:'Type',desc:'Description',action:'Action taken',
           save:'Save',cancel:'Cancel',del:'Delete',confirmDel:'Delete this?',yes:'Yes',close:'OK',
@@ -355,7 +355,7 @@ jobs:
           conflict:'Conflict',noConflict:'✓ No conflict',restShort:'Only {h}h rest (needs {m})',overlap:'Already on a shift at that time',withTeam:'with {t}',onCall:'on call with own team',
           availability:'Available',noShiftThatDay:'No shift on that date',upConf:'⚠️ Upcoming conflicts',saveAnyway:'Save despite conflict',
           today_s:'Today',absentToday:'Absent',coverFor:'covers',calledIn:'Called in',fileHint:'A .json file you can send to yourself on WhatsApp and restore any time',
-          tapPerson:'Tap an employee to open their file'}};
+          tapPerson:'Tap an employee to open their file',site:'Site',sites:'Sites',bothSites:'Both sites',allSites:'All sites',moveSite:'New site'}};
           const DAYS={ar:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
           const SDAYS={ar:['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'],en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
           const MONTHS={ar:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
@@ -365,28 +365,30 @@ jobs:
 
           // ================= state =================
           const KEY='shiftapp_v2';
-          const DEF_CFG={lang:'ar',theme:'auto',myTeam:0,myName:'',start:'08:00',fpStart:'07:30',fpEnd:'07:45',cards:22,logFrom:'05:00',logTo:'06:00',anchor:'2026-11-13',minRest:12,
+          const DEF_CFG={lang:'ar',theme:'auto',myTeam:0,myName:'',start:'08:00',fpStart:'07:30',fpEnd:'07:45',cards:22,logFrom:'05:00',logTo:'06:00',anchor:'2026-11-13',minRest:12,sites:[{id:'compound',name:'Compound'},{id:'chancery',name:'Chancery'}],
             uniItems:[{id:'shirt',name:''},{id:'pants',name:''},{id:'shoes',name:''},{id:'coat',name:''},{id:'cap',name:''}],
             people:[{id:'t0m0',name:'مصعب',team:0,role:'sup',hist:[{team:0,from:'2000-01-01'}]},{id:'t1m0',name:'سالم',team:1,role:'sup',hist:[{team:1,from:'2000-01-01'}]},{id:'t2m0',name:'حاتم',team:2,role:'sup',hist:[{team:2,from:'2000-01-01'}]}]};
           const clone=x=>JSON.parse(JSON.stringify(x));
           let S={cfg:clone(DEF_CFG),logs:{},events:[],uni:[],warns:[],v:3};
           function normalize(x){const st={cfg:Object.assign(clone(DEF_CFG),x.cfg||{}),logs:x.logs||{},events:x.events||[],uni:x.uni||[],warns:x.warns||[],v:3};
             const c=st.cfg;
-            if(!(x.cfg&&Array.isArray(x.cfg.people))){ // from v2.0/2.1 slot model
-              const used=new Set();st.events.forEach(e=>{used.add(e.p1);used.add(e.p2);});st.uni.forEach(u=>used.add(u.p));
-              const teams=(x.cfg&&x.cfg.teams)||[{m:['مصعب']},{m:['سالم']},{m:['حاتم']}];const ps=[];
           EOF_FILE
 
       - name: Create project files (6)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            if(!(x.cfg&&Array.isArray(x.cfg.people))){ // from v2.0/2.1 slot model
+              const used=new Set();st.events.forEach(e=>{used.add(e.p1);used.add(e.p2);});st.uni.forEach(u=>used.add(u.p));
+              const teams=(x.cfg&&x.cfg.teams)||[{m:['مصعب']},{m:['سالم']},{m:['حاتم']}];const ps=[];
               teams.forEach((tm,i)=>tm.m.forEach((n,j)=>{const id='t'+i+'m'+j;if((n||'').trim()||used.has(id))ps.push({id,name:(n||'').trim(),team:i,role:j===0?'sup':'mem',hist:[{team:i,from:'2000-01-01'}]});}));
               if(((x.cfg&&x.cfg.reserve)||'').trim()||used.has('res'))ps.push({id:'res',name:((x.cfg&&x.cfg.reserve)||'').trim(),team:c.myTeam||0,role:'res',hist:[{team:c.myTeam||0,from:'2000-01-01'}]});
               c.people=ps;}
             c.people.forEach(p=>{ // v2.2 → v3
               if(!p.role)p.role=p.team==='res'?'res':(p.sup?'sup':'mem');delete p.sup;
               if(p.team==='res')p.team=c.myTeam||0;
-              p.hist=(p.hist&&p.hist.length?p.hist:[{team:p.team,from:'2000-01-01'}]).map(h=>({team:h.team==='res'?(c.myTeam||0):h.team,from:h.from}));});
+              p.hist=(p.hist&&p.hist.length?p.hist:[{team:p.team,from:'2000-01-01'}]).map(h=>({team:h.team==='res'?(c.myTeam||0):h.team,from:h.from,site:h.site}));
+              if(!p.site)p.site='compound';});
+            if(!c.sites||!c.sites.length)c.sites=clone(DEF_CFG.sites);
             delete c.teams;delete c.reserve;
             // events v2 → v3
             st.events=st.events.map(e=>{e=Object.assign({},e);
@@ -436,13 +438,23 @@ jobs:
           const P=id=>people().find(p=>p.id===id);
           function teamAtP(p,k){let tm=p.team;const h=(p.hist||[]).slice().sort((a,b)=>a.from<b.from?-1:1);if(h.length){tm=h[0].team;h.forEach(x=>{if(x.from<=k)tm=x.team;});}return tm;}
           const teamAt=teamAtP;
+          function siteAt(p,k){if(p.role==='res')return 'both';let st=p.site||'compound';const h=(p.hist||[]).filter(x=>x.site).sort((a,b)=>a.from<b.from?-1:1);if(h.length){st=h[0].site;h.forEach(x=>{if(x.from<=k)st=x.site;});}return st;}
+          const siteName=id=>id==='both'?t('bothSites'):((C().sites.find(s=>s.id===id)||{}).name||id);
+          const siteOpts=sel=>C().sites.map(s=>`<option value="${s.id}" ${s.id===sel?'selected':''}>${esc(s.name)}</option>`).join('');
+          const curSite=p=>p.role==='res'?'both':(p.site||'compound');
           const startOf=p=>{const h=(p.hist||[]).slice().sort((a,b)=>a.from<b.from?-1:1);return h.length?h[0].from:'2000-01-01';};
           const employedOn=(p,k)=>k>=startOf(p)&&!(p.left&&k>=p.left);
           const activePeople=()=>people().filter(p=>!p.left);
           const RO={sup:0,mem:1,res:2};
-          function teamMembers(k){return activePeople().filter(p=>p.team===k).sort((a,b)=>RO[a.role]-RO[b.role]||pName(a.id).localeCompare(pName(b.id)));}
-          function personList(){const o=[];[0,1,2].forEach(k=>teamMembers(k).forEach(p=>o.push({id:p.id,name:pName(p.id),team:p.team,role:p.role})));return o;}
+          const SO=p=>p.role==='res'?9:C().sites.findIndex(s=>s.id===curSite(p));
+          function teamMembers(k){return activePeople().filter(p=>p.team===k).sort((a,b)=>SO(a)-SO(b)||RO[a.role]-RO[b.role]||pName(a.id).localeCompare(pName(b.id)));}
+          function personList(){const o=[];[0,1,2].forEach(k=>teamMembers(k).forEach(p=>o.push({id:p.id,name:pName(p.id),team:p.team,role:p.role,site:curSite(p)})));return o;}
           function pName(id){const p=P(id);if(!p)return id||'';return (p.name||'').trim()||(p.role==='res'?t('reserve'):t('member'));}
+          EOF_FILE
+
+      - name: Create project files (7)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function teamName(i){const s=activePeople().find(p=>p.team===i&&p.role==='sup');return t('teamOf')+' '+(s?pName(s.id):(i+1));}
           const roleTag=p=>p.role==='sup'?`<span class="tag sup">★ ${t('supervisor')}</span>`:p.role==='res'?`<span class="tag res">${t('reserve')}</span>`:'';
           const initial=id=>(pName(id).trim()[0]||'?');
@@ -453,11 +465,6 @@ jobs:
           function absentOn(pid,k){return S.events.find(e=>(e.type==='absence'||e.type==='leave')&&e.p1===pid&&e.from<=k&&e.to>=k);}
           function swappedOut(pid,k){return S.events.some(e=>e.type==='swap'&&((e.p2===pid&&e.from===k)||(e.p1===pid&&e.back===k)));}
           function extras(pid,A,B){const o=[];S.events.forEach(e=>{
-          EOF_FILE
-
-      - name: Create project files (7)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(e.type==='absence'&&e.cov===pid){const ab=P(e.p1);kRange(e.from<A?A:e.from,e.to>B?B:e.to).forEach(k=>{const ty=e.st&&e.from===e.to?e.st:(ab?teamShift(teamAt(ab,k),k):'O');if(ty!=='O')o.push({k,type:ty,kind:'cover',ev:e});});}
             if(e.type==='callout'&&e.p1===pid&&e.from>=A&&e.from<=B)o.push({k:e.from,type:e.st,kind:'callout',ev:e});
             if(e.type==='swap'){if(e.p1===pid&&e.from>=A&&e.from<=B)o.push({k:e.from,type:e.st,kind:'swap',ev:e});if(e.back&&e.p2===pid&&e.back>=A&&e.back<=B)o.push({k:e.back,type:e.st2,kind:'swap',ev:e});}});
@@ -503,13 +510,18 @@ jobs:
           function closeSheet(){$('sheet').classList.remove('show');}
           $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet();});
           function confirmBox(msg,fn){openSheet(`<h3>${esc(msg)}</h3><div class="btns"><button class="btn dang" id="cfY">${t('yes')}</button><button class="btn" id="cfN">${t('cancel')}</button></div>`);$('cfY').onclick=()=>{closeSheet();fn();};$('cfN').onclick=closeSheet;}
-          const personOpts=(sel,list)=>(list||personList()).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)} — ${esc(teamName(p.team))}${p.role==='res'?' ('+t('reserve')+')':''}</option>`).join('');
+          const personOpts=(sel,list)=>(list||personList()).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)} — ${esc(teamName(p.team))} · ${p.role==='res'?t('reserve'):esc(siteName(p.site))}</option>`).join('');
           const teamOpts=sel=>[0,1,2].map(k=>`<option value="${k}" ${+sel===k?'selected':''}>${esc(teamName(k))}</option>`).join('');
           const confBox=list=>list.length?`<div class="warnbox">⚠️ ${list.map(esc).join('\n⚠️ ')}</div>`:`<div class="okbox">${t('noConflict')}</div>`;
 
           // ================= navigation =================
           const TABS=[['home','🏠'],['cal','🗓️'],['emp','👥'],['log','📝'],['rep','📊']];
           let view='home',prevView='home',empId=null,empTab='info',empMonth=null;
+          EOF_FILE
+
+      - name: Create project files (8)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function go(v){if(v==='set'&&view!=='set')prevView=view;view=v;render();window.scrollTo(0,0);}
           function openPerson(id,tab){empId=id;empTab=tab||'info';go('person');}
           window.handleBack=()=>{if($('sheet').classList.contains('show')){closeSheet();return true;}
@@ -520,11 +532,6 @@ jobs:
           function render(){now=new Date();applyLang();applyTheme();
             $('appTitle').textContent=view==='set'?'⚙️ '+t('set'):'🗓️ '+t('app');$('gear').textContent=view==='set'?'✕':'⚙️';
             const nv=view==='person'?'emp':view;
-          EOF_FILE
-
-      - name: Create project files (8)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('nav').innerHTML=TABS.map(([k,i])=>`<button data-v="${k}" class="${nv===k?'on':''}"><span>${i}</span>${t(k)}</button>`).join('');
             $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
             document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+view));
@@ -567,17 +574,19 @@ jobs:
             v.innerHTML=h;bindCommon(v);}
           function dayStatus(pid,k){const ab=absentOn(pid,k);if(ab)return '❌ '+t('ev_'+ab.type);const ex=extras(pid,k,k);if(ex.length)return '➕ '+t('kind_'+ex[0].kind)+' '+ICO[ex[0].type];return '';}
           function teamsForDay(k){let h='';const d=parse(k);[['D',t('dayShift')],['N',t('nightShift')],['O',t('O')]].forEach(([ty,lab])=>{const tm=teamOn(d,ty);
-            const ms=teamMembers(tm).map(p=>{const s=dayStatus(p.id,k);return `<span data-pid="${p.id}" style="cursor:pointer">${p.role==='sup'?'★':''}${esc(pName(p.id))}${p.role==='res'?' ('+t('reserve')+')':''}${s?' <b class="bad">'+s+'</b>':''}</span>`;}).join(' · ');
-            h+=`<div class="tl ${tm===C().myTeam?'me':''}" style="flex-wrap:wrap"><span><b>${esc(teamName(tm))}</b></span><span class="pill ${ty}-t ${ty}-b">${ICO[ty]} ${lab}</span><div class="muted" style="width:100%">${ms||t('noMembers')}</div></div>`;});
-            const extra=S.events.filter(e=>(e.type==='callout'&&e.from===k)||(e.type==='swap'&&(e.from===k||e.back===k)));
-            if(extra.length)h+=extra.map(e=>`<div class="item"><div class="h">${esc(evText(e))}</div></div>`).join('');return h;}
-          function openDay(k){const d=parse(k);let h=`<h3>${fmt(d)}</h3>`+teamsForDay(k);
-            ['D','N'].forEach(ty=>{if(shiftOf(d,C().myTeam).type===ty){const id=shiftId(d,ty),g=S.logs[id];h+=`<div class="item"><div class="h">${ICO[ty]} ${t(ty)} — ${t('log')}<button class="btn sm pri" data-log="${id}">${t('openLog')}</button></div>${g&&g.notes?`<div class="b">${esc(g.notes)}</div>`:''}</div>`;}});
+            const span=p=>{const s=dayStatus(p.id,k);return `<span data-pid="${p.id}" style="cursor:pointer">${p.role==='sup'?'★':''}${esc(pName(p.id))}${s?' <b class="bad">'+s+'</b>':''}</span>`;};
+            const grp=[...C().sites.map(st=>[st.name,teamMembers(tm).filter(p=>p.role!=='res'&&siteAt(p,k)===st.id)]),[t('reserve'),teamMembers(tm).filter(p=>p.role==='res')]].filter(g=>g[1].length);
           EOF_FILE
 
       - name: Create project files (9)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            const ms=grp.map(([n,l])=>`<div>📍 <b>${esc(n)}</b>: ${l.map(span).join(' · ')}</div>`).join('');
+            h+=`<div class="tl ${tm===C().myTeam?'me':''}" style="flex-wrap:wrap"><span><b>${esc(teamName(tm))}</b></span><span class="pill ${ty}-t ${ty}-b">${ICO[ty]} ${lab}</span><div class="muted" style="width:100%">${ms||t('noMembers')}</div></div>`;});
+            const extra=S.events.filter(e=>(e.type==='callout'&&e.from===k)||(e.type==='swap'&&(e.from===k||e.back===k)));
+            if(extra.length)h+=extra.map(e=>`<div class="item"><div class="h">${esc(evText(e))}</div></div>`).join('');return h;}
+          function openDay(k){const d=parse(k);let h=`<h3>${fmt(d)}</h3>`+teamsForDay(k);
+            ['D','N'].forEach(ty=>{if(shiftOf(d,C().myTeam).type===ty){const id=shiftId(d,ty),g=S.logs[id];h+=`<div class="item"><div class="h">${ICO[ty]} ${t(ty)} — ${t('log')}<button class="btn sm pri" data-log="${id}">${t('openLog')}</button></div>${g&&g.notes?`<div class="b">${esc(g.notes)}</div>`:''}</div>`;}});
             h+=`<div class="btns"><button class="btn" id="dCall">📞 ${t('qCall')}</button><button class="btn pri" id="dClose">${t('close')}</button></div>`;
             openSheet(h);$('dClose').onclick=closeSheet;$('dCall').onclick=()=>evForm('callout',null,k);bindCommon($('panel'));}
 
@@ -596,15 +605,15 @@ jobs:
             $('cT').onclick=()=>{calView=new Date(now.getFullYear(),now.getMonth(),1);rCal();};}
 
           // ================= EMPLOYEES =================
-          let empQ='',empF='all',empSub='list';
+          let empQ='',empF='all',empSub='list',empSite='all';
           function warnsOf(pid){return S.warns.filter(w=>w.p===pid).sort((a,b)=>a.date<b.date?1:-1);}
           function todayStatus(p){const k=ymd(now);if(p.left)return `<span class="muted">${t('leftOn')} ${p.left}</span>`;const ab=absentOn(p.id,k);if(ab)return `<span class="bad">❌ ${t('ev_'+ab.type)}</span>`;
             const sh=shiftsOf(p.id,k,k,{oncall:true});if(!sh.length)return `<span class="O-t">🛋️ ${t('O')}</span>`;const x=sh[0];return `<span class="${x.type}-t">${ICO[x.type]} ${t(x.type)}${x.kind==='oncall'?' ('+t('reserve')+')':x.kind!=='base'?' ('+t('kind_'+x.kind)+')':''}</span>`;}
-          function empCard(p){const w=warnsOf(p.id).length;return `<div class="ecard" data-pid="${p.id}"><div class="av">${esc(initial(p.id))}</div><div class="in"><div class="nm">${esc(pName(p.id))}${roleTag(p)}${w?`<span class="tag warn">⚠️ ${w}</span>`:''}</div><div class="mt">${esc(teamName(p.team))} · ${todayStatus(p)}</div></div><span class="muted">${L()==='ar'?'‹':'›'}</span></div>`;}
+          function empCard(p){const w=warnsOf(p.id).length;return `<div class="ecard" data-pid="${p.id}"><div class="av">${esc(initial(p.id))}</div><div class="in"><div class="nm">${esc(pName(p.id))}${roleTag(p)}${w?`<span class="tag warn">⚠️ ${w}</span>`:''}</div><div class="mt">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} · ${todayStatus(p)}</div></div><span class="muted">${L()==='ar'?'‹':'›'}</span></div>`;}
           function rEmp(){const v=$('v-emp');let h=`<div class="qa"><button id="qA"><span>❌</span>${t('qAbs')}</button><button id="qC"><span>📞</span>${t('qCall')}</button><button id="qW"><span>⚠️</span>${t('qWarn')}</button><button id="qU"><span>👕</span>${t('qUni')}</button></div>`;
             h+=`<div class="tabs">${[['list',t('list')],['events',t('events')],['uni',t('uni')]].map(([k,l])=>`<button data-sub="${k}" class="${empSub===k?'on':''}">${l}</button>`).join('')}</div>`;
             if(empSub==='list'){
-              h+=`<input class="search" id="eQ" placeholder="${t('searchPh')}" value="${esc(empQ)}"><div class="tabs">${[['all',t('all')],[0,teamName(0)],[1,teamName(1)],[2,teamName(2)],['former',t('former')]].map(([k,l])=>`<button data-ef="${k}" class="${String(empF)===String(k)?'on':''}">${esc(l)}</button>`).join('')}</div><div id="eList"></div>
+              h+=`<input class="search" id="eQ" placeholder="${t('searchPh')}" value="${esc(empQ)}"><div class="tabs">${[['all',t('all')],[0,teamName(0)],[1,teamName(1)],[2,teamName(2)],['former',t('former')]].map(([k,l])=>`<button data-ef="${k}" class="${String(empF)===String(k)?'on':''}">${esc(l)}</button>`).join('')}</div><div class="tabs">${[['all','📍 '+t('allSites')],...C().sites.map(x=>[x.id,'📍 '+x.name])].map(([k,l])=>`<button data-esite="${k}" class="${empSite===k?'on':''}">${esc(l)}</button>`).join('')}</div><div id="eList"></div>
               <button class="btn pri full" id="eNew">${t('newEmp')}</button>`;}
             else if(empSub==='events')h+=eventsList(S.events,true);
             else h+=uniList();
@@ -614,11 +623,18 @@ jobs:
             if(empSub==='list'){const draw=()=>{const q=empQ.trim().toLowerCase();let list;
                 if(empF==='former')list=people().filter(p=>p.left);else{list=[];[0,1,2].forEach(k=>{if(empF==='all'||String(empF)===String(k))list=list.concat(teamMembers(k));});}
                 if(q)list=list.filter(p=>pName(p.id).toLowerCase().includes(q));
-                let out='';if(empF==='all'&&!q){[0,1,2].forEach(k=>{const ms=list.filter(p=>p.team===k);out+=`<div class="sec">${esc(teamName(k))} · ${ms.length}${k===C().myTeam?' ('+t('yours')+')':''}</div>`+(ms.map(empCard).join('')||`<div class="empty-msg">${t('noMembers')}</div>`);});}
+                if(empSite!=='all')list=list.filter(p=>curSite(p)===empSite||curSite(p)==='both');
+                let out='';if(empF==='all'&&!q&&empSite==='all'){[0,1,2].forEach(k=>{const ms=list.filter(p=>p.team===k);out+=`<div class="sec">${esc(teamName(k))} · ${ms.length}${k===C().myTeam?' ('+t('yours')+')':''}</div>`+(ms.map(empCard).join('')||`<div class="empty-msg">${t('noMembers')}</div>`);});}
                 else out=list.map(empCard).join('')||`<div class="empty-msg">${t('noMembers')}</div>`;
                 $('eList').innerHTML=out;bindCommon($('eList'));};
+          EOF_FILE
+
+      - name: Create project files (10)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               draw();$('eQ').oninput=e=>{empQ=e.target.value;draw();};
               v.querySelectorAll('[data-ef]').forEach(b=>b.onclick=()=>{empF=b.dataset.ef;rEmp();});
+              v.querySelectorAll('[data-esite]').forEach(b=>b.onclick=()=>{empSite=b.dataset.esite;rEmp();});
               $('eNew').onclick=empForm;}
             bindEvents(v,rEmp);bindCommon(v);
             const ua=$('uAdd');if(ua)ua.onclick=()=>uniForm();}
@@ -626,14 +642,9 @@ jobs:
           // ================= PERSON =================
           function rPerson(){const v=$('v-person');const p=P(empId);if(!p){go('emp');return;}const ar=L()==='ar';
             let h=`<button class="btn sm" id="pBack" style="margin-bottom:8px">${ar?'→':'←'} ${t('emp')}</button>`;
-            h+=`<div class="phead"><div class="av">${esc(initial(p.id))}</div><div style="flex:1"><div class="nm">${esc(pName(p.id))}</div><div class="muted">${esc(teamName(p.team))} ${roleTag(p)}</div><div style="font-size:13px;margin-top:2px">${todayStatus(p)}</div></div></div>`;
+            h+=`<div class="phead"><div class="av">${esc(initial(p.id))}</div><div style="flex:1"><div class="nm">${esc(pName(p.id))}</div><div class="muted">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} ${roleTag(p)}</div><div style="font-size:13px;margin-top:2px">${todayStatus(p)}</div></div></div>`;
             if(!p.left)h+=`<div class="qa"><button id="pqA"><span>❌</span>${t('qAbs')}</button><button id="pqC"><span>📞</span>${t('qCall')}</button><button id="pqW"><span>⚠️</span>${t('qWarn')}</button><button id="pqU"><span>👕</span>${t('qUni')}</button></div>`;
             h+=`<div class="tabs">${[['info',t('info')],['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['events',t('events')]].map(([k,l])=>`<button data-pt="${k}" class="${empTab===k?'on':''}">${l}${k==='warns'&&warnsOf(p.id).length?' ('+warnsOf(p.id).length+')':''}</button>`).join('')}</div>`;
-          EOF_FILE
-
-      - name: Create project files (10)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+='<div id="pBody"></div>';v.innerHTML=h;
             $('pBack').onclick=()=>go('emp');
             if(!p.left){$('pqA').onclick=()=>evForm('absence',p.id);$('pqC').onclick=()=>evForm('callout',p.id);$('pqW').onclick=()=>warnForm(p.id);$('pqU').onclick=()=>uniForm([p.id]);}
@@ -643,7 +654,7 @@ jobs:
               <label>${t('role')}</label><select id="piR" ${p.left?'disabled':''}>${['mem','sup','res'].map(r=>`<option value="${r}" ${p.role===r?'selected':''}>${r==='mem'?t('member'):r==='sup'?'★ '+t('supervisor'):t('reserve')}</option>`).join('')}</select>
               <label>${t('notes')}</label><textarea id="piO">${esc(p.notes||'')}</textarea>
               <p class="muted" style="margin-top:6px">${t('startDate')}: ${startOf(p)==='2000-01-01'?'—':startOf(p)}</p></div>`;
-              const hs=(p.hist||[]).filter(x=>x.from>'2000-01-01');if(hs.length)b+=`<div class="card"><h3>🔀 ${t('move')}</h3>${hs.map(x=>`<div class="b">${x.from} → ${esc(teamName(x.team))}</div>`).join('')}</div>`;
+              const hs=(p.hist||[]).filter(x=>x.from>'2000-01-01');if(hs.length)b+=`<div class="card"><h3>🔀 ${t('move')}</h3>${hs.map(x=>`<div class="b">${x.from} → ${esc(teamName(x.team))}${x.site?' · 📍'+esc(siteName(x.site)):''}</div>`).join('')}</div>`;
               b+=`<div class="btns">`+(p.left?`<button class="btn" id="piBk">${t('restoreEmp')}</button>`:`<button class="btn" id="piM">${t('move')}</button><button class="btn dang" id="piX">${t('resign')}</button>`)+`</div>`;
               B.innerHTML=b;
               $('piN').onchange=e=>{p.name=e.target.value.trim();save();rPerson();};$('piP').onchange=e=>{p.phone=e.target.value.trim();save();};$('piO').onchange=e=>{p.notes=e.target.value;save();toast(t('saved'));};
@@ -663,39 +674,40 @@ jobs:
               B.querySelectorAll('[data-delu]').forEach(x=>x.onclick=()=>confirmBox(t('confirmDel'),()=>{S.uni=S.uni.filter(u=>u.id!==x.dataset.delu);save();rPerson();}));}
             if(empTab==='warns'){const ws=warnsOf(p.id);const lvl=ws.length?Math.max(...ws.map(w=>WL.indexOf(w.type))):-1;
               let b=`<div class="card"><h3>⚠️ ${t('warns')}${p.left?'':` <button class="btn sm pri" id="pwN">${t('addWarn')}</button>`}</h3><div class="lvl">${WL.map((w,i)=>`<i class="${i<=lvl?'on':''}"></i>`).join('')}</div><div class="muted" style="display:flex;justify-content:space-between">${WL.map(w=>`<span>${t('w_'+w)}</span>`).join('')}</div></div>`;
+          EOF_FILE
+
+      - name: Create project files (11)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               b+=ws.length?ws.map(w=>`<div class="item"><div class="h"><span>${w.date} · ${t('w_'+w.type)}</span><button class="btn sm dang" data-delw="${w.id}">${t('del')}</button></div><div class="b">${esc(w.reason||'')}${w.ded?'\n'+t('deduct')+': '+w.ded+' '+(w.dedType==='amount'?t('dedAmount'):t('dedDays')):''}</div></div>`).join(''):`<div class="empty-msg">${t('noWarns')}</div>`;
               B.innerHTML=b;if($('pwN'))$('pwN').onclick=()=>warnForm(p.id);
               B.querySelectorAll('[data-delw]').forEach(x=>x.onclick=()=>confirmBox(t('confirmDel'),()=>{S.warns=S.warns.filter(w=>w.id!==x.dataset.delw);save();rPerson();}));}
             if(empTab==='events'){B.innerHTML=eventsList(S.events.filter(e=>e.p1===p.id||e.p2===p.id||e.cov===p.id),false);bindEvents(B,rPerson);}
             bindCommon(B);}
           function setRole(p,r){if(r==='sup')activePeople().forEach(x=>{if(x.team===p.team&&x.role==='sup'&&x!==p)x.role='mem';});p.role=r;}
-          function moveForm(p){openSheet(`<h3>${t('move')} — ${esc(pName(p.id))}</h3><label>${t('newTeam')}</label><select id="mvT">${teamOpts(p.team)}</select><label>${t('moveDate')}</label><input type="date" id="mvD" value="${ymd(now)}">
+          function moveForm(p){openSheet(`<h3>${t('move')} — ${esc(pName(p.id))}</h3><label>${t('newTeam')}</label><select id="mvT">${teamOpts(p.team)}</select>${p.role==='res'?'':`<label>${t('moveSite')}</label><select id="mvSi">${siteOpts(curSite(p))}</select>`}<label>${t('moveDate')}</label><input type="date" id="mvD" value="${ymd(now)}">
             <div class="btns"><button class="btn pri" id="mvS">${t('save')}</button><button class="btn" id="mvC">${t('cancel')}</button></div>`);
-            $('mvC').onclick=closeSheet;$('mvS').onclick=()=>{const k=+$('mvT').value,d=$('mvD').value||ymd(now);if(k===p.team){closeSheet();return;}
-              p.hist=(p.hist||[]).filter(x=>x.from!==d);p.hist.push({team:k,from:d});p.hist.sort((a,b)=>a.from<b.from?-1:1);p.team=k;if(p.role==='sup')p.role='mem';save();closeSheet();render();toast(t('saved'));};}
-          EOF_FILE
-
-      - name: Create project files (11)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            $('mvC').onclick=closeSheet;$('mvS').onclick=()=>{const k=+$('mvT').value,d=$('mvD').value||ymd(now),si=$('mvSi')?$('mvSi').value:p.site;if(k===p.team&&si===p.site){closeSheet();return;}
+              if(!(p.hist||[]).some(x=>x.site))p.hist=(p.hist||[]).map(x=>Object.assign({},x,{site:p.site||'compound'}));
+              p.hist=(p.hist||[]).filter(x=>x.from!==d);p.hist.push({team:k,from:d,site:si});p.hist.sort((a,b)=>a.from<b.from?-1:1);if(k!==p.team&&p.role==='sup')p.role='mem';p.team=k;p.site=si;save();closeSheet();render();toast(t('saved'));};}
           function resignForm(p){openSheet(`<h3>${t('resign')} — ${esc(pName(p.id))}</h3><label>${t('date')}</label><input type="date" id="rsD" value="${ymd(now)}"><label>${t('reason')}</label><input id="rsN">
             <label class="chk" style="margin-top:8px"><input type="checkbox" id="rsR" checked>${t('addReplacement')}</label><div id="rsW"><label>${t('newName')}</label><input id="rsNN"></div>
             <div class="btns"><button class="btn dang" id="rsS">${t('save')}</button><button class="btn" id="rsC">${t('cancel')}</button></div>`);
             $('rsR').onchange=e=>$('rsW').style.display=e.target.checked?'block':'none';$('rsC').onclick=closeSheet;
             $('rsS').onclick=()=>{const d=$('rsD').value||ymd(now),rp=$('rsR').checked,nn=$('rsNN').value.trim();if(rp&&!nn){toast(t('needName'));$('rsNN').focus();return;}
-              let nid=null;if(rp){nid='p'+uid();people().push({id:nid,name:nn,team:p.team,role:p.role,hist:[{team:p.team,from:d}]});}
+              let nid=null;if(rp){nid='p'+uid();people().push({id:nid,name:nn,team:p.team,role:p.role,site:p.site||'compound',hist:[{team:p.team,from:d,site:p.site||'compound'}]});}
               p.left=d;p.leftNote=$('rsN').value.trim();if(p.role==='sup')p.role='mem';save();closeSheet();if(nid)openPerson(nid);else render();toast(t('saved'));};}
           function empForm(){openSheet(`<h3>${t('newEmp').replace('+ ','')}</h3><label>${t('name')}</label><input id="nwN"><label>${t('teamOf')}</label><select id="nwT">${teamOpts(empF!=='all'&&empF!=='former'?empF:C().myTeam)}</select>
             <label>${t('role')}</label><select id="nwR"><option value="mem">${t('member')}</option><option value="sup">★ ${t('supervisor')}</option><option value="res">${t('reserve')}</option></select>
-            <label>${t('startDate')}</label><input type="date" id="nwD" value="${ymd(now)}"><div class="btns"><button class="btn pri" id="nwOk">${t('save')}</button><button class="btn" id="nwC">${t('cancel')}</button></div>`);
+            <label>${t('site')}</label><select id="nwSi">${siteOpts(empSite!=='all'?empSite:'compound')}</select><label>${t('startDate')}</label><input type="date" id="nwD" value="${ymd(now)}"><div class="btns"><button class="btn pri" id="nwOk">${t('save')}</button><button class="btn" id="nwC">${t('cancel')}</button></div>`);
             $('nwC').onclick=closeSheet;$('nwOk').onclick=()=>{const n=$('nwN').value.trim();if(!n){toast(t('needName'));$('nwN').focus();return;}const k=+$('nwT').value;
-              const p={id:'p'+uid(),name:n,team:k,role:'mem',hist:[{team:k,from:$('nwD').value||ymd(now)}]};people().push(p);setRole(p,$('nwR').value);save();closeSheet();render();toast(t('saved'));};}
+              const si=$('nwSi').value;const p={id:'p'+uid(),name:n,team:k,role:'mem',site:si,hist:[{team:k,from:$('nwD').value||ymd(now),site:si}]};people().push(p);setRole(p,$('nwR').value);save();closeSheet();render();toast(t('saved'));};}
 
           // ================= EVENTS =================
           function evText(e){const n=pName(e.p1);
-            if(e.type==='absence')return `❌ ${t('ev_absence')}: ${n}`+(e.cov?` — ${pName(e.cov)} ${t('covers')} ${ICO[e.st||'D']}`:'');
+            if(e.type==='absence'){const ab=P(e.p1);return `❌ ${t('ev_absence')}: ${n}`+(ab&&ab.role!=='res'?` 📍${siteName(siteAt(ab,e.from))}`:'')+(e.cov?` — ${pName(e.cov)} ${t('covers')} ${ICO[e.st||'D']}`:'');}
             if(e.type==='leave')return `🏖️ ${t('ev_leave')}: ${n}`;
-            if(e.type==='callout')return `📞 ${t('ev_callout')}: ${n} — ${ICO[e.st]} ${t(e.st)} · ${t('forTeam')} ${teamName(e.team)}`;
+            if(e.type==='callout')return `📞 ${t('ev_callout')}: ${n} — ${ICO[e.st]} ${t(e.st)} · ${t('forTeam')} ${teamName(e.team)}${e.site?' 📍'+siteName(e.site):''}`;
             if(e.type==='swap')return `🔁 ${t('ev_swap')}: ${n} ${t('swapWith')} ${pName(e.p2)}`;return e.type;}
           function evDates(e){return e.type==='swap'?e.from+(e.back?' ↔ '+e.back:''):e.from+(e.to&&e.to!==e.from?' → '+e.to:'');}
           let evFilter='all';
@@ -708,7 +720,12 @@ jobs:
             const h=`<h3 id="efH"></h3><div class="tabs">${['absence','leave','callout','swap'].map(k=>`<button data-eft="${k}" class="${type===k?'on':''}">${t('ev_'+k)}</button>`).join('')}</div>
             <label id="efPl">${t('person')}</label><select id="efP">${personOpts(pid)}</select>
             <div class="row"><div><label id="efFl">${t('date')}</label><input type="date" id="efF" value="${k0}"></div><div id="efTw"><label>${t('to')}</label><input type="date" id="efT" value="${k0}"></div></div>
-            <div id="efCall"><div class="row"><div><label>${t('shiftT')}</label><select id="efS"><option value="D">☀️ ${t('D')}</option><option value="N">🌙 ${t('N')}</option></select></div><div><label>${t('forTeam')}</label><select id="efTm">${teamOpts(0)}</select></div></div></div>
+          EOF_FILE
+
+      - name: Create project files (12)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            <div id="efCall"><div class="row"><div><label>${t('shiftT')}</label><select id="efS"><option value="D">☀️ ${t('D')}</option><option value="N">🌙 ${t('N')}</option></select></div><div><label>${t('forTeam')}</label><select id="efTm">${teamOpts(0)}</select></div></div><label>${t('site')}</label><select id="efSite">${siteOpts('compound')}</select></div>
             <div id="efSw"><label>${t('swapWith')}</label><select id="efP2">${personOpts()}</select><label>${t('backDate')}</label><input type="date" id="efB"></div>
             <div id="efCovW"><label>${t('coveredBy')}</label><select id="efCov"></select></div>
             <div id="efInfo"></div><label>${t('note')}</label><input id="efN">
@@ -722,14 +739,9 @@ jobs:
               let info='';const k=$('efF').value,pidv=$('efP').value;
               if(ty==='absence'){const s=absShift();if(s==='O'){info=`<div class="muted" style="margin-top:6px">${t('noShiftThatDay')}</div>`;$('efCov').innerHTML=`<option value="">${t('noCover')}</option>`;}
                 else{const prev=$('efCov').value;const p=P(pidv);const ft=p?teamAt(p,k):null;const cs=candidates(k,s,[pidv],ft);
-                  $('efCov').innerHTML=`<option value="">${t('noCover')}</option>`+cs.map(c=>`<option value="${c.id}">${c.conf.length?'⚠️ ':'✓ '}${esc(c.name)}${c.role==='res'?' ('+t('reserve')+')':''} — ${esc(teamName(c.team))}</option>`).join('');
+                  $('efCov').innerHTML=`<option value="">${t('noCover')}</option>`+cs.map(c=>`<option value="${c.id}">${c.conf.length?'⚠️ ':'✓ '}${esc(c.name)}${c.role==='res'?' ('+t('reserve')+')':''} — ${esc(teamName(c.team))} · ${esc(siteName(c.site))}</option>`).join('');
                   if(prev&&cs.some(c=>c.id===prev))$('efCov').value=prev;else{const r=cs.find(c=>c.role==='res'&&p&&c.team===p.team&&!c.conf.length);if(r&&!$('efCov').dataset.touched)$('efCov').value=r.id;}
-          EOF_FILE
-
-      - name: Create project files (12)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-                  info=`<div class="muted" style="margin-top:6px">${ICO[s]} ${t(s)} — ${fmtK(k)}</div>`;const cv=$('efCov').value;if(cv)info+=confBox(conflicts(cv,k,s,null,ft));}}
+                  info=`<div class="muted" style="margin-top:6px">${ICO[s]} ${t(s)} — ${fmtK(k)}${p&&p.role!=='res'?' · 📍'+esc(siteName(siteAt(p,k))):''}</div>`;const cv=$('efCov').value;if(cv)info+=confBox(conflicts(cv,k,s,null,ft));}}
               if(ty==='callout'){const s=$('efS').value;info=confBox(conflicts(pidv,k,s,null,+$('efTm').value));}
               if(ty==='swap'){const p1=P(pidv),p2=P($('efP2').value);if(p1&&p2&&k){const s=teamShift(teamAt(p2,k),k);
                 if(s==='O')info=`<div class="muted" style="margin-top:6px">${esc(pName(p2.id))}: ${t('noShiftThatDay')}</div>`;else{info=`<div class="muted" style="margin-top:6px">${esc(pName(p1.id))} → ${ICO[s]} ${t(s)} ${fmtK(k)}</div>`+confBox(conflicts(p1.id,k,s));}
@@ -741,7 +753,7 @@ jobs:
             $('efC').onclick=closeSheet;
             $('efOk').onclick=()=>{const p1=$('efP').value,f=$('efF').value;if(!p1||!f)return;const note=$('efN').value.trim();let e;
               if(ty==='absence'||ty==='leave'){let to=$('efT').value||f;if(to<f)to=f;e={id:uid(),type:ty,p1,from:f,to,note};if(ty==='absence'){const cv=$('efCov').value;if(cv){e.cov=cv;e.st=absShift();}}}
-              if(ty==='callout')e={id:uid(),type:'callout',p1,from:f,to:f,st:$('efS').value,team:+$('efTm').value,note};
+              if(ty==='callout')e={id:uid(),type:'callout',p1,from:f,to:f,st:$('efS').value,team:+$('efTm').value,site:$('efSite').value,note};
               if(ty==='swap'){const p2=$('efP2').value;if(!p2||p2===p1)return;const st=teamShift(teamAt(P(p2),f),f);if(st==='O'){toast(t('noShiftThatDay'));return;}e={id:uid(),type:'swap',p1,p2,from:f,to:f,st,note};
                 const b=$('efB').value;if(b){const s2=teamShift(teamAt(P(p1),b),b);if(s2!=='O'){e.back=b;e.st2=s2;}}}
               if(!e)return;S.events.push(e);save();closeSheet();render();toast(t('saved'));};
@@ -761,6 +773,11 @@ jobs:
 
           // ================= UNIFORM =================
           function itemName(it){return (it.name||'').trim()||t('u_'+it.id);}
+          EOF_FILE
+
+      - name: Create project files (13)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function itemById(id){return C().uniItems.find(i=>i.id===id)||{id,name:id};}
           function uniOf(p){return S.uni.filter(u=>u.p===p).sort((a,b)=>a.date<b.date?1:-1);}
           function lastSize(p,it){for(const u of uniOf(p)){const x=u.items[it];if(x&&x.size)return x.size;}return '';}
@@ -775,11 +792,6 @@ jobs:
             h+=ppl.map(p=>`<label class="chk"><input type="checkbox" data-pp="${p.id}" data-tx="${p.team}" ${pre.includes(p.id)?'checked':''}>${esc(p.name)}</label>`).join('');
             h+=`<label>${t('note')}</label><input id="uN"><div class="btns"><button class="btn pri" id="uNx">${t('nextStep')}</button><button class="btn" id="uC">${t('cancel')}</button></div>`;
             openSheet(h);$('uC').onclick=closeSheet;
-          EOF_FILE
-
-      - name: Create project files (13)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('panel').querySelectorAll('[data-pq]').forEach(b=>b.onclick=()=>{const q=b.dataset.pq;$('panel').querySelectorAll('[data-pp]').forEach(c=>{c.checked=q==='all'?true:q==='none'?false:(c.dataset.tx===q||c.checked);});});
             $('uNx').onclick=()=>{const date=$('uD').value||ymd(now),note=$('uN').value.trim();
               const items=[...$('panel').querySelectorAll('[data-ui]')].filter(c=>c.checked).map(c=>({id:c.dataset.ui,qty:Math.max(1,parseInt($('panel').querySelector('[data-uq="'+c.dataset.ui+'"]').value,10)||1)}));
@@ -802,6 +814,11 @@ jobs:
               <div id="mmBox" style="display:${mmF()?'block':'none'}"><div class="alert" style="margin:10px 0 0">${t('mismatch')}</div><label>${t('mismatchNote')}</label><input id="fCN" value="${esc(g.cardNote)}"></div></div>`;
             if(logSel.type==='N')h+=`<div class="card"><h3>📒 ${t('logChange')} <span class="muted">${C().logFrom}–${C().logTo}</span></h3><label class="chk"><input type="checkbox" id="fVis" ${g.vis?'checked':''}>${t('visitorsLog')}</label><label class="chk"><input type="checkbox" id="fWrk" ${g.wrk?'checked':''}>${t('workersLog')}</label></div>`;
             h+=`<div class="card"><h3>📝 ${t('handNotes')}</h3><textarea id="fNotes" placeholder="${t('handNotesPh')}">${esc(g.notes)}</textarea></div>`;
+          EOF_FILE
+
+      - name: Create project files (14)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="card"><h3>🚨 ${t('incidents')} <button class="btn sm pri" id="fInc">${t('addIncident')}</button></h3>`+(g.inc.length?g.inc.map(x=>`<div class="item"><div class="h"><span>${esc(x.time)} · ${t('inc_'+x.type)}</span><button class="btn sm dang" data-delinc="${x.id}">${t('del')}</button></div><div class="b">${esc(x.desc)}${x.action?'\n↳ '+esc(x.action):''}</div></div>`).join(''):`<div class="empty-msg">${t('nothing')}</div>`)+'</div>';
             v.innerHTML=h;
             $('lP').onclick=()=>{logSel=myShiftStep(logSel.date,logSel.type,-1);rLog();};$('lN').onclick=()=>{logSel=myShiftStep(logSel.date,logSel.type,1);rLog();};
@@ -817,30 +834,31 @@ jobs:
             $('iC').onclick=closeSheet;$('iS').onclick=()=>{const d=$('iD').value.trim();if(!d){$('iD').focus();return;}g.inc.push({id:uid(),time:$('iT').value,type:$('iY').value,desc:d,action:$('iA').value.trim()});g.inc.sort((a,b)=>a.time<b.time?-1:1);save();closeSheet();rLog();toast(t('saved'));};}
 
           // ================= REPORTS =================
-          EOF_FILE
-
-      - name: Create project files (14)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-          let repSub='sheet',repMonth=null,sheetTeam='all',repOut='';
+          let repSub='sheet',repMonth=null,sheetTeam='all',sheetSite='all',repOut='';
           let rp={per:'this',from:'',to:'',sec:{shifts:true,inc:true,cards:true,logs:true,notes:true,team:true,warn:true,uni:true}};
           function monthRow(p,A,B){const td=ymd(now);if(B>td)B=td;if(B<A)return{list:[],d:0,n:0,total:0,abs:0,leave:0,extra:0,w:0};const list=shiftsOf(p.id,A,B);const d=list.filter(x=>x.type==='D').length,n=list.filter(x=>x.type==='N').length;
             let abs=0,leave=0;kRange(A,B).forEach(k=>{if(!employedOn(p,k))return;const a=absentOn(p.id,k);if(!a)return;if(a.type==='leave')leave++;else if(p.role!=='res'&&teamShift(teamAt(p,k),k)!=='O')abs++;});
             const extra=list.filter(x=>x.kind!=='base').length;const w=S.warns.filter(x=>x.p===p.id&&x.date>=A&&x.date<=B).length;return{list,d,n,total:d+n,abs,leave,extra,w};}
-          function sheetPeople(A,B){return people().filter(p=>startOf(p)<=B&&!(p.left&&p.left<A)&&(sheetTeam==='all'||teamAt(p,B)===+sheetTeam)).sort((a,b)=>teamAt(a,B)-teamAt(b,B)||RO[a.role]-RO[b.role]);}
+          function sheetPeople(A,B){return people().filter(p=>startOf(p)<=B&&!(p.left&&p.left<A)&&(sheetTeam==='all'||teamAt(p,B)===+sheetTeam)&&(sheetSite==='all'||siteAt(p,B)===sheetSite||siteAt(p,B)==='both')).sort((a,b)=>teamAt(a,B)-teamAt(b,B)||SO(a)-SO(b)||RO[a.role]-RO[b.role]);}
           function rRep(){const v=$('v-rep');const ar=L()==='ar';let h=`<div class="tabs">${[['sheet','📅 '+t('sheet')],['text','📄 '+t('textRep')]].map(([k,l])=>`<button data-rs="${k}" class="${repSub===k?'on':''}">${l}</button>`).join('')}</div>`;
             if(repSub==='sheet'){if(!repMonth)repMonth=new Date(now.getFullYear(),now.getMonth(),1);const A=ymd(repMonth),B=ymd(new Date(repMonth.getFullYear(),repMonth.getMonth()+1,0));
               h+=`<div class="card"><div class="mnav"><button class="btn" id="smP">${ar?'›':'‹'}</button><b>${t('actual')} — ${MONTHS[L()][repMonth.getMonth()]} ${repMonth.getFullYear()}</b><button class="btn" id="smN">${ar?'‹':'›'}</button></div>
               <div class="tabs">${[['all',t('all')],['0',teamName(0)],['1',teamName(1)],['2',teamName(2)]].map(([k,l])=>`<button data-st="${k}" class="${sheetTeam===k?'on':''}">${esc(l)}</button>`).join('')}</div>
-              <div class="scrollx"><table class="tbl"><tr><th>${t('name')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
-              let tot=0;sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);tot+=r.total;h+=`<tr data-pid="${p.id}"><td>${esc(pName(p.id))}${p.role==='res'?' <span class="tag res">'+t('reserve')+'</span>':''}</td><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs||''}</td><td>${r.leave||''}</td><td>${r.extra||''}</td><td>${r.w||''}</td></tr>`;});
+              <div class="tabs">${[['all','📍 '+t('allSites')],...C().sites.map(x=>[x.id,'📍 '+x.name])].map(([k,l])=>`<button data-ss="${k}" class="${sheetSite===k?'on':''}">${esc(l)}</button>`).join('')}</div>
+              <div class="scrollx"><table class="tbl"><tr><th>${t('name')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
+              let tot=0;sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);tot+=r.total;h+=`<tr data-pid="${p.id}"><td>${esc(pName(p.id))}${p.role==='res'?' <span class="tag res">'+t('reserve')+'</span>':''}</td><td>${esc(siteName(siteAt(p,B)))}</td><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs||''}</td><td>${r.leave||''}</td><td>${r.extra||''}</td><td>${r.w||''}</td></tr>`;});
               h+=`</table></div><div class="btns"><button class="btn pri" id="smPr">${t('print')}</button><button class="btn" id="smSh">${t('share')}</button></div></div>`;
               v.innerHTML=h;bindCommon(v);
               $('smP').onclick=()=>{repMonth=new Date(repMonth.getFullYear(),repMonth.getMonth()-1,1);rRep();};$('smN').onclick=()=>{repMonth=new Date(repMonth.getFullYear(),repMonth.getMonth()+1,1);rRep();};
-              v.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{sheetTeam=b.dataset.st;rRep();});
+              v.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{sheetTeam=b.dataset.st;rRep();});v.querySelectorAll('[data-ss]').forEach(b=>b.onclick=()=>{sheetSite=b.dataset.ss;rRep();});
               $('smPr').onclick=()=>printHtml(sheetHtml(A,B),t('sheet'));$('smSh').onclick=()=>shareText(sheetText(A,B));}
             else{if(!rp.from){rp.from=ymd(new Date(now.getFullYear(),now.getMonth(),1));rp.to=ymd(now);}
               h+=`<div class="card"><label>${t('period')}</label><div class="seg">${[['this',t('thisMonth')],['last',t('lastMonth')],['custom',t('custom')]].map(([k,l])=>`<button data-per="${k}" class="${rp.per===k?'on':''}">${l}</button>`).join('')}</div>
+          EOF_FILE
+
+      - name: Create project files (15)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               <div class="row" style="display:${rp.per==='custom'?'flex':'none'}"><div><label>${t('from')}</label><input type="date" id="rF" value="${rp.from}"></div><div><label>${t('to')}</label><input type="date" id="rT" value="${rp.to}"></div></div>
               <label>${t('include')}</label>${[['shifts','secShifts'],['inc','secIncidents'],['cards','secCards'],['logs','secLogs'],['notes','secNotes'],['team','secTeam'],['warn','secWarn'],['uni','secUni']].map(([k,l])=>`<label class="chk"><input type="checkbox" data-sec="${k}" ${rp.sec[k]?'checked':''}>${t(l)}</label>`).join('')}
               <button class="btn pri full" id="rG">${t('generate')}</button></div>`;
@@ -853,19 +871,14 @@ jobs:
             v.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{repSub=b.dataset.rs;rRep();});}
           const docHead=title=>`<!DOCTYPE html><html lang="${L()}" dir="${L()==='ar'?'rtl':'ltr'}"><head><meta charset="utf-8"><title>${esc(title)}</title><style>@page{size:A4;margin:14mm}body{font-family:'Noto Naskh Arabic','Noto Sans Arabic',Arial,sans-serif;color:#000;font-size:12px}h1{font-size:17px;margin:0 0 4px;text-align:center}.sub{text-align:center;color:#444;margin-bottom:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #444;padding:5px 4px;text-align:center}th{background:#e5e7eb}td:first-child,th:first-child{text-align:start}.sig{display:flex;justify-content:space-between;margin-top:40px}.sig div{width:40%;border-top:1px solid #000;text-align:center;padding-top:4px}pre{white-space:pre-wrap;font-family:inherit;font-size:12px;line-height:1.8}.tot td{font-weight:bold;background:#f3f4f6}</style></head><body>`;
           function sheetHtml(A,B){const ps=sheetPeople(A,B);const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();
-            let h=docHead(t('sheet'))+`<h1>${t('actual')} — ${m}</h1><div class="sub">${sheetTeam==='all'?t('all'):esc(teamName(+sheetTeam))} · ${t('generated')}: ${fmt(now)}</div><table><tr><th>#</th><th>${t('name')}</th><th>${t('teamOf')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
-          EOF_FILE
-
-      - name: Create project files (15)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            let h=docHead(t('sheet'))+`<h1>${t('actual')} — ${m}</h1><div class="sub">${sheetTeam==='all'?t('all'):esc(teamName(+sheetTeam))} · 📍${sheetSite==='all'?t('allSites'):esc(siteName(sheetSite))} · ${t('generated')}: ${fmt(now)}</div><table><tr><th>#</th><th>${t('name')}</th><th>${t('teamOf')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
             let T0={d:0,n:0,t:0,a:0,l:0,x:0,w:0};ps.forEach((p,i)=>{const r=monthRow(p,A,B);T0.d+=r.d;T0.n+=r.n;T0.t+=r.total;T0.a+=r.abs;T0.l+=r.leave;T0.x+=r.extra;T0.w+=r.w;
-              h+=`<tr><td>${i+1}</td><td>${esc(pName(p.id))}${p.role==='sup'?' ★':p.role==='res'?' ('+t('reserve')+')':''}${p.left?' — '+t('leftOn')+' '+p.left:''}</td><td>${esc(teamName(teamAt(p,B)))}</td><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs}</td><td>${r.leave}</td><td>${r.extra}</td><td>${r.w}</td></tr>`;});
-            h+=`<tr class="tot"><td></td><td>${t('total')}</td><td></td><td>${T0.d}</td><td>${T0.n}</td><td>${T0.t}</td><td>${T0.t*12}</td><td>${T0.a}</td><td>${T0.l}</td><td>${T0.x}</td><td>${T0.w}</td></tr></table><div class="sig"><div>${t('sign1')}</div><div>${t('sign2')}</div></div></body></html>`;return h;}
+              h+=`<tr><td>${i+1}</td><td>${esc(pName(p.id))}${p.role==='sup'?' ★':p.role==='res'?' ('+t('reserve')+')':''}${p.left?' — '+t('leftOn')+' '+p.left:''}</td><td>${esc(teamName(teamAt(p,B)))}</td><td>${esc(siteName(siteAt(p,B)))}</td><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs}</td><td>${r.leave}</td><td>${r.extra}</td><td>${r.w}</td></tr>`;});
+            h+=`<tr class="tot"><td></td><td>${t('total')}</td><td></td><td></td><td>${T0.d}</td><td>${T0.n}</td><td>${T0.t}</td><td>${T0.t*12}</td><td>${T0.a}</td><td>${T0.l}</td><td>${T0.x}</td><td>${T0.w}</td></tr></table><div class="sig"><div>${t('sign1')}</div><div>${t('sign2')}</div></div></body></html>`;return h;}
           function sheetText(A,B){const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();let o=`${t('actual')} — ${m}\n${'─'.repeat(20)}\n`;
-            sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);o+=`${pName(p.id)}: ${r.total} (${t('dayC')} ${r.d} · ${t('nightC')} ${r.n})${r.abs?' · '+t('absC')+' '+r.abs:''}${r.leave?' · '+t('leaveC')+' '+r.leave:''}${r.extra?' · '+t('extraC')+' '+r.extra:''}${r.w?' · ⚠️'+r.w:''}\n`;});return o;}
+            sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);o+=`${pName(p.id)} (${siteName(siteAt(p,B))}): ${r.total} (${t('dayC')} ${r.d} · ${t('nightC')} ${r.n})${r.abs?' · '+t('absC')+' '+r.abs:''}${r.leave?' · '+t('leaveC')+' '+r.leave:''}${r.extra?' · '+t('extraC')+' '+r.extra:''}${r.w?' · ⚠️'+r.w:''}\n`;});return o;}
           function personMonthHtml(p,A,B,r){const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();
-            let h=docHead(pName(p.id))+`<h1>${esc(pName(p.id))} — ${t('actual')}</h1><div class="sub">${esc(teamName(p.team))} · ${m}</div><table><tr><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th></tr><tr><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs}</td><td>${r.leave}</td><td>${r.extra}</td></tr></table><br>
+            let h=docHead(pName(p.id))+`<h1>${esc(pName(p.id))} — ${t('actual')}</h1><div class="sub">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} · ${m}</div><table><tr><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th></tr><tr><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs}</td><td>${r.leave}</td><td>${r.extra}</td></tr></table><br>
             <table><tr><th>#</th><th>${t('date')}</th><th>${t('shiftT')}</th><th>${t('type')}</th></tr>`+r.list.map((x,i)=>`<tr><td>${i+1}</td><td>${fmt(parse(x.k))}</td><td>${t(x.type)}</td><td>${t('kind_'+x.kind)}</td></tr>`).join('')+`</table><div class="sig"><div>${t('sign1')}</div><div>${t('sign2')}</div></div></body></html>`;return h;}
           const textHtml=txt=>docHead(t('report'))+`<pre>${esc(txt)}</pre></body></html>`;
           function range(){let a,b;if(rp.per==='this'){a=new Date(now.getFullYear(),now.getMonth(),1);b=new Date(now.getFullYear(),now.getMonth()+1,0);}else if(rp.per==='last'){a=new Date(now.getFullYear(),now.getMonth()-1,1);b=new Date(now.getFullYear(),now.getMonth(),0);}else{a=parse(rp.from||ymd(now));b=parse(rp.to||ymd(now));if(b<a)[a,b]=[b,a];}return[a,b];}
@@ -873,6 +886,11 @@ jobs:
             const my=[];kRange(A,B).forEach(k=>{const s=teamShift(C().myTeam,k);if(s!=='O')my.push({date:parse(k),type:s,id:k+'_'+s});});
             const started=x=>shiftTimes(x.date,x.type).s<=now;
             if(rp.sec.shifts){const dn=my.filter(x=>x.type==='D').length,nn=my.filter(x=>x.type==='N').length;o+=`\n■ ${t('secShifts')}\n${t('D')}: ${dn} · ${t('N')}: ${nn} · ${t('total')}: ${dn+nn} ${t('shifts')} (${(dn+nn)*12} ${t('hours')})\n`;}
+          EOF_FILE
+
+      - name: Create project files (16)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(rp.sec.inc){o+=`\n■ ${t('secIncidents')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.inc)g.inc.forEach(i=>{n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${i.time} [${t('inc_'+i.type)}] ${i.desc}${i.action?' ↳ '+i.action:''}\n`;});});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.cards){o+=`\n■ ${t('secCards')} (${t('total')} ${C().cards})\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&(g.recv!=null||g.hand!=null)){n++;const bad=(g.recv!=null&&g.recv!==+C().cards)||(g.recv!=null&&g.hand!=null&&g.recv!==g.hand);o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${t('received')} ${g.recv==null?'—':g.recv} / ${t('handed')} ${g.hand==null?'—':g.hand}${bad?' ⚠️'+(g.cardNote?' '+g.cardNote:''):''}\n`;}});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.logs){const ns=my.filter(x=>x.type==='N'&&started(x));if(ns.length){o+=`\n■ ${t('secLogs')}\n`;ns.forEach(x=>{const g=S.logs[x.id]||{};o+=`- ${fmtS(x.date)}: ${t('visitorsLog')} ${g.vis?'✓':'✗'} · ${t('workersLog')} ${g.wrk?'✓':'✗'}\n`;});}}
@@ -886,22 +904,18 @@ jobs:
           function doRestore(text){let x;try{x=JSON.parse(text);if(!x||!x.cfg)throw 0;}catch(e){toast(t('bad'));return;}confirmBox(t('restoreQ'),()=>{S=normalize(x);save();toast(t('restored'));render();});}
           function rSet(){const v=$('v-set'),c=C();let h=`<div class="card"><h3>🌐 ${t('language')}</h3><div class="seg"><button data-lang="ar" class="${c.lang==='ar'?'on':''}">العربية</button><button data-lang="en" class="${c.lang==='en'?'on':''}">English</button></div>
             <h3>🎨 ${t('theme')}</h3><div class="seg">${['dark','light','auto'].map(k=>`<button data-th="${k}" class="${c.theme===k?'on':''}">${k==='dark'?'🌙 ':k==='light'?'☀️ ':'⚙️ '}${t(k)}</button>`).join('')}</div></div>`;
-          EOF_FILE
-
-      - name: Create project files (16)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="card"><h3>👤 ${t('myTeam')}</h3><div class="seg">${[0,1,2].map(i=>`<button data-mt="${i}" class="${c.myTeam===i?'on':''}">${esc(teamName(i))}</button>`).join('')}</div><label>${t('myName')}</label><input id="sMe" value="${esc(c.myName)}"></div>`;
             h+=`<div class="card"><h3>⏰ ${t('times')}</h3><div class="row"><div><label>${t('fpStart')}</label><input type="time" data-k="fpStart" value="${c.fpStart}"></div><div><label>${t('fpEnd')}</label><input type="time" data-k="fpEnd" value="${c.fpEnd}"></div></div>
               <label>${t('startTime')}</label><input type="time" data-k="start" value="${c.start}"><p class="muted" style="margin-top:4px">${t('nightNote')}</p>
               <div class="row"><div><label>${t('logFrom')}</label><input type="time" data-k="logFrom" value="${c.logFrom}"></div><div><label>${t('logTo')}</label><input type="time" data-k="logTo" value="${c.logTo}"></div></div>
               <div class="row"><div><label>${t('cardsTotal')}</label><input type="number" inputmode="numeric" id="sCards" value="${c.cards}"></div><div><label>${t('minRest')}</label><input type="number" inputmode="numeric" id="sRest" value="${c.minRest}"></div></div>
               <label>${t('anchor')}</label><input type="date" id="sAnc" value="${c.anchor}"><p class="muted" style="margin-top:4px">${t('hint')}</p></div>`;
+            h+=`<div class="card"><h3>📍 ${t('sites')}</h3>`+c.sites.map((x,i)=>`<input data-site="${i}" value="${esc(x.name)}" style="margin-bottom:6px">`).join('')+`</div>`;
             h+=`<div class="card"><h3>👕 ${t('uniItems')}</h3>`+c.uniItems.map((it,i)=>`<div class="row" style="align-items:center;margin-bottom:6px"><input data-itn="${i}" value="${esc(itemName(it))}" style="flex:4"><button class="btn sm dang" data-itd="${i}" style="flex:1">${t('del')}</button></div>`).join('')+`<button class="btn full" id="itA">${t('addItem')}</button></div>`;
             h+=`<div class="card"><h3>💾 ${t('backup')}</h3><p class="muted">${t('fileHint')}</p><button class="btn pri full" id="bF">${t('shareFile')}</button>
               <label class="btn full" style="margin-top:8px;color:var(--text)">${t('restoreFile')}<input type="file" id="bI" accept=".json,application/json,text/plain,*/*" style="display:none"></label>
               <button class="btn full" id="bC">${t('copyText')}</button><label>${t('pasteText')}</label><textarea id="bT" style="min-height:50px"></textarea><button class="btn full" id="bR">${t('restore')}</button>
-              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v3.0</p>`;
+              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v3.1</p>`;
             v.innerHTML=h;
             v.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{c.lang=b.dataset.lang;repOut='';save();render();});
             v.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{c.theme=b.dataset.th;save();render();});
@@ -910,9 +924,15 @@ jobs:
             v.querySelectorAll('[data-k]').forEach(i=>i.onchange=()=>{if(i.value){c[i.dataset.k]=i.value;save();toast(t('saved'));}});
             $('sCards').onchange=e=>{const n=parseInt(e.target.value,10);if(n>0){c.cards=n;save();toast(t('saved'));}};
             $('sRest').onchange=e=>{const n=parseInt(e.target.value,10);if(n>=0){c.minRest=n;save();toast(t('saved'));}};
+          EOF_FILE
+
+      - name: Create project files (17)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('sAnc').onchange=e=>{if(e.target.value){c.anchor=e.target.value;save();toast(t('saved'));}};
             v.querySelectorAll('[data-itn]').forEach(i=>i.onchange=()=>{const it=c.uniItems[+i.dataset.itn];const val=i.value.trim();it.name=(val===t('u_'+it.id))?'':val;save();toast(t('saved'));});
             v.querySelectorAll('[data-itd]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{c.uniItems.splice(+b.dataset.itd,1);save();rSet();}));
+            v.querySelectorAll('[data-site]').forEach(i=>i.onchange=()=>{const v2=i.value.trim();if(v2){c.sites[+i.dataset.site].name=v2;save();toast(t('saved'));}});
             $('itA').onclick=()=>{c.uniItems.push({id:'i'+uid(),name:t('itemName')});save();rSet();};
             $('bF').onclick=()=>shareFile('shifts-backup-'+ymd(now)+'.json','application/json',JSON.stringify(S));
             $('bI').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>doRestore(String(r.result));r.readAsText(f);e.target.value='';};
@@ -932,7 +952,7 @@ jobs:
           </html>
           EOF_FILE
 
-      - name: Create project files (17)
+      - name: Create project files (18)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
@@ -1121,7 +1141,7 @@ jobs:
           }
           EOF_FILE
 
-      - name: Create project files (18)
+      - name: Create project files (19)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/ShareProvider.java' <<'EOF_FILE'
@@ -1265,5 +1285,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Shifts v3.0 build ${{ github.run_number }}
+          name: Shifts v3.1 build ${{ github.run_number }}
           files: Shifts.apk
