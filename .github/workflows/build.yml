@@ -23,8 +23,8 @@ jobs:
                   applicationId "com.mohamed.shifts"
                   minSdk 26
                   targetSdk 34
-                  versionCode 9
-                  versionName "4.0"
+                  versionCode 10
+                  versionName "4.1"
               }
               signingConfigs {
                   debug {
@@ -253,6 +253,71 @@ jobs:
           .ib{position:relative}
           .bdg{position:absolute;top:-4px;inset-inline-end:-4px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;border-radius:10px;min-width:17px;height:17px;line-height:17px;padding:0 4px;text-align:center}
           .hbtns{display:flex;gap:8px}
+          /* ===== Glass theme (v4.1) ===== */
+          :root{--bg:transparent;--card:rgba(20,14,52,.38);--card2:rgba(255,255,255,.08);--line:rgba(255,255,255,.2);--text:#fff;--muted:rgba(255,255,255,.74);
+          --accent:#c4b5fd;color-scheme:dark;--day:#fcd34d;--dayBg:rgba(251,191,36,.26);--night:#c7d2fe;--nightBg:rgba(129,140,248,.32);--off:#6ee7b7;--offBg:rgba(52,211,153,.24);--danger:#fda4af;--dangerBg:rgba(244,63,94,.32);
+          --blur:blur(22px) saturate(1.3);--shadow:inset 0 1px 0 rgba(255,255,255,.22),0 18px 36px -22px rgba(0,0,0,.55)}
+          body{background:radial-gradient(circle at 85% 6%,#7c3aed 0,transparent 46%),radial-gradient(circle at 6% 42%,#0ea5e9 0,transparent 42%),radial-gradient(circle at 72% 92%,rgba(190,18,60,.55) 0,transparent 44%),#0b1026;background-attachment:fixed;min-height:100vh}
+          body:not(.light){color-scheme:dark}
+          body.light{color-scheme:light;--card:rgba(255,255,255,.55);--card2:rgba(255,255,255,.42);--line:rgba(255,255,255,.9);--text:#1e1b4b;--muted:#5b5680;--accent:#6d28d9;
+          --day:#b45309;--dayBg:rgba(251,191,36,.3);--night:#4338ca;--nightBg:rgba(129,140,248,.3);--off:#047857;--offBg:rgba(52,211,153,.28);--danger:#e11d48;--dangerBg:rgba(244,63,94,.18);
+          --shadow:inset 0 1px 0 rgba(255,255,255,.9),0 18px 36px -24px rgba(76,29,149,.45);
+          background:radial-gradient(circle at 85% 6%,#c4b5fd 0,transparent 46%),radial-gradient(circle at 6% 42%,#7dd3fc 0,transparent 42%),radial-gradient(circle at 72% 92%,#fda4af 0,transparent 44%),#f3f0ff;background-attachment:fixed}
+          EOF_FILE
+
+      - name: Create project files (4)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          .card,.stat,.kpi,.item,.tl,.ecard,.phead,.wd,.seg,.tabs button,.btn,.ib,.qa button,.alert,.okbox,.warnbox,.shnav .mid,.hero{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+          .card,.hero,.phead,header{backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur)}
+          .item,.tl,.kpi,.seg button.on{background:var(--card2)}
+          .card,.phead{border-radius:26px}.item,.tl{border-radius:16px}.ecard{border-radius:22px}.kpi{border-radius:18px}
+          header{background:rgba(11,16,38,.55)}body.light header{background:rgba(243,240,255,.6)}header h1{color:var(--text)}
+          .ib{border-radius:50%;color:var(--text)}
+          .btn{color:var(--text);border-radius:16px}
+          .btn.pri{background:#fff;color:#4c1d95;border-color:#fff}body.light .btn.pri{background:#4c1d95;color:#fff;border-color:#4c1d95}
+          .btn.dang{background:var(--dangerBg);color:var(--danger)}
+          .tabs button{color:var(--muted);border-radius:20px}.tabs button.on{background:#fff;color:#4c1d95;border-color:#fff}body.light .tabs button.on{background:#4c1d95;color:#fff}
+          .seg{border-radius:16px;padding:4px}.seg button{color:var(--muted)}.seg button.on{color:var(--text);box-shadow:none}
+          input,select,textarea{background:rgba(0,0,0,.2);border:1px solid var(--line);color:var(--text);border-radius:14px}
+          body.light input,body.light select,body.light textarea{background:rgba(255,255,255,.75)}
+          select option{color:#1e1b4b;background:#fff}
+          input::placeholder,textarea::placeholder{color:var(--muted)}
+          .panel{background:rgba(32,22,78,.82);border:1px solid var(--line);border-bottom:0;backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);color:var(--text)}
+          body.light .panel{background:rgba(255,255,255,.9)}
+          .sheet{background:rgba(5,5,20,.45)}
+          .hero,.hero.D,.hero.N,.hero.O{color:var(--text);border-radius:32px}
+          .hero.N{background:linear-gradient(160deg,rgba(129,140,248,.28),rgba(255,255,255,.08))}.hero.D{background:linear-gradient(160deg,rgba(251,191,36,.28),rgba(255,255,255,.08))}.hero.O{background:linear-gradient(160deg,rgba(52,211,153,.26),rgba(255,255,255,.08))}
+          .badge{background:rgba(255,255,255,.22);color:var(--text)}body.light .badge{background:rgba(255,255,255,.75)}
+          .pill,.tag{backdrop-filter:none}.tag{background:rgba(255,255,255,.2);color:var(--text)}body.light .tag{background:rgba(255,255,255,.75)}
+          .tag.sup{background:var(--dayBg);color:var(--day)}.tag.res{background:var(--nightBg);color:var(--night)}.tag.warn{background:var(--dangerBg);color:var(--danger)}
+          .ecard .av,.phead .av{background:rgba(255,255,255,.22);color:var(--text);border:1px solid var(--line)}
+          .c{border-radius:14px}.c.today{outline:2px solid var(--text)}
+          .wd.today{outline:2px solid var(--text)}
+          .alert{color:var(--danger);background:var(--dangerBg)}
+          .toast{background:rgba(255,255,255,.92);color:#1e1b4b}
+          pre.rep{background:rgba(0,0,0,.22);border-color:var(--line);color:var(--text)}body.light pre.rep{background:rgba(255,255,255,.7)}
+          .tbl th,.tbl td{border-color:var(--line)}
+          .lvl i{background:rgba(255,255,255,.2)}
+          .sec{color:var(--muted)}
+          main{padding-bottom:130px}
+
+          /* floating nav */
+          #nav{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:532px;margin:0 auto;border-radius:28px;padding:6px;gap:2px;
+          background:var(--card);border:1px solid var(--line);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:var(--shadow),0 10px 30px -10px rgba(0,0,0,.45)}
+          body:not(.light) #nav{background:rgba(30,22,70,.55)}
+          #nav button{border-radius:22px;padding:6px 0 5px;color:var(--muted);font-size:10.5px;font-weight:700}
+          #nav button span{font-size:21px}
+          #nav button.on{background:rgba(255,255,255,.26);color:var(--text)}body.light #nav button.on{background:rgba(76,29,149,.14);color:#4c1d95}
+          .hero{text-align:center;padding:22px 18px 18px}
+          .hero .ico{position:static;display:block;font-size:58px;opacity:1;line-height:1.1;margin-bottom:2px}
+          .hero .cd{position:absolute;top:14px;inset-inline-start:14px;background:rgba(255,255,255,.2);border:1px solid var(--line);border-radius:14px;padding:3px 10px;font-size:12px;font-weight:800}
+          body.light .hero .cd{background:rgba(255,255,255,.7)}
+          .hero .big{font-size:30px}
+
+          @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+          .card,.stat,.kpi,.ecard,.phead,.wd,.seg,.ib,.qa button,.hero,#nav,body:not(.light) #nav,header{background:rgba(44,30,104,.92)}
+          body.light .card,body.light .stat,body.light .kpi,body.light .item,body.light .tl,body.light .ecard,body.light .phead,body.light .wd,body.light .seg,body.light .tabs button,body.light .btn,body.light .ib,body.light .qa button,body.light .hero,body.light #nav{background:rgba(255,255,255,.9)}}
           </style>
           </head>
           <body>
@@ -280,13 +345,13 @@ jobs:
           D:'نهار',N:'ليل',O:'راحة',first:'اليوم الأول',second:'اليوم الثاني',onDuty:'في الخدمة الآن',ends:'تنتهي',
           yourNext:'ورديتك الجاية',nextShift:'الوردية الجاية',nextOff:'الراحة الجاية',fp:'البصمة',work:'الدوام',today:'اليوم',
           teamOf:'فريق',member:'عضو',supervisor:'مشرف',reserve:'احتياط',myTeam:'فريقي',yours:'فريقك',role:'الصفة',
-          EOF_FILE
-
-      - name: Create project files (4)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           tasks:'مهام الوردية',cardsRecv:'استلام البطاقات',cardsHand:'تسليم البطاقات',cards:'بطاقات الدخول',received:'المستلم',handed:'المسلّم',
           mismatch:'⚠️ فيه فرق في عدد البطاقات',mismatchNote:'سبب الفرق',logChange:'تغيير السجلات',visitorsLog:'سجل الزوار',workersLog:'سجل العمال',
+          EOF_FILE
+
+      - name: Create project files (5)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           done:'تم',notDone:'لم يتم',handNotes:'ملاحظات التسليم',handNotesPh:'اكتب اللي لازم تعرفه الوردية الجاية…',
           incidents:'الحوادث',addIncident:'+ إضافة حادث',time:'الوقت',type:'النوع',desc:'الوصف',action:'الإجراء المتخذ',
           save:'حفظ',cancel:'إلغاء',del:'حذف',confirmDel:'متأكد تبي تحذف؟',yes:'نعم',close:'تمام',
@@ -318,13 +383,13 @@ jobs:
           kind_base:'جدول',kind_cover:'تغطية',kind_callout:'استدعاء',kind_swap:'تبديل',
           conflict:'تعارض',noConflict:'✓ ما فيه تعارض',restShort:'راحة {h} ساعة فقط (المطلوب {m})',overlap:'عنده وردية في نفس الوقت',withTeam:'مع {t}',onCall:'مناوب مع فريقه',
           availability:'المتاحين',noShiftThatDay:'ما عنده وردية في التاريخ هذا',upConf:'⚠️ تعارضات في الأيام الجاية',saveAnyway:'حفظ رغم التعارض',
-          EOF_FILE
-
-      - name: Create project files (5)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           today_s:'اليوم',absentToday:'غايب',coverFor:'يغطي',calledIn:'مستدعى',fileHint:'ملف .json تقدر تبعته لنفسك على واتساب وترجعه وقت ما تبي',
           tapPerson:'اضغط على أي موظف تفتح ملفه',site:'الموقع',sites:'المواقع',bothSites:'الموقعين',allSites:'كل المواقع',moveSite:'الموقع الجديد',
+          EOF_FILE
+
+      - name: Create project files (6)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           me:'ملفي',you:'أنت',teams:'الفرق',teamNameL:'اسم الفريق',teamNamePh:'تلقائي: فريق + اسم المشرف',supName:'اسم المشرف',editTeam:'✏️ تعديل الفريق',addMember:'+ إضافة',membersL:'الأعضاء',removeQ:'شيل الموظف من الفريق؟ لو عنده سجلات يتنقل للسابقين.',
           mode:'وضع التطبيق',modeMember:'عضو',modeSup:'مشرف',rerunSetup:'🔄 إعادة الإعداد',
           wWelcome:'أهلاً 👋',wWelcomeSub:'خلينا نجهز التطبيق في دقيقة',wStart:'ابدأ',wBack:'رجوع',wNext:'التالي',wFinish:'✓ تمام، ابدأ',
@@ -357,13 +422,13 @@ jobs:
           save:'Save',cancel:'Cancel',del:'Delete',confirmDel:'Delete this?',yes:'Yes',close:'OK',
           ev_absence:'Absence',ev_leave:'Leave',ev_callout:'Call-in',ev_swap:'Swap',events:'Events',
           person:'Employee',coveredBy:'Who covered?',noCover:'— no cover —',covers:'covers',swapWith:'swaps with',from:'From',to:'To',date:'Date',note:'Note',noEvents:'Nothing recorded',
-          EOF_FILE
-
-      - name: Create project files (6)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           shiftT:'Shift',forTeam:'For',backDate:'Return date (optional)',
           period:'Period',thisMonth:'This month',lastMonth:'Last month',custom:'Custom',generate:'Generate report',copy:'📋 Copy',share:'📤 Share',print:'🖨️ Print / PDF',copied:'Copied',
+          EOF_FILE
+
+      - name: Create project files (7)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           include:'Include',secShifts:'My shifts summary',secIncidents:'Incidents',secCards:'Card handover',secTeam:'Absences, leave, call-ins & swaps',secNotes:'Handover notes',secLogs:'Log changes',secUni:'Uniform issues',secWarn:'Warnings',
           shifts:'shifts',hours:'hours',nothing:'None',total:'Total',report:'Report',
           language:'Language',theme:'Theme',dark:'Dark',light:'Light',auto:'Auto',myName:'My name',times:'Times',
@@ -408,7 +473,7 @@ jobs:
           kMembers:'Staff',kOnDuty:'On duty now',kAbsent:'Absent today',kLeave:'On leave',kShort:'Short (7 days)',kAlerts:'Alerts',rotBoard:'Teams rotation',hoursMonth:'Hours this month',
           EOF_FILE
 
-      - name: Create project files (7)
+      - name: Create project files (8)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           train:'Training',trainGen:'🎓 Generate training schedule',trainStart:'From date',trainTime:'Time',trainChange:'Schedule-change message',trainMsg:'Message',trainSaved:'Training schedule',trainOf:'Training',trainHint:'Each team trains the morning after its last night',
@@ -476,7 +541,7 @@ jobs:
           const pad=n=>String(n).padStart(2,'0');
           EOF_FILE
 
-      - name: Create project files (8)
+      - name: Create project files (9)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -550,7 +615,7 @@ jobs:
             return o.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:(a.type==='D'?-1:1));}
           EOF_FILE
 
-      - name: Create project files (9)
+      - name: Create project files (10)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function conflicts(pid,k,type,skipEv,forTeam){const out=[];const s0=sStart(k,type),e0=sEnd(k,type);const minR=(+C().minRest||12)*36e5;
@@ -593,7 +658,7 @@ jobs:
             try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();}catch(e){copyText(content);}}
           function printHtml(html,title){try{if(AB&&AB.print){AB.print(html,title);return;}}catch(e){}const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();setTimeout(()=>w.print(),300);}}
           function sysDark(){try{if(AB&&AB.isDark)return !!AB.isDark();}catch(e){}return !window.matchMedia||window.matchMedia('(prefers-color-scheme: dark)').matches;}
-          function applyTheme(){const dark=C().theme==='dark'||(C().theme==='auto'&&sysDark());document.body.classList.toggle('light',!dark);try{if(AB&&AB.setBars)AB.setBars(dark?'#0f172a':'#f1f5f9',!dark);}catch(e){}}
+          function applyTheme(){const dark=C().theme==='dark'||(C().theme==='auto'&&sysDark());document.body.classList.toggle('light',!dark);try{if(AB&&AB.setBars)AB.setBars(dark?'#0b1026':'#f3f0ff',!dark);}catch(e){}}
           window.onSysTheme=()=>applyTheme();
           function applyLang(){document.documentElement.lang=L();document.documentElement.dir=L()==='ar'?'rtl':'ltr';document.title=t('app');}
 
@@ -610,7 +675,7 @@ jobs:
           const tabs=()=>isMember()?[['home','🏠'],['cal','🗓️'],['me','👤'],['log','📝'],['rep','📊']]:isPM()?[['home','🏠'],['cal','🗓️'],['emp','👥'],['admin','🧭'],['rep','📊']]:[['home','🏠'],['cal','🗓️'],['emp','👥'],['log','📝'],['rep','📊']];
           EOF_FILE
 
-      - name: Create project files (10)
+      - name: Create project files (11)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           let view='home',prevView='home',empId=null,empTab='info',empMonth=null,personFrom='emp';
@@ -646,7 +711,9 @@ jobs:
           function rHome(){if(isPM())return rHomePM();const v=$('v-home');const td=shiftOf(now,C().myTeam);const ms=myShiftAround(now);let h='';const on=ms&&ms.s<=now;
             if(on&&logReminderActive(ms))h+=`<div class="alert" data-go="log">${t('logReminder')}</div>`;
             if(ms){const ty=ms.type,ht=on?ty:td.type;
-              h+=`<div class="hero ${ht}"><div class="ico">${ICO[ht]}</div><div class="lbl">${t('today')} — ${fmt(now)} · ${esc(teamName(C().myTeam))}</div>`;
+              const left=Math.max(0,Math.round(((on?ms.e:ms.s)-now)/6e4));const ar=L()==='ar';
+              const lh=left>=1440?(ar?Math.floor(left/1440)+' يوم و'+Math.floor(left%1440/60)+' س':Math.floor(left/1440)+'d '+Math.floor(left%1440/60)+'h'):Math.floor(left/60)+':'+pad(left%60);
+              h+=`<div class="hero ${ht}"><div class="ico">${ICO[ht]}</div><span class="cd">⏳ ${ar?(on?'ينتهي بعد ':'يبدأ بعد ')+lh:(on?'ends in ':'starts in ')+lh}</span><div class="lbl">${t('today')} — ${fmt(now)} · ${esc(teamFull(C().myTeam))}</div>`;
               if(on)h+=`<div class="big">${t('onDuty')} — ${t(ty)}</div><div class="sub">${t('ends')} ${hm(ms.st+720)} · ${ms.pos===1?t('first'):t('second')}</div>`;
               else h+=`<div class="big">${td.type==='O'?t('O'):t(td.type)+' · '+(td.pos===1?t('first'):t('second'))}</div><div class="sub">${t('yourNext')}: ${ICO[ty]} ${t(ty)} — ${fmt(ms.date)}</div><span class="badge">${t('fp')} ${hm(ms.fpS)}–${hm(ms.fpE)} · ${t('work')} ${hm(ms.st)}</span>`;
               h+='</div>';}
@@ -662,13 +729,13 @@ jobs:
               const st=(ok,txt)=>`<span class="st ${ok?'ok':'bad'}">${ok?'✓ ':''}${txt}</span>`;
               h+=`<div class="card"><h3>${t('tasks')} <span class="muted">${on?t('current'):t('last')}: ${t(cur.type)} ${fmtS(cur.date)}</span></h3>`;
               h+=`<div class="task"><span class="ti">🪪</span><span class="tx">${t('cardsRecv')}</span>${st(g.recv!=null,g.recv!=null?g.recv+' / '+C().cards:t('notDone'))}</div>`;
-              if(cur.type==='N')h+=`<div class="task"><span class="ti">📒</span><span class="tx">${t('logChange')} <span class="muted">${C().logFrom}–${C().logTo}</span></span>${st(g.vis&&g.wrk,g.vis&&g.wrk?t('done'):t('notDone'))}</div>`;
-              h+=`<div class="task"><span class="ti">📝</span><span class="tx">${t('handNotes')}</span>${st(!!g.notes,g.notes?t('done'):t('notDone'))}</div>`;
           EOF_FILE
 
-      - name: Create project files (11)
+      - name: Create project files (12)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+              if(cur.type==='N')h+=`<div class="task"><span class="ti">📒</span><span class="tx">${t('logChange')} <span class="muted">${C().logFrom}–${C().logTo}</span></span>${st(g.vis&&g.wrk,g.vis&&g.wrk?t('done'):t('notDone'))}</div>`;
+              h+=`<div class="task"><span class="ti">📝</span><span class="tx">${t('handNotes')}</span>${st(!!g.notes,g.notes?t('done'):t('notDone'))}</div>`;
               h+=`<div class="task"><span class="ti">🪪</span><span class="tx">${t('cardsHand')}</span>${st(g.hand!=null,g.hand!=null?g.hand+' / '+C().cards:t('notDone'))}</div>`;
               h+=`<button class="btn pri full" data-log="${id}">${t('openLog')}</button></div>`;}
             h+=`<div class="sec">${t('upcoming')}</div><div class="week">`;
@@ -706,13 +773,13 @@ jobs:
             for(let d=1;d<=len;d++){const dt=new Date(calView.getFullYear(),calView.getMonth(),d),k=ymd(dt),s=shiftOf(dt,C().myTeam);
               const dot=S.events.some(e=>(e.from<=k&&e.to>=k)||e.back===k)||S.asg.some(a=>a.k===k)||['D','N'].some(ty=>{const g=S.logs[k+'_'+ty];return g&&(g.notes||(g.inc&&g.inc.length));});
               const sh=k>=kAdd(ymd(now),-31)&&(slotInfo(k,'D').short||slotInfo(k,'N').short);
-              const tr=trainingsOn(k).length,nt=S.notes.some(x=>x.date===k&&!x.done);const mk=(sh?'⚠️':'')+(tr?'🎓':'')+(nt?'📌':'')+(dot?'<i class="mkd"></i>':'');
-              const lab=isPM()?`<small dir="ltr" style="font-size:9px">☀️${teamOn(dt,'D')+1} 🌙${teamOn(dt,'N')+1}</small>`:`<small class="${s.type}-t">${t(s.type)}</small>`;
           EOF_FILE
 
-      - name: Create project files (12)
+      - name: Create project files (13)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+              const tr=trainingsOn(k).length,nt=S.notes.some(x=>x.date===k&&!x.done);const mk=(sh?'⚠️':'')+(tr?'🎓':'')+(nt?'📌':'')+(dot?'<i class="mkd"></i>':'');
+              const lab=isPM()?`<small dir="ltr" style="font-size:9px">☀️${teamOn(dt,'D')+1} 🌙${teamOn(dt,'N')+1}</small>`:`<small class="${s.type}-t">${t(s.type)}</small>`;
               h+=`<button class="c ${isPM()?'':s.type+'-b'} ${k===ymd(now)?'today':''}" data-day="${k}" ${isPM()?'style="background:var(--card2)"':''}><span class="mk">${mk}</span><span>${d}</span>${lab}</button>`;}
             h+=`</div><div class="legend"><span><i style="background:var(--day)"></i>${t('D')}</span><span><i style="background:var(--night)"></i>${t('N')}</span><span><i style="background:var(--off)"></i>${t('O')}</span><span><i style="background:var(--danger);border-radius:50%"></i>${t('events')}</span></div><button class="btn full" id="cT">${t('today')}</button></div><p class="muted" style="text-align:center">${isPM()?'':esc(teamFull(C().myTeam))+' · '}${t('hint')}</p>`;
             v.innerHTML=h;bindCommon(v);
@@ -758,7 +825,7 @@ jobs:
             if(!p.left&&canEdit)h+=`<div class="qa"><button id="pqA"><span>❌</span>${t('qAbs')}</button><button id="pqC"><span>📞</span>${t('qCall')}</button><button id="pqW"><span>⚠️</span>${t('qWarn')}</button><button id="pqU"><span>👕</span>${t('qUni')}</button></div>`;
           EOF_FILE
 
-      - name: Create project files (13)
+      - name: Create project files (14)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="tabs">${(isMember()?[['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['evals',t('evals')],['events',t('events')],['info',t('info')]]:[['info',t('info')],['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['evals',t('evals')],['events',t('events')]]).map(([k,l])=>`<button data-pt="${k}" class="${empTab===k?'on':''}">${l}${k==='warns'&&warnsOf(p.id).length?' ('+warnsOf(p.id).length+')':''}</button>`).join('')}</div>`;
@@ -799,7 +866,7 @@ jobs:
             if(empTab==='evals'){const ev=S.evals.filter(x=>x.p===p.id).sort((a,b)=>a.m<b.m?1:-1);const w=S.eom.filter(x=>x.p===p.id);
           EOF_FILE
 
-      - name: Create project files (14)
+      - name: Create project files (15)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               B.innerHTML=(w.length?`<div class="card"><h3>🏆 ${t('eom')}</h3>${w.map(x=>`<div class="b">${monthLabel(x.m)}</div>`).join('')}</div>`:'')+`<div class="card"><h3>⭐ ${t('evals')}</h3>`+(ev.length?ev.map(x=>`<div class="tl"><span>${monthLabel(x.m)}</span><span>${gradeTag(x.score)}</span></div>`).join(''):`<div class="empty-msg">${t('nothing')}</div>`)+'</div>';}
@@ -842,7 +909,7 @@ jobs:
             $('teN').onchange=e=>{c.teamNames[k]=e.target.value.trim();save();if(view!=='setup')render();};
           EOF_FILE
 
-      - name: Create project files (15)
+      - name: Create project files (16)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('panel').querySelectorAll('[data-mn]').forEach(i=>i.onchange=()=>{P(i.dataset.mn).name=i.value.trim();save();if(view!=='setup')render();});
@@ -880,7 +947,7 @@ jobs:
             if(wz.step===5){if(wz.mode==='sup'){const ms=teamMembers(wz.team).filter(p=>p.role!=='sup');h+=`<h2 style="font-size:19px">${t('wMembersQ')}</h2><p class="muted" style="margin-bottom:10px">${t('wMembersSub')}</p><div class="card">`+
           EOF_FILE
 
-      - name: Create project files (16)
+      - name: Create project files (17)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
                 (ms.map(p=>`<div class="tl"><span>${esc(pName(p.id))}</span><span class="muted">${p.role==='res'?t('reserve'):'📍'+esc(siteName(curSite(p)))}</span></div>`).join('')||`<div class="empty-msg">${t('noMembers')}</div>`)+`<button class="btn pri full" id="wzEd">${t('editTeam')}</button></div>`;}
@@ -931,7 +998,7 @@ jobs:
           function bindEvents(v,re){v.querySelectorAll('[data-evf]').forEach(b=>b.onclick=()=>{evFilter=b.dataset.evf;re();});
           EOF_FILE
 
-      - name: Create project files (17)
+      - name: Create project files (18)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             v.querySelectorAll('[data-delev]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();confirmBox(t('confirmDel'),()=>{const e=S.events.find(x=>x.id===b.dataset.delev);if(e&&(e.type==='absence'||e.type==='leave'))S.asg=S.asg.filter(a=>!(a.for===e.p1&&a.k>=e.from&&a.k<=e.to));S.events=S.events.filter(x=>x.id!==b.dataset.delev);save();re();});});
@@ -976,7 +1043,7 @@ jobs:
           function slotForm(pid,k0,ty0,tm0,back){k0=k0||ymd(now);const ty=ty0||'N';const tm=tm0!=null?tm0:teamOn(parse(k0),ty);
           EOF_FILE
 
-      - name: Create project files (18)
+      - name: Create project files (19)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             openSheet(`<h3>📞 ${t('ev_callout')}</h3><div class="sec">${t('chooseSlot')}</div><div class="row"><div><label>${t('date')}</label><input type="date" id="sfD" value="${k0}"></div><div><label>${t('shiftT')}</label><select id="sfS"><option value="D" ${ty==='D'?'selected':''}>☀️ ${t('D')}</option><option value="N" ${ty==='N'?'selected':''}>🌙 ${t('N')}</option></select></div></div>
@@ -1023,7 +1090,7 @@ jobs:
             $('uNx').onclick=()=>{const date=$('uD').value||ymd(now),note=$('uN').value.trim();
           EOF_FILE
 
-      - name: Create project files (19)
+      - name: Create project files (20)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               const items=[...$('panel').querySelectorAll('[data-ui]')].filter(c=>c.checked).map(c=>({id:c.dataset.ui,qty:Math.max(1,parseInt($('panel').querySelector('[data-uq="'+c.dataset.ui+'"]').value,10)||1)}));
@@ -1065,7 +1132,7 @@ jobs:
           let rp={per:'this',from:'',to:'',sec:{shifts:true,inc:true,cards:true,logs:true,notes:true,team:true,warn:true,uni:true,train:true,stock:true,evals:true}};
           EOF_FILE
 
-      - name: Create project files (20)
+      - name: Create project files (21)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function monthRow(p,A,B){const td=ymd(now);if(B>td)B=td;if(B<A)return{list:[],d:0,n:0,total:0,abs:0,leave:0,extra:0,w:0};const list=shiftsOf(p.id,A,B);const d=list.filter(x=>x.type==='D').length,n=list.filter(x=>x.type==='N').length;
@@ -1100,7 +1167,7 @@ jobs:
           function sheetHtml(A,B){const ps=sheetPeople(A,B);const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();
           EOF_FILE
 
-      - name: Create project files (21)
+      - name: Create project files (22)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             let h=docHead(t('sheet'))+`<h1>${t('actual')} — ${m}</h1><div class="sub">${sheetTeam==='all'?t('all'):esc(teamName(+sheetTeam))} · 📍${sheetSite==='all'?t('allSites'):esc(siteName(sheetSite))} · ${t('generated')}: ${fmt(now)}</div><table><tr><th>#</th><th>${t('name')}</th><th>${t('teamOf')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
@@ -1128,7 +1195,7 @@ jobs:
             if(rp.sec.uni){o+=`\n■ ${t('secUni')}\n`;const us=S.uni.filter(u=>u.date>=A&&u.date<=B).sort((x,y)=>x.date<y.date?-1:1);if(!us.length)o+=t('nothing')+'\n';else{us.forEach(u=>o+=`- ${u.date} ${pName(u.p)}: ${uniLine(u)}${u.note?' ('+u.note+')':''}\n`);const got=new Set(us.map(u=>u.p));const miss=personList().filter(p=>!got.has(p.id));if(miss.length)o+=`${t('notReceived')}: ${miss.map(p=>p.name).join('، ')}\n`;}}
           EOF_FILE
 
-      - name: Create project files (22)
+      - name: Create project files (23)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(rp.sec.train){o+=`\n■ ${t('train')}\n`;const tr=allTrainings().filter(x=>x.date>=A&&x.date<=B);o+=tr.length?tr.map(x=>`- ${fmtK(x.date)} ${x.time} — ${teamFull(x.team)}`).join('\n')+'\n':t('nothing')+'\n';}
@@ -1173,7 +1240,7 @@ jobs:
           function updBell(){const n=dueList().length;const b=$('bell');if(b)b.innerHTML='🔔'+(n?`<span class="bdg">${n}</span>`:'');if(lastDue>=0&&n>lastDue){const x=dueList().slice(-1)[0];if(x)toast('🔔 '+x.text);try{navigator.vibrate&&navigator.vibrate(300);}catch(e){}}lastDue=n;}
           EOF_FILE
 
-      - name: Create project files (23)
+      - name: Create project files (24)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function notesSheet(){const k=ymd(now);const due=S.notes.filter(isDue),up=S.notes.filter(x=>!x.done&&!isDue(x)).sort((a,b)=>(a.date+a.time)<(b.date+b.time)?-1:1),dn=S.notes.filter(x=>x.done).slice(-10).reverse();
@@ -1209,7 +1276,7 @@ jobs:
             const splitEq=n=>{const b=Math.floor(n/3),r=n%3;return [0,1,2].map(i=>b+(i<r?1:0));};
           EOF_FILE
 
-      - name: Create project files (24)
+      - name: Create project files (25)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             openSheet(`<h3>${t('newShip')}</h3><label>${t('shipDate')}</label><input type="date" id="shD" value="${ymd(now)}">`+its.map(it=>`<div class="item"><div class="row" style="align-items:center"><b style="flex:2">${esc(it.name)}</b><input type="number" inputmode="numeric" data-tot="${it.id}" placeholder="${t('totalQ')}" style="flex:1"></div><div class="row" style="margin-top:6px">${[0,1,2].map(i=>`<div><label style="margin:0">${esc(teamName(i))}</label><input type="number" inputmode="numeric" data-q="${it.id}|${i}"></div>`).join('')}</div></div>`).join('')+
@@ -1241,7 +1308,7 @@ jobs:
             if(adminSub==='eom'){const w=S.eom.find(x=>x.m===eomM);const{el,reset}=eligibleFor(eomM);
           EOF_FILE
 
-      - name: Create project files (25)
+      - name: Create project files (26)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               h+=`<div class="card">${mnav('eo',eomM)}`+(w?`<div class="phead" style="background:var(--dayBg);margin:0"><div class="av">🏆</div><div style="flex:1"><div class="nm">${esc(pName(w.p))}</div><div class="muted">${t('eomWinner')} · ${monthLabel(eomM)}</div></div><button class="btn sm dang" data-eodel="${eomM}">✕</button></div>`:'')+'</div>';
@@ -1281,14 +1348,14 @@ jobs:
             h+=`<div class="card"><h3>📍 ${t('sites')}</h3>`+c.sites.map((x,i)=>`<input data-site="${i}" value="${esc(x.name)}" style="margin-bottom:6px">`).join('')+`</div>`;
           EOF_FILE
 
-      - name: Create project files (26)
+      - name: Create project files (27)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="card"><h3>👕 ${t('uniItems')}</h3>`+c.uniItems.map((it,i)=>`<div class="row" style="align-items:center;margin-bottom:6px"><input data-itn="${i}" value="${esc(itemName(it))}" style="flex:4"><button class="btn sm dang" data-itd="${i}" style="flex:1">${t('del')}</button></div>`).join('')+`<button class="btn full" id="itA">${t('addItem')}</button></div>`;
             h+=`<div class="card"><h3>💾 ${t('backup')}</h3><p class="muted">${t('fileHint')}</p><button class="btn pri full" id="bF">${t('shareFile')}</button>
               <label class="btn full" style="margin-top:8px;color:var(--text)">${t('restoreFile')}<input type="file" id="bI" accept=".json,application/json,text/plain,*/*" style="display:none"></label>
               <button class="btn full" id="bC">${t('copyText')}</button><label>${t('pasteText')}</label><textarea id="bT" style="min-height:50px"></textarea><button class="btn full" id="bR">${t('restore')}</button>
-              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v4.0<br>${t('credit')}<br><span dir="ltr">0924682644</span></p>`;
+              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v4.1<br>${t('credit')}<br><span dir="ltr">0924682644</span></p>`;
             v.innerHTML=h;
             v.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{c.lang=b.dataset.lang;repOut='';save();render();});
             v.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{c.theme=b.dataset.th;save();render();});
@@ -1325,7 +1392,7 @@ jobs:
           </html>
           EOF_FILE
 
-      - name: Create project files (27)
+      - name: Create project files (28)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
@@ -1364,9 +1431,9 @@ jobs:
               protected void onCreate(Bundle savedInstanceState) {
                   super.onCreate(savedInstanceState);
                   boolean dark = isDark();
-                  applyBars(dark ? "#0f172a" : "#f1f5f9", !dark);
+                  applyBars(dark ? "#0b1026" : "#f3f0ff", !dark);
                   web = new WebView(this);
-                  web.setBackgroundColor(Color.parseColor(dark ? "#0f172a" : "#f1f5f9"));
+                  web.setBackgroundColor(Color.parseColor(dark ? "#0b1026" : "#f3f0ff"));
                   WebSettings s = web.getSettings();
                   s.setJavaScriptEnabled(true);
                   s.setDomStorageEnabled(true);
@@ -1514,7 +1581,7 @@ jobs:
           }
           EOF_FILE
 
-      - name: Create project files (28)
+      - name: Create project files (29)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/ShareProvider.java' <<'EOF_FILE'
@@ -1658,5 +1725,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Shifts v4.0 build ${{ github.run_number }}
+          name: Shifts v4.1 build ${{ github.run_number }}
           files: Shifts.apk
