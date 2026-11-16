@@ -23,8 +23,8 @@ jobs:
                   applicationId "com.mohamed.shifts"
                   minSdk 26
                   targetSdk 34
-                  versionCode 11
-                  versionName "4.2"
+                  versionCode 12
+                  versionName "4.3"
               }
               signingConfigs {
                   debug {
@@ -99,6 +99,10 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+              <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+              <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+              <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
               <application
                   android:label="@string/app_name"
                   android:icon="@mipmap/ic_launcher"
@@ -138,6 +142,14 @@ jobs:
                           <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                       </intent-filter>
                       <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_off_info" />
+                  </receiver>
+                  <receiver android:name=".NotifReceiver" android:exported="false" />
+                  <receiver android:name=".BootReceiver" android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.BOOT_COMPLETED" />
+                          <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                          <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+                      </intent-filter>
                   </receiver>
                   <provider
                       android:name=".ShareProvider"
@@ -360,6 +372,9 @@ jobs:
             <section class="view" id="v-log"></section>
             <section class="view" id="v-rep"></section>
             <section class="view" id="v-admin"></section>
+            <section class="view" id="v-check"></section>
+            <section class="view" id="v-ann"></section>
+            <section class="view" id="v-emerg"></section>
             <section class="view" id="v-set"></section>
             <section class="view" id="v-setup"></section>
           </main>
@@ -376,12 +391,12 @@ jobs:
           yourNext:'ورديتك الجاية',nextShift:'الوردية الجاية',nextOff:'الراحة الجاية',fp:'البصمة',work:'الدوام',today:'اليوم',
           teamOf:'فريق',member:'عضو',supervisor:'مشرف',reserve:'احتياط',myTeam:'فريقي',yours:'فريقك',role:'الصفة',
           tasks:'مهام الوردية',cardsRecv:'استلام البطاقات',cardsHand:'تسليم البطاقات',cards:'بطاقات الدخول',received:'المستلم',handed:'المسلّم',
-          mismatch:'⚠️ فيه فرق في عدد البطاقات',mismatchNote:'سبب الفرق',logChange:'تغيير السجلات',visitorsLog:'سجل الزوار',workersLog:'سجل العمال',
           EOF_FILE
 
       - name: Create project files (6)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          mismatch:'⚠️ فيه فرق في عدد البطاقات',mismatchNote:'سبب الفرق',logChange:'تغيير السجلات',visitorsLog:'سجل الزوار',workersLog:'سجل العمال',
           done:'تم',notDone:'لم يتم',handNotes:'ملاحظات التسليم',handNotesPh:'اكتب اللي لازم تعرفه الوردية الجاية…',
           incidents:'الحوادث',addIncident:'+ إضافة حادث',time:'الوقت',type:'النوع',desc:'الوصف',action:'الإجراء المتخذ',
           save:'حفظ',cancel:'إلغاء',del:'حذف',confirmDel:'متأكد تبي تحذف؟',yes:'نعم',close:'تمام',
@@ -414,12 +429,12 @@ jobs:
           conflict:'تعارض',noConflict:'✓ ما فيه تعارض',restShort:'راحة {h} ساعة فقط (المطلوب {m})',overlap:'عنده وردية في نفس الوقت',withTeam:'مع {t}',onCall:'مناوب مع فريقه',
           availability:'المتاحين',noShiftThatDay:'ما عنده وردية في التاريخ هذا',upConf:'⚠️ تعارضات في الأيام الجاية',saveAnyway:'حفظ رغم التعارض',
           today_s:'اليوم',absentToday:'غايب',coverFor:'يغطي',calledIn:'مستدعى',fileHint:'ملف .json تقدر تبعته لنفسك على واتساب وترجعه وقت ما تبي',
-          tapPerson:'اضغط على أي موظف تفتح ملفه',site:'الموقع',sites:'المواقع',bothSites:'الموقعين',allSites:'كل المواقع',moveSite:'الموقع الجديد',
           EOF_FILE
 
       - name: Create project files (7)
         run: |
           cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          tapPerson:'اضغط على أي موظف تفتح ملفه',site:'الموقع',sites:'المواقع',bothSites:'الموقعين',allSites:'كل المواقع',moveSite:'الموقع الجديد',
           me:'ملفي',you:'أنت',teams:'الفرق',teamNameL:'اسم الفريق',teamNamePh:'تلقائي: فريق + اسم المشرف',supName:'اسم المشرف',editTeam:'✏️ تعديل الفريق',addMember:'+ إضافة',membersL:'الأعضاء',removeQ:'شيل الموظف من الفريق؟ لو عنده سجلات يتنقل للسابقين.',
           mode:'وضع التطبيق',modeMember:'عضو',modeSup:'مشرف',rerunSetup:'🔄 إعادة الإعداد',
           wWelcome:'أهلاً 👋',wWelcomeSub:'خلينا نجهز التطبيق في دقيقة',wStart:'ابدأ',wBack:'رجوع',wNext:'التالي',wFinish:'✓ تمام، ابدأ',
@@ -440,7 +455,12 @@ jobs:
           stock:'المخزون',items2:'الأصناف',addItem2:'+ صنف',unit:'الوحدة',newShip:'📦 بضاعة جديدة',shipDate:'تاريخ الوصول',totalQ:'الكمية',split:'التقسيم',ships:'الشحنات',monthTot:'مجموع الشهر',noItems:'ضيف الأصناف الأول',
           evals:'التقييم',evalMonth:'تقييم شهر',score:'النسبة %',g_weak:'ضعيف',g_ok:'مقبول',g_good:'جيد',g_vgood:'جيد جداً',g_exc:'ممتاز',
           eom:'موظف الشهر',eomPick:'اختيار',eomWinner:'🏆 موظف الشهر',eomNoms:'المرشحين',eomCycle:'باقي في الدورة',eomHist:'السابقين',eomReset:'الكل أخذها — الدورة بدأت من جديد',
-          notes2:'التنبيهات',addNote:'+ تنبيه',noteText:'نص التنبيه',due:'حان وقتها',upcomingN:'جاية',doneN:'منتهية',noNotes2:'ما فيه تنبيهات',trainSoon:'🎓 تدريب قريب',widgets:'ودجت الشاشة الرئيسية',addWidget:'➕ حط الودجت على الشاشة',wMed:'متوسط — وردية اليوم والأيام الجاية',wSm:'صغير — وردية اليوم',wOff:'صغير — الراحة الجاية',widgetNA:'الودجت متاح في تطبيق أندرويد — أو ضيفه من قائمة الودجت في تلفونك'},
+          EOF_FILE
+
+      - name: Create project files (8)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          notes2:'التنبيهات',addNote:'+ تنبيه',noteText:'نص التنبيه',due:'حان وقتها',upcomingN:'جاية',doneN:'منتهية',noNotes2:'ما فيه تنبيهات',trainSoon:'🎓 تدريب قريب',rFp:'البصمة',notifs:'🔔 الإشعارات على التلفون',notifOnL:'تشغيل الإشعارات',nPermB:'السماح بالإشعارات',nExactB:'المنبهات الدقيقة',nPermOk:'✓ مسموح',nPermNo:'✗ مش مسموح',nExactNo:'✗ ممكن تتأخر كم دقيقة',nT_fp:'👆 البصمة',nT_locks:'🔑 الأقفال والبوابات',nT_lights:'💡 الإنارة (المغرب/الشروق)',nT_logs:'📒 تغيير الأوراق',nT_notes:'📌 تنبيهاتي',openAppR:'📲 افتح تطبيق الورديات',openAppB:'لتحديث التذكيرات للأسبوعين الجايين',locL:'موقع حساب الشمس (طرابلس افتراضي)',modeSite:'تلفون الموقع',wSiteD:'تلفون ثابت في الموقع لكل الفرق: يتظبط لوحده على الفريق اللي في الدوام، مع التذكيرات والاستلام والحضور',siteOf:'الموقع',pinL:'الرقم السري (للمشرف/المدير)',pinPh:'4 أرقام — اختياري',pinAsk:'أدخل الرقم السري',pinBad:'الرقم غلط',nowDuty:'الآن',check:'الاستلام',ann:'الإعلانات',emerg:'الطوارئ',ckTitle:'✅ استلام الوردية',attTitle:'👥 الحضور',annAdd:'+ إعلان',annPh:'نص الإعلان…',noAnn:'ما فيه إعلانات',emAdd:'+ رقم',emName:'الاسم',call:'📞 اتصال',noPhone:'ما فيه رقم — أضفه من ملف الموظف',todayRem:'تذكيرات الوردية',ok_:'تم ✓',ckNote:'ملاحظة',ckItemsL:'قائمة الاستلام',rLocksS:'تفقد الأقفال والبوابات — بداية الوردية',rLocksE:'تفقد الأقفال والبوابات — نهاية الوردية',rLightOn:'تشغيل الإنارة الخارجية',rLightOff:'إطفاء الإنارة الخارجية',rSunset:'المغرب',rSunrise:'الشروق',rLogs:'تغيير أوراق Staff وVisitors',widgets:'ودجت الشاشة الرئيسية',addWidget:'➕ حط الودجت على الشاشة',wMed:'متوسط — وردية اليوم والأيام الجاية',wSm:'صغير — وردية اليوم',wOff:'صغير — الراحة الجاية',widgetNA:'الودجت متاح في تطبيق أندرويد — أو ضيفه من قائمة الودجت في تلفونك'},
           en:{app:'Shifts',home:'Home',cal:'Calendar',emp:'Staff',log:'Log',rep:'Reports',set:'Settings',
           D:'Day',N:'Night',O:'Off',first:'1st day',second:'2nd day',onDuty:'On duty now',ends:'ends',
           yourNext:'Your next shift',nextShift:'Next shift',nextOff:'Next day off',fp:'Fingerprint',work:'Duty',today:'Today',
@@ -452,11 +472,6 @@ jobs:
           save:'Save',cancel:'Cancel',del:'Delete',confirmDel:'Delete this?',yes:'Yes',close:'OK',
           ev_absence:'Absence',ev_leave:'Leave',ev_callout:'Call-in',ev_swap:'Swap',events:'Events',
           person:'Employee',coveredBy:'Who covered?',noCover:'— no cover —',covers:'covers',swapWith:'swaps with',from:'From',to:'To',date:'Date',note:'Note',noEvents:'Nothing recorded',
-          EOF_FILE
-
-      - name: Create project files (8)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           shiftT:'Shift',forTeam:'For',backDate:'Return date (optional)',
           period:'Period',thisMonth:'This month',lastMonth:'Last month',custom:'Custom',generate:'Generate report',copy:'📋 Copy',share:'📤 Share',print:'🖨️ Print / PDF',copied:'Copied',
           include:'Include',secShifts:'My shifts summary',secIncidents:'Incidents',secCards:'Card handover',secTeam:'Absences, leave, call-ins & swaps',secNotes:'Handover notes',secLogs:'Log changes',secUni:'Uniform issues',secWarn:'Warnings',
@@ -474,6 +489,11 @@ jobs:
           uni:'Uniform',uniNew:'+ Issue uniform',uniItems:'Uniform items',items:'Items',qty:'Qty',size:'Size',people:'Employees',all:'All',none:'Clear',nextStep:'Next',sizes:'Sizes',lastSizes:'Latest sizes',history:'Issue history',lastGot:'Last issued',never:'Never',notReceived:'Received nothing in period',addItem:'+ Add item',itemName:'Item name',pickPeople:'Pick at least one employee',pickItems:'Pick at least one item',
           u_shirt:'Shirt',u_pants:'Trousers',u_shoes:'Shoes',u_coat:'Coat',u_cap:'Cap',
           newEmp:'+ New employee',move:'🔀 Move',resign:'🚪 Resign',leftOn:'Left on',former:'Former',restoreEmp:'↩️ Return to service',
+          EOF_FILE
+
+      - name: Create project files (9)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           name:'Name',phone:'Phone',notes:'Notes',startDate:'Start date',moveDate:'Move date',newTeam:'To',reason:'Reason',addReplacement:'Add a new employee in their place',newName:'New employee name',needName:'Enter a name',active:'Active',noMembers:'None',
           searchPh:'🔍 Search by name…',list:'List',info:'Info',duty:'Duty',warns:'Warnings',
           w_verbal:'Verbal',w_written:'Written',w_deduct:'With deduction',w_final:'Final warning',addWarn:'+ Warning',suggested:'Suggested level',deduct:'Deduction',dedDays:'days',dedAmount:'LYD',value:'Value',noWarns:'No warnings',
@@ -501,16 +521,16 @@ jobs:
           credit:'Designed & built by: Mohamed Alshawesh',
           wRotQ:'Where is each team today?',wRotSub:'Pick Day, Night or Off for each team — and whether today is the 1st or 2nd day',dayNo:'Day in cycle',firstDay:'1st day',secondDay:'2nd day',
           kMembers:'Staff',kOnDuty:'On duty now',kAbsent:'Absent today',kLeave:'On leave',kShort:'Short (7 days)',kAlerts:'Alerts',rotBoard:'Teams rotation',hoursMonth:'Hours this month',
-          EOF_FILE
-
-      - name: Create project files (9)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           train:'Training',trainGen:'🎓 Generate training schedule',trainStart:'From date',trainTime:'Time',trainChange:'Schedule-change message',trainMsg:'Message',trainSaved:'Training schedule',trainOf:'Training',trainHint:'Each team trains the morning after its last night',
           stock:'Stock',items2:'Items',addItem2:'+ Item',unit:'Unit',newShip:'📦 New delivery',shipDate:'Arrival date',totalQ:'Qty',split:'Split',ships:'Deliveries',monthTot:'Month total',noItems:'Add items first',
           evals:'Evaluation',evalMonth:'Evaluation for',score:'Score %',g_weak:'Weak',g_ok:'Acceptable',g_good:'Good',g_vgood:'Very good',g_exc:'Excellent',
           eom:'Employee of the month',eomPick:'Pick',eomWinner:'🏆 Employee of the month',eomNoms:'Nominees',eomCycle:'left in cycle',eomHist:'Past winners',eomReset:'Everyone has won — new cycle',
-          notes2:'Reminders',addNote:'+ Reminder',noteText:'Reminder text',due:'Due',upcomingN:'Upcoming',doneN:'Done',noNotes2:'No reminders',trainSoon:'🎓 Training soon',widgets:'Home-screen widget',addWidget:'➕ Add widget to home screen',wMed:'Medium — today + next days',wSm:'Small — today\'s shift',wOff:'Small — next day off',widgetNA:'Widgets work in the Android app — or add from your launcher\'s widget list'}};
+          EOF_FILE
+
+      - name: Create project files (10)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          notes2:'Reminders',addNote:'+ Reminder',noteText:'Reminder text',due:'Due',upcomingN:'Upcoming',doneN:'Done',noNotes2:'No reminders',trainSoon:'🎓 Training soon',rFp:'Fingerprint',notifs:'🔔 Phone notifications',notifOnL:'Enable notifications',nPermB:'Allow notifications',nExactB:'Exact alarms',nPermOk:'✓ Allowed',nPermNo:'✗ Not allowed',nExactNo:'✗ may be a few minutes late',nT_fp:'👆 Fingerprint',nT_locks:'🔑 Locks & gates',nT_lights:'💡 Lights (sunset/sunrise)',nT_logs:'📒 Sheet change',nT_notes:'📌 My reminders',openAppR:'📲 Open the Shifts app',openAppB:'to refresh reminders for the next two weeks',locL:'Sun location (Tripoli default)',modeSite:'Site phone',wSiteD:'A fixed phone at the site for all teams: follows the team on duty, with reminders, check-in and attendance',siteOf:'Site',pinL:'PIN (supervisor/manager)',pinPh:'4 digits — optional',pinAsk:'Enter PIN',pinBad:'Wrong PIN',nowDuty:'Now',check:'Check-in',ann:'Notices',emerg:'Emergency',ckTitle:'✅ Shift check-in',attTitle:'👥 Attendance',annAdd:'+ Notice',annPh:'Notice text…',noAnn:'No notices',emAdd:'+ Number',emName:'Name',call:'📞 Call',noPhone:'No number — add it in the employee file',todayRem:'Shift reminders',ok_:'Done ✓',ckNote:'Note',ckItemsL:'Check-in items',rLocksS:'Check locks & gates — shift start',rLocksE:'Check locks & gates — shift end',rLightOn:'Turn ON outdoor lights',rLightOff:'Turn OFF outdoor lights',rSunset:'Sunset',rSunrise:'Sunrise',rLogs:'Change Staff & Visitors sheets',widgets:'Home-screen widget',addWidget:'➕ Add widget to home screen',wMed:'Medium — today + next days',wSm:'Small — today\'s shift',wOff:'Small — next day off',widgetNA:'Widgets work in the Android app — or add from your launcher\'s widget list'}};
           const DAYS={ar:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
           const SDAYS={ar:['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'],en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
           const MONTHS={ar:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
@@ -520,12 +540,12 @@ jobs:
 
           // ================= state =================
           const KEY='shiftapp_v2';
-          const DEF_CFG={lang:'ar',theme:'auto',myTeam:0,myName:'',start:'08:00',fpStart:'07:30',fpEnd:'07:45',cards:22,logFrom:'05:00',logTo:'06:00',anchor:'2026-11-13',minRest:12,mode:null,meId:null,teamNames:['','',''],off:null,items:[{id:'coffee',name:'قهوة',unit:''},{id:'cups',name:'أكواب',unit:''}],eomFrom:'',sites:[{id:'compound',name:'Compound'},{id:'chancery',name:'Chancery'}],
+          const DEF_CFG={lang:'ar',theme:'auto',myTeam:0,myName:'',start:'08:00',fpStart:'07:30',fpEnd:'07:45',cards:22,logFrom:'05:00',logTo:'06:00',anchor:'2026-11-13',minRest:12,lat:32.8872,lon:13.1913,siteId:'compound',pin:'',notifOn:null,notifTypes:null,emerg:[],ckItems:null,mode:null,meId:null,teamNames:['','',''],off:null,items:[{id:'coffee',name:'قهوة',unit:''},{id:'cups',name:'أكواب',unit:''}],eomFrom:'',sites:[{id:'compound',name:'Compound'},{id:'chancery',name:'Chancery'}],
             uniItems:[{id:'shirt',name:''},{id:'pants',name:''},{id:'shoes',name:''},{id:'coat',name:''},{id:'cap',name:''}],
             people:[{id:'t0m0',name:'مصعب',team:0,role:'sup',hist:[{team:0,from:'2000-01-01'}]},{id:'t1m0',name:'سالم',team:1,role:'sup',hist:[{team:1,from:'2000-01-01'}]},{id:'t2m0',name:'حاتم',team:2,role:'sup',hist:[{team:2,from:'2000-01-01'}]}]};
           const clone=x=>JSON.parse(JSON.stringify(x));
-          let S={cfg:clone(DEF_CFG),logs:{},events:[],uni:[],warns:[],asg:[],trainings:[],ships:[],evals:[],eom:[],notes:[],v:4};
-          function normalize(x){const st={cfg:Object.assign(clone(DEF_CFG),x.cfg||{}),logs:x.logs||{},events:x.events||[],uni:x.uni||[],warns:x.warns||[],asg:x.asg||[],trainings:x.trainings||[],ships:x.ships||[],evals:x.evals||[],eom:x.eom||[],notes:x.notes||[],v:4};
+          let S={cfg:clone(DEF_CFG),logs:{},events:[],uni:[],warns:[],asg:[],trainings:[],ships:[],evals:[],eom:[],notes:[],ann:[],checks:{},attend:{},remDone:{},v:4};
+          function normalize(x){const st={cfg:Object.assign(clone(DEF_CFG),x.cfg||{}),logs:x.logs||{},events:x.events||[],uni:x.uni||[],warns:x.warns||[],asg:x.asg||[],trainings:x.trainings||[],ships:x.ships||[],evals:x.evals||[],eom:x.eom||[],notes:x.notes||[],ann:x.ann||[],checks:x.checks||{},attend:x.attend||{},remDone:x.remDone||{},v:4};
             const c=st.cfg;
             if(!(x.cfg&&Array.isArray(x.cfg.people))){ // from v2.0/2.1 slot model
               const used=new Set();st.events.forEach(e=>{used.add(e.p1);used.add(e.p2);});st.uni.forEach(u=>used.add(u.p));
@@ -553,6 +573,11 @@ jobs:
               if(e.type==='callout'){st.asg.push({id:e.id,k:e.from,type:e.st||'D',team:e.team!=null?+e.team:0,site:e.site||'compound',pid:e.p1,for:null,note:e.note||''});return;}
               if(e.type==='absence'&&e.cov){const ab=findP(st,e.p1);let k=e.from;while(k<=e.to){const tm=ab?teamAtP(ab,k):0;let ty=e.from===e.to&&e.st?e.st:shiftOfC(st.cfg,parseD(k),tm).type;
                   if(ty!=='O'){let si=ab?(ab.role==='res'?'compound':siteOfP(ab,k)):'compound';st.asg.push({id:e.id+'_'+k,k,type:ty,team:tm,site:si,pid:e.cov,for:e.p1,note:''});}
+          EOF_FILE
+
+      - name: Create project files (11)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
                   const d=parseD(k);d.setDate(d.getDate()+1);k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
                 delete e.cov;delete e.st;}
               ev2.push(e);});
@@ -561,13 +586,13 @@ jobs:
           function siteOfP(p,k){let st=p.site||'compound';const h=(p.hist||[]).filter(x=>x.site).sort((a,b)=>a.from<b.from?-1:1);if(h.length){st=h[0].site;h.forEach(x=>{if(x.from<=k)st=x.site;});}return st;}
           function findP(st,id){return st.cfg.people.find(p=>p.id===id);}
           function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}pushWidget();}
-          function pushWidget(){try{const A=window.AndroidBridge;if(!A||!A.saveWidget||!S.cfg)return;const c=S.cfg;const tm=c.myTeam||0;
-          EOF_FILE
-
-      - name: Create project files (10)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
-            A.saveWidget(JSON.stringify({anchor:c.anchor,off:[0,1,2].map(k=>offOf(c,k)),team:tm,start:mins(c.start),fpS:mins(c.fpStart),fpE:mins(c.fpEnd),lang:c.lang||'ar',header:teamFull(tm)}));}catch(e){}}
+          function notifEnabled(){const c=C();return c.notifOn==null?isSite():!!c.notifOn;}
+          function pushNotifs(){try{const A=window.AndroidBridge;if(!A||!A.scheduleNotifs||!S.cfg||!S.cfg.mode)return;if(!notifEnabled()){A.scheduleNotifs('[]');return;}
+            const n0=Date.now(),l=reminders(n0,n0+14*864e5).filter(r=>!S.remDone[r.key]).map(r=>({key:r.key,at:r.at,title:r.title,body:r.body}));const last=l.length?l[l.length-1].at:n0;l.push({key:'openapp',at:Math.min(last+36e5,n0+13*864e5+36e5),title:t('openAppR'),body:t('openAppB')});l.sort((a,b)=>a.at-b.at);A.scheduleNotifs(JSON.stringify(l));}catch(e){}}
+          function syncDone(){try{const A=window.AndroidBridge;if(!A||!A.getDone)return;const k=JSON.parse(A.getDone()||'[]');if(k.length){k.forEach(x=>S.remDone[x]=Date.now());A.clearDone&&A.clearDone();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}}catch(e){}}
+          window.onAppResume=()=>{syncDone();pushNotifs();if(view!=='setup'&&!$('sheet').classList.contains('show'))render();};
+          function pushWidget(){pushNotifs();try{const A=window.AndroidBridge;if(!A||!A.saveWidget||!S.cfg)return;const c=S.cfg;const tm=c.myTeam||0;
+            A.saveWidget(JSON.stringify({anchor:c.anchor,off:[0,1,2].map(k=>offOf(c,k)),team:tm,start:mins(c.start),fpS:mins(c.fpStart),fpE:mins(c.fpEnd),lang:c.lang||'ar',header:teamFull(tm),mode:c.mode||'',siteName:siteName(c.siteId||'compound'),teamNames:[0,1,2].map(teamFull),teamShort:[0,1,2].map(teamName)}));}catch(e){}}
           const C=()=>S.cfg;
           const L=()=>C().lang;
           const t=(k,vars)=>{let s=(T[L()]&&T[L()][k]!=null)?T[L()][k]:(T.ar[k]!=null?T.ar[k]:k);if(vars)Object.keys(vars).forEach(v=>s=s.replace('{'+v+'}',vars[v]));return s;};
@@ -618,6 +643,11 @@ jobs:
           const RO={sup:0,mem:1,res:2};
           const SO=p=>p.role==='res'?9:C().sites.findIndex(s=>s.id===curSite(p));
           function teamMembers(k){return activePeople().filter(p=>p.team===k).sort((a,b)=>SO(a)-SO(b)||RO[a.role]-RO[b.role]||pName(a.id).localeCompare(pName(b.id)));}
+          EOF_FILE
+
+      - name: Create project files (12)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function personList(){const o=[];[0,1,2].forEach(k=>teamMembers(k).forEach(p=>o.push({id:p.id,name:pName(p.id),team:p.team,role:p.role,site:curSite(p)})));return o;}
           function pName(id){const p=P(id);if(!p)return id||'';return (p.name||'').trim()||(p.role==='res'?t('reserve'):t('member'));}
           function teamName(i){const cu=((C().teamNames||[])[i]||'').trim();return cu||t('teamWord')+' '+(i+1);}
@@ -625,6 +655,7 @@ jobs:
           function teamFull(i){const s=supOf(i);return teamName(i)+(s?' · '+pName(s.id):'');}
           const isMember=()=>C().mode==='member';
           const isPM=()=>C().mode==='pm';
+          const isSite=()=>C().mode==='site';
           const meP=()=>C().meId?P(C().meId):null;
           const roleTag=p=>p.role==='sup'?`<span class="tag sup">★ ${t('supervisor')}</span>`:p.role==='res'?`<span class="tag res">${t('reserve')}</span>`:'';
           const initial=id=>(pName(id).trim()[0]||'?');
@@ -639,11 +670,6 @@ jobs:
             S.events.forEach(e=>{if(e.type==='swap'){if(e.p1===pid&&e.from>=A&&e.from<=B)o.push({k:e.from,type:e.st,kind:'swap',ev:e});if(e.back&&e.p2===pid&&e.back>=A&&e.back<=B)o.push({k:e.back,type:e.st2,kind:'swap',ev:e});}});
             return o;}
           // worked: actual shifts. planned (for conflicts): includes reserve on-call with team
-          EOF_FILE
-
-      - name: Create project files (11)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function shiftsOf(pid,A,B,opt){opt=opt||{};const p=P(pid);if(!p)return[];const o=[];
             kRange(A,B).forEach(k=>{if(!employedOn(p,k))return;const tm=teamAt(p,k),ty=teamShift(tm,k);if(ty==='O')return;
               if(p.role==='res'&&!opt.oncall)return;if(absentOn(pid,k)||swappedOut(pid,k))return;
@@ -686,6 +712,11 @@ jobs:
           function fallbackCopy(s){const ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(t('copied'));}catch(e){}ta.remove();}
           function shareText(s){try{if(AB&&AB.share){AB.share(s);return;}}catch(e){}if(navigator.share)navigator.share({text:s}).catch(()=>{});else copyText(s);}
           function shareFile(name,mime,content){try{if(AB&&AB.shareFile){AB.shareFile(name,mime,content);return;}}catch(e){}
+          EOF_FILE
+
+      - name: Create project files (13)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             try{const f=new File([content],name,{type:mime});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).catch(()=>{});return;}}catch(e){}
             try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();}catch(e){copyText(content);}}
           function printHtml(html,title){try{if(AB&&AB.print){AB.print(html,title);return;}}catch(e){}const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();setTimeout(()=>w.print(),300);}}
@@ -700,16 +731,11 @@ jobs:
           $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet();});
           function confirmBox(msg,fn){openSheet(`<h3>${esc(msg)}</h3><div class="btns"><button class="btn dang" id="cfY">${t('yes')}</button><button class="btn" id="cfN">${t('cancel')}</button></div>`);$('cfY').onclick=()=>{closeSheet();fn();};$('cfN').onclick=closeSheet;}
           const personOpts=(sel,list)=>(list||personList()).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)} — ${esc(teamName(p.team))} · ${p.role==='res'?t('reserve'):esc(siteName(p.site))}</option>`).join('');
-          EOF_FILE
-
-      - name: Create project files (12)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           const teamOpts=sel=>[0,1,2].map(k=>`<option value="${k}" ${+sel===k?'selected':''}>${esc(teamFull(k))}</option>`).join('');
           const confBox=list=>list.length?`<div class="warnbox">⚠️ ${list.map(esc).join('\n⚠️ ')}</div>`:`<div class="okbox">${t('noConflict')}</div>`;
 
           // ================= navigation =================
-          const tabs=()=>isMember()?[['home','🏠'],['cal','🗓️'],['me','👤'],['log','📝'],['rep','📊']]:isPM()?[['home','🏠'],['cal','🗓️'],['emp','👥'],['admin','🧭'],['rep','📊']]:[['home','🏠'],['cal','🗓️'],['emp','👥'],['log','📝'],['rep','📊']];
+          const tabs=()=>isSite()?[['home','🏠'],['log','📝'],['check','✅'],['ann','📢'],['emerg','📞']]:isMember()?[['home','🏠'],['cal','🗓️'],['me','👤'],['log','📝'],['rep','📊']]:isPM()?[['home','🏠'],['cal','🗓️'],['emp','👥'],['admin','🧭'],['rep','📊']]:[['home','🏠'],['cal','🗓️'],['emp','👥'],['log','📝'],['rep','📊']];
           let view='home',prevView='home',empId=null,empTab='info',empMonth=null,personFrom='emp';
           function go(v){if(v==='me'){if(meP()){openPerson(C().meId);return;}v='set';}if(v==='set'&&view!=='set')prevView=view;view=v;render();window.scrollTo(0,0);}
           function openPerson(id,tab){if(view!=='person')personFrom=view;if(isMember()&&id===C().meId)personFrom='home';empId=id;empTab=tab||(isMember()?'duty':'info');view='person';render();window.scrollTo(0,0);}
@@ -717,17 +743,18 @@ jobs:
             if(view==='setup'){if(wz.step>0){wz.step--;rSetup();return true;}return false;}
             if(view==='person'){go(personFrom||'home');return true;}if(view==='set'){go(prevView==='set'?'home':prevView);return true;}if(view!=='home'){go('home');return true;}return false;};
           $('bell').onclick=()=>notesSheet();
-          $('gear').onclick=()=>{if(view==='set')go(prevView==='set'?'home':prevView);else go('set');};
+          $('gear').onclick=()=>{if(view==='set')go(prevView==='set'?'home':prevView);else if(isSite())requirePin(()=>go('set'));else go('set');};
 
           let now=new Date(),calView=new Date(now.getFullYear(),now.getMonth(),1),logSel=null;
-          function render(){now=new Date();applyLang();applyTheme();
-            if(!C().mode)view='setup';const su=view==='setup';$('nav').style.display=su?'none':'';$('gear').style.visibility=su?'hidden':'';$('bell').style.visibility=su?'hidden':'';
-            $('appTitle').textContent=view==='set'?'⚙️ '+t('set'):view==='setup'?'🗓️ '+t('app'):'🗓️ '+t('app');$('gear').textContent=view==='set'?'✕':'⚙️';
+          let _synced=false;
+          function render(){now=new Date();if(!_synced){_synced=true;syncDone();}applyLang();applyTheme();
+            if(!C().mode)view='setup';if(isSite()&&C().mode){const d=dutyNow();if(d.team>=0)C().myTeam=d.team;}const su=view==='setup';$('nav').style.display=su?'none':'';$('gear').style.visibility=su?'hidden':'';$('bell').style.visibility=su?'hidden':'';
+            $('appTitle').textContent=view==='set'?'⚙️ '+t('set'):isSite()?'📍 '+t('modeSite'):'🗓️ '+t('app');$('gear').textContent=view==='set'?'✕':'⚙️';
             const nv=view==='person'?(isMember()&&empId===C().meId?'me':(isMember()?personFrom:'emp')):view;
             $('nav').innerHTML=tabs().map(([k,i])=>`<button data-v="${k}" class="${nv===k?'on':''}"><span>${i}</span>${t(k)}</button>`).join('');
             $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
             document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+view));
-            updBell();({home:rHome,cal:rCal,emp:rEmp,person:rPerson,log:rLog,rep:rRep,set:rSet,setup:rSetup,admin:rAdmin})[view]();}
+            updBell();({home:rHome,cal:rCal,emp:rEmp,person:rPerson,log:rLog,rep:rRep,set:rSet,setup:rSetup,admin:rAdmin,check:rCheck,ann:rAnn,emerg:rEmerg})[view]();}
           function bindCommon(v){v.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>openDay(e.dataset.day));
             v.querySelectorAll('[data-log]').forEach(e=>e.onclick=()=>{closeSheet();logSel=idToShift(e.dataset.log);go('log');});
             v.querySelectorAll('[data-pid]').forEach(e=>e.onclick=()=>{closeSheet();openPerson(e.dataset.pid);});
@@ -740,10 +767,15 @@ jobs:
             S.asg.forEach(a=>{if(a.k<A||a.k>B)return;const c=conflicts(a.pid,a.k,a.type,a.id,a.team);if(c.length)out.push({pid:a.pid,k:a.k,ty:a.type,c});});
             S.events.forEach(e=>{if(e.type!=='swap')return;const chk=(pid,k,ty)=>{if(!pid||!k||k<A||k>B)return;const c=conflicts(pid,k,ty,e.id);if(c.length)out.push({pid,k,ty,c});};chk(e.p1,e.from,e.st);if(e.back)chk(e.p2,e.back,e.st2);});
             return out;}
-          function rHome(){if(isPM())return rHomePM();const v=$('v-home');const td=shiftOf(now,C().myTeam);const ms=myShiftAround(now);let h='';const on=ms&&ms.s<=now;
+          function rHome(){if(isPM())return rHomePM();if(isSite())return rHomeSite();const v=$('v-home');const td=shiftOf(now,C().myTeam);const ms=myShiftAround(now);let h='';const on=ms&&ms.s<=now;
             if(on&&logReminderActive(ms))h+=`<div class="alert" data-go="log">${t('logReminder')}</div>`;
             if(ms){const ty=ms.type,ht=on?ty:td.type;
               const left=Math.max(0,Math.round(((on?ms.e:ms.s)-now)/6e4));const ar=L()==='ar';
+          EOF_FILE
+
+      - name: Create project files (14)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               const lh=left>=1440?(ar?Math.floor(left/1440)+' يوم و'+Math.floor(left%1440/60)+' س':Math.floor(left/1440)+'d '+Math.floor(left%1440/60)+'h'):Math.floor(left/60)+':'+pad(left%60);
               h+=`<div class="hero ${ht}"><div class="ico">${ICO[ht]}</div><span class="cd">⏳ ${ar?(on?'ينتهي بعد ':'يبدأ بعد ')+lh:(on?'ends in ':'starts in ')+lh}</span><div class="lbl">${t('today')} — ${fmt(now)} · ${esc(teamFull(C().myTeam))}</div>`;
               if(on)h+=`<div class="big">${t('onDuty')} — ${t(ty)}</div><div class="sub">${t('ends')} ${hm(ms.st+720)} · ${ms.pos===1?t('first'):t('second')}</div>`;
@@ -757,11 +789,6 @@ jobs:
               return `<div class="item" data-day="${x.k}" style="cursor:pointer"><div class="h"><span>${ICO[x.type]} ${fmtK(x.k)} — ${esc(teamName(x.team))}</span><span class="pill bad" style="background:var(--dangerBg)">${t('needs')} ${x.short}</span></div>${miss.length?`<div class="b">❌ ${miss.map(esc).join('، ')}</div>`:''}</div>`;}).join('')+'</div>';
             const uc=upcomingConflicts();if(uc.length)h+=`<div class="card"><h3>${t('upConf')}</h3>`+uc.map(x=>`<div class="item" data-pid="${x.pid}"><div class="h">${esc(pName(x.pid))} — ${ICO[x.ty]} ${fmtK(x.k)}</div><div class="b">${x.c.map(esc).join('\n')}</div></div>`).join('')+'</div>';
             const cur=lastOrCurrentMyShift(now);
-          EOF_FILE
-
-      - name: Create project files (13)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(cur){const id=shiftId(cur.date,cur.type),g=S.logs[id]||{};
               const st=(ok,txt)=>`<span class="st ${ok?'ok':'bad'}">${ok?'✓ ':''}${txt}</span>`;
               h+=`<div class="card"><h3>${t('tasks')} <span class="muted">${on?t('current'):t('last')}: ${t(cur.type)} ${fmtS(cur.date)}</span></h3>`;
@@ -785,6 +812,11 @@ jobs:
             if(si.res.length)h+=`<div class="muted" style="margin-top:6px">🔁 ${t('reserve')}: ${si.res.map(r=>{const a=S.asg.find(x=>x.pid===r.id&&x.k===k&&x.type===ty);return esc(pName(r.id))+(a?` → ${a.for?t('inPlaceOf')+' '+esc(pName(a.for)):esc(teamName(a.team))}`:` (${t('onCallRes')})`);}).join(' · ')}</div>`;
             h+=`<button class="btn sm full" data-xcall="${k}|${ty}|${si.team}">${t('extraCall')}</button></div>`;return h;}
           function teamsForDay(k){const d=parse(k);let h=slotCard(slotInfo(k,'D'))+slotCard(slotInfo(k,'N'));const ot=teamOn(d,'O');
+          EOF_FILE
+
+      - name: Create project files (15)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="tl"><span>🛋️ ${t('O')} — ${esc(teamName(ot))}</span><span class="muted">${teamMembers(ot).length}</span></div>`;return h;}
           function bindSlots(v,back){v.querySelectorAll('[data-cover]').forEach(b=>b.onclick=()=>{const[k,ty,tm,si,f]=b.dataset.cover.split('|');pickCover(k,ty,+tm,si,f,back);});
             v.querySelectorAll('[data-xcall]').forEach(b=>b.onclick=()=>{const[k,ty,tm]=b.dataset.xcall.split('|');slotForm(null,k,ty,+tm,back);});
@@ -802,11 +834,6 @@ jobs:
             SDAYS[L()].forEach(n=>h+=`<div class="dn">${n}</div>`);
             const first=calView.getDay(),len=new Date(calView.getFullYear(),calView.getMonth()+1,0).getDate();
             for(let i=0;i<first;i++)h+='<div class="c empty"></div>';
-          EOF_FILE
-
-      - name: Create project files (14)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             for(let d=1;d<=len;d++){const dt=new Date(calView.getFullYear(),calView.getMonth(),d),k=ymd(dt),s=shiftOf(dt,C().myTeam);
               const dot=S.events.some(e=>(e.from<=k&&e.to>=k)||e.back===k)||S.asg.some(a=>a.k===k)||['D','N'].some(ty=>{const g=S.logs[k+'_'+ty];return g&&(g.notes||(g.inc&&g.inc.length));});
               const sh=k>=kAdd(ymd(now),-31)&&(slotInfo(k,'D').short||slotInfo(k,'N').short);
@@ -831,6 +858,11 @@ jobs:
               h+=`<input class="search" id="eQ" placeholder="${t('searchPh')}" value="${esc(empQ)}"><div class="tabs">${[['all',t('all')],[0,teamFull(0)],[1,teamFull(1)],[2,teamFull(2)],['former',t('former')]].map(([k,l])=>`<button data-ef="${k}" class="${String(empF)===String(k)?'on':''}">${esc(l)}</button>`).join('')}</div><div class="tabs">${[['all','📍 '+t('allSites')],...C().sites.map(x=>[x.id,'📍 '+x.name])].map(([k,l])=>`<button data-esite="${k}" class="${empSite===k?'on':''}">${esc(l)}</button>`).join('')}</div><div id="eList"></div>
               <button class="btn pri full" id="eNew">${t('newEmp')}</button>`;}
             else if(empSub==='events')h+=eventsList(S.events,true);
+          EOF_FILE
+
+      - name: Create project files (16)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             else h+=uniList();
             v.innerHTML=h;
             $('qA').onclick=()=>evForm('absence');$('qC').onclick=()=>slotForm();$('qW').onclick=()=>warnForm();$('qU').onclick=()=>uniForm();
@@ -853,11 +885,6 @@ jobs:
           function rPerson(){const v=$('v-person');const p=P(empId);if(!p){go('emp');return;}const ar=L()==='ar';
             const mine=p.id===C().meId,canEdit=!isMember()||mine;
             let h=(isMember()&&mine)?'':`<button class="btn sm" id="pBack" style="margin-bottom:8px">${ar?'→':'←'} ${t(personFrom==='emp'?'emp':personFrom==='cal'?'cal':'home')}</button>`;
-          EOF_FILE
-
-      - name: Create project files (15)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="phead"><div class="av">${esc(initial(p.id))}</div><div style="flex:1"><div class="nm">${esc(pName(p.id))}${mine?' <span class="tag">'+t('you')+'</span>':''}</div><div class="muted">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} ${roleTag(p)}</div><div style="font-size:13px;margin-top:2px">${todayStatus(p)}</div></div></div>`;
             if(!p.left&&canEdit)h+=`<div class="qa"><button id="pqA"><span>❌</span>${t('qAbs')}</button><button id="pqC"><span>📞</span>${t('qCall')}</button><button id="pqW"><span>⚠️</span>${t('qWarn')}</button><button id="pqU"><span>👕</span>${t('qUni')}</button></div>`;
             h+=`<div class="tabs">${(isMember()?[['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['evals',t('evals')],['events',t('events')],['info',t('info')]]:[['info',t('info')],['duty',t('duty')],['uni',t('uni')],['warns',t('warns')],['evals',t('evals')],['events',t('events')]]).map(([k,l])=>`<button data-pt="${k}" class="${empTab===k?'on':''}">${l}${k==='warns'&&warnsOf(p.id).length?' ('+warnsOf(p.id).length+')':''}</button>`).join('')}</div>`;
@@ -882,6 +909,11 @@ jobs:
               let b=`<div class="card"><div class="mnav"><button class="btn" id="dmP">${ar?'›':'‹'}</button><b>${MONTHS[L()][empMonth.getMonth()]} ${empMonth.getFullYear()}</b><button class="btn" id="dmN">${ar?'‹':'›'}</button></div>
               <div class="kpis"><div class="kpi"><b>${r.total}</b><span>${t('actual')}</span></div><div class="kpi"><b class="D-t">${r.d}</b><span>${t('dayC')}</span></div><div class="kpi"><b class="N-t">${r.n}</b><span>${t('nightC')}</span></div>
               <div class="kpi"><b>${r.total*12}</b><span>${t('hours')}</span></div><div class="kpi"><b class="bad">${r.abs}</b><span>${t('absC')}</span></div><div class="kpi"><b>${r.extra}</b><span>${t('extraC')}</span></div></div>
+          EOF_FILE
+
+      - name: Create project files (17)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               <div class="sec">${t('workedDays')}</div>`+(r.list.length?r.list.map(x=>`<div class="tl"><span>${fmtK(x.k)}</span><span class="pill ${x.type}-t ${x.type}-b">${ICO[x.type]} ${t(x.type)}${x.kind!=='base'?' · '+t('kind_'+x.kind):''}</span></div>`).join(''):`<div class="empty-msg">${t('nothing')}</div>`)+
               `<button class="btn pri full" id="dmPr">${t('printMonth')}</button></div>`;B.innerHTML=b;
               $('dmP').onclick=()=>{empMonth=new Date(empMonth.getFullYear(),empMonth.getMonth()-1,1);rPerson();};$('dmN').onclick=()=>{empMonth=new Date(empMonth.getFullYear(),empMonth.getMonth()+1,1);rPerson();};
@@ -892,11 +924,6 @@ jobs:
               B.querySelectorAll('[data-delu]').forEach(x=>x.onclick=()=>confirmBox(t('confirmDel'),()=>{S.uni=S.uni.filter(u=>u.id!==x.dataset.delu);save();rPerson();}));}
             if(empTab==='warns'){const ws=warnsOf(p.id);const lvl=ws.length?Math.max(...ws.map(w=>WL.indexOf(w.type))):-1;
               let b=`<div class="card"><h3>⚠️ ${t('warns')}${p.left?'':` <button class="btn sm pri" id="pwN">${t('addWarn')}</button>`}</h3><div class="lvl">${WL.map((w,i)=>`<i class="${i<=lvl?'on':''}"></i>`).join('')}</div><div class="muted" style="display:flex;justify-content:space-between">${WL.map(w=>`<span>${t('w_'+w)}</span>`).join('')}</div></div>`;
-          EOF_FILE
-
-      - name: Create project files (16)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               b+=ws.length?ws.map(w=>`<div class="item"><div class="h"><span>${w.date} · ${t('w_'+w.type)}</span><button class="btn sm dang" data-delw="${w.id}">${t('del')}</button></div><div class="b">${esc(w.reason||'')}${w.ded?'\n'+t('deduct')+': '+w.ded+' '+(w.dedType==='amount'?t('dedAmount'):t('dedDays')):''}</div></div>`).join(''):`<div class="empty-msg">${t('noWarns')}</div>`;
               B.innerHTML=b;if($('pwN'))$('pwN').onclick=()=>warnForm(p.id);
               B.querySelectorAll('[data-delw]').forEach(x=>x.onclick=()=>confirmBox(t('confirmDel'),()=>{S.warns=S.warns.filter(w=>w.id!==x.dataset.delw);save();rPerson();}));}
@@ -921,6 +948,11 @@ jobs:
             <label>${t('role')}</label><select id="nwR"><option value="mem">${t('member')}</option><option value="sup">★ ${t('supervisor')}</option><option value="res">${t('reserve')}</option></select>
             <label>${t('site')}</label><select id="nwSi">${siteOpts(empSite!=='all'?empSite:'compound')}</select><label>${t('startDate')}</label><input type="date" id="nwD" value="${ymd(now)}"><div class="btns"><button class="btn pri" id="nwOk">${t('save')}</button><button class="btn" id="nwC">${t('cancel')}</button></div>`);
             $('nwC').onclick=closeSheet;$('nwOk').onclick=()=>{const n=$('nwN').value.trim();if(!n){toast(t('needName'));$('nwN').focus();return;}const k=+$('nwT').value;
+          EOF_FILE
+
+      - name: Create project files (18)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               const si=$('nwSi').value;const p={id:'p'+uid(),name:n,team:k,role:'mem',site:si,hist:[{team:k,from:$('nwD').value||ymd(now),site:si}]};people().push(p);setRole(p,$('nwR').value);save();closeSheet();render();toast(t('saved'));};}
 
           function movePerson(p,k,si,d){if(!(p.hist||[]).some(x=>x.site))p.hist=(p.hist||[]).map(x=>Object.assign({},x,{site:p.site||'compound'}));
@@ -933,11 +965,6 @@ jobs:
             <div class="sec" style="margin-top:12px">${t('membersL')} · ${ms.length}</div>`;
             h+=ms.map(p=>`<div class="item"><div class="row" style="align-items:center"><input data-mn="${p.id}" value="${esc(p.name)}" style="flex:3"><button class="btn sm dang" data-mx="${p.id}" style="flex:0 0 auto">✕</button></div>
               <div class="row" style="margin-top:6px"><select data-mr="${p.id}"><option value="mem" ${p.role==='mem'?'selected':''}>${t('member')}</option><option value="res" ${p.role==='res'?'selected':''}>${t('reserve')}</option></select>${p.role==='res'?'<span class="muted" style="align-self:center">📍 '+t('bothSites')+'</span>':`<select data-ms="${p.id}">${siteOpts(curSite(p))}</select>`}</div></div>`).join('')||`<div class="empty-msg">${t('noMembers')}</div>`;
-          EOF_FILE
-
-      - name: Create project files (17)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="item"><div class="row" style="align-items:center"><input id="teAN" placeholder="${t('name')}" style="flex:3"><select id="teAS" style="flex:2">${siteOpts('compound')}<option value="res">${t('reserve')}</option></select></div><button class="btn pri full" id="teA">${t('addMember')}</button></div>
             <button class="btn full" id="teC">${t('close')}</button>`;
             openSheet(h);
@@ -964,8 +991,14 @@ jobs:
             if(wz.step===0)h+=`<div class="card" style="text-align:center;padding:26px 16px"><div style="font-size:54px">🗓️</div><h2 style="font-size:22px;margin:6px 0">${t('wWelcome')}</h2><p class="muted">${t('wWelcomeSub')}</p><p class="muted" style="font-size:11px;margin-top:10px">${t('credit')} · <span dir="ltr">0924682644</span></p></div>
               <div class="card"><h3>🌐 ${t('language')}</h3><div class="seg"><button data-wl="ar" class="${c.lang==='ar'?'on':''}">العربية</button><button data-wl="en" class="${c.lang==='en'?'on':''}">English</button></div>
               <h3>🎨 ${t('theme')}</h3><div class="seg">${['dark','light','auto'].map(k=>`<button data-wth="${k}" class="${c.theme===k?'on':''}">${t(k)}</button>`).join('')}</div></div>`;
-            if(wz.step===1)h+=`<h2 style="font-size:19px;margin-bottom:10px">${t('wRoleQ')}</h2>`+big('wm="member"',wz.mode==='member','🧍',t('modeMember'),t('wMemberD'))+big('wm="sup"',wz.mode==='sup','★',t('modeSup'),t('wSupD'))+big('wm="pm"',wz.mode==='pm','🧭',t('modePM'),t('wPMD'));
-            if(wz.step===2){h+=`<h2 style="font-size:19px;margin-bottom:10px">${t('wAboutQ')}</h2><div class="card"><label>${t('name')}</label><input id="wzN" value="${esc(wz.name)}">
+            if(wz.step===1)h+=`<h2 style="font-size:19px;margin-bottom:10px">${t('wRoleQ')}</h2>`+big('wm="member"',wz.mode==='member','🧍',t('modeMember'),t('wMemberD'))+big('wm="sup"',wz.mode==='sup','★',t('modeSup'),t('wSupD'))+big('wm="pm"',wz.mode==='pm','🧭',t('modePM'),t('wPMD'))+big('wm="site"',wz.mode==='site','📍',t('modeSite'),t('wSiteD'));
+          EOF_FILE
+
+      - name: Create project files (19)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            if(wz.step===2&&wz.mode==='site'){h+=`<h2 style="font-size:19px;margin-bottom:10px">📍 ${t('modeSite')}</h2><div class="card"><label>${t('siteOf')}</label><div class="seg">${c.sites.map(x=>`<button data-ws="${x.id}" class="${wz.site===x.id?'on':''}">📍 ${esc(x.name)}</button>`).join('')}</div><label>${t('pinL')}</label><input id="wzPin" type="password" inputmode="numeric" maxlength="6" placeholder="${t('pinPh')}" value="${esc(wz.pin||'')}"></div>`;}
+            else if(wz.step===2){h+=`<h2 style="font-size:19px;margin-bottom:10px">${t('wAboutQ')}</h2><div class="card"><label>${t('name')}</label><input id="wzN" value="${esc(wz.name)}">
           `;if(wz.mode!=='pm')h+=`<label>${t('wYourTeam')}</label><div class="seg">${[0,1,2].map(i=>`<button data-wt2="${i}" class="${wz.team===i?'on':''}">${esc(teamFull(i))}</button>`).join('')}</div>`;
               if(wz.mode==='member')h+=`<label>${t('wYourRole')}</label><div class="seg"><button data-wr="mem" class="${wz.mrole==='mem'?'on':''}">${t('member')}</button><button data-wr="res" class="${wz.mrole==='res'?'on':''}">${t('reserve')}</button></div>`;
               if(wz.mode!=='pm'&&!(wz.mode==='member'&&wz.mrole==='res'))h+=`<label>${t('wYourSite')}</label><div class="seg">${c.sites.map(x=>`<button data-ws="${x.id}" class="${wz.site===x.id?'on':''}">📍 ${esc(x.name)}</button>`).join('')}</div>`;
@@ -974,23 +1007,18 @@ jobs:
               h+=[0,1,2].map(k=>`<div class="card" style="padding:10px 12px"><h3>${esc(teamFull(k))}${k===wz.team&&wz.mode!=='pm'?' <span class="tag">'+t('yours')+'</span>':''}</h3><div class="seg" style="margin-bottom:0">${['D','N','O'].map((ty,ci)=>`<button data-wc="${k}|${ci}" class="${wz.cls[k]===ci?'on':''}">${ICO[ty]} ${t(ty)}</button>`).join('')}</div></div>`).join('');
               h+=`<div class="card"><h3>${t('dayNo')}</h3><div class="seg" style="margin-bottom:0"><button data-wpar="0" class="${wz.par===0?'on':''}">${t('firstDay')}</button><button data-wpar="1" class="${wz.par===1?'on':''}">${t('secondDay')}</button></div></div>
               <div class="card"><h3>⏰ ${t('times')}</h3><div class="row"><div><label>${t('fpStart')}</label><input type="time" id="wzF1" value="${wz.fpStart}"></div><div><label>${t('fpEnd')}</label><input type="time" id="wzF2" value="${wz.fpEnd}"></div></div><label>${t('startTime')}</label><input type="time" id="wzSt" value="${wz.start}"><p class="muted" style="margin-top:4px">${t('nightNote')}</p></div>`;}
-          EOF_FILE
-
-      - name: Create project files (18)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(wz.step===4){h+=`<h2 style="font-size:19px">${t('wTeamsQ')}</h2><p class="muted" style="margin-bottom:10px">${t('wTeamsSub')}</p>`+[0,1,2].map(i=>{const sup=activePeople().find(p=>p.team===i&&p.role==='sup');const meSup=wz.mode==='sup'&&i===wz.team;
                 return `<div class="card"><h3>${t('teamOf')} ${i+1}${i===wz.team?' <span class="tag">'+t('yours')+'</span>':''}</h3><label>${t('supName')} ★</label><input data-wsup="${i}" value="${esc(meSup?wz.name:(sup?sup.name:''))}" ${meSup?'disabled':''}></div>`;}).join('');}
             if(wz.step===5){if(wz.mode==='sup'){const ms=teamMembers(wz.team).filter(p=>p.role!=='sup');h+=`<h2 style="font-size:19px">${t('wMembersQ')}</h2><p class="muted" style="margin-bottom:10px">${t('wMembersSub')}</p><div class="card">`+
                 (ms.map(p=>`<div class="tl"><span>${esc(pName(p.id))}</span><span class="muted">${p.role==='res'?t('reserve'):'📍'+esc(siteName(curSite(p)))}</span></div>`).join('')||`<div class="empty-msg">${t('noMembers')}</div>`)+`<button class="btn pri full" id="wzEd">${t('editTeam')}</button></div>`;}
               h+=`<div class="card" style="text-align:center;padding:22px 14px"><div style="font-size:46px">✅</div><h2 style="font-size:20px;margin:6px 0">${t('wDoneQ')}</h2><p class="muted">${t('wDoneSub')}</p>
-                <div class="item" style="text-align:start;margin-top:12px"><div class="b">${esc(wz.name||'—')} · ${wz.mode==='pm'?'🧭 '+t('modePM'):wz.mode==='sup'?'★ '+t('modeSup'):(wz.mrole==='res'?t('reserve'):t('modeMember'))}${wz.mode==='pm'?'':'\n'+esc(teamFull(wz.team))+(wz.mode==='member'&&wz.mrole==='res'?'':' · 📍'+esc(siteName(wz.site)))}\n${t('today')}: ${[0,1,2].map(k=>teamName(k)+' '+ICO[['D','N','O'][wz.cls[k]]]).join(' · ')}</div></div></div>`;}
+                <div class="item" style="text-align:start;margin-top:12px"><div class="b">${esc(wz.name||'—')} · ${wz.mode==='site'?'📍 '+t('modeSite')+' · '+esc(siteName(wz.site)):wz.mode==='pm'?'🧭 '+t('modePM'):wz.mode==='sup'?'★ '+t('modeSup'):(wz.mrole==='res'?t('reserve'):t('modeMember'))}${wz.mode==='pm'||wz.mode==='site'?'':'\n'+esc(teamFull(wz.team))+(wz.mode==='member'&&wz.mrole==='res'?'':' · 📍'+esc(siteName(wz.site)))}\n${t('today')}: ${[0,1,2].map(k=>teamName(k)+' '+ICO[['D','N','O'][wz.cls[k]]]).join(' · ')}</div></div></div>`;}
             h+=`<div class="btns" style="margin-top:6px">${wz.step>0?`<button class="btn" id="wzB">${t('wBack')}</button>`:''}<button class="btn pri" id="wzX" style="flex:2">${wz.step===0?t('wStart'):wz.step===5?t('wFinish'):t('wNext')}</button></div>`;
             v.innerHTML=h;
             const q=(sel,fn)=>v.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
             q('[data-wl]',b=>{c.lang=b.dataset.wl;save();render();});q('[data-wth]',b=>{c.theme=b.dataset.wth;save();render();});
             q('[data-wm]',b=>{wz.mode=b.dataset.wm;rSetup();});
-            if($('wzN'))$('wzN').oninput=e=>{wz.name=e.target.value;};
+            if($('wzN'))$('wzN').oninput=e=>{wz.name=e.target.value;};if($('wzPin'))$('wzPin').oninput=e=>{wz.pin=e.target.value.trim();};
             q('[data-wt2]',b=>{wz.team=+b.dataset.wt2;rSetup();});
             q('[data-wr]',b=>{wz.mrole=b.dataset.wr;rSetup();});q('[data-ws]',b=>{wz.site=b.dataset.ws;rSetup();});
             q('[data-wc]',b=>{const[k,ci]=b.dataset.wc.split('|').map(Number);const other=wz.cls.indexOf(ci);if(other>=0&&other!==k)wz.cls[other]=wz.cls[k];wz.cls[k]=ci;rSetup();});
@@ -1000,12 +1028,17 @@ jobs:
               if(sup){if(n)sup.name=n;}else if(n){const p={id:'p'+uid(),name:n,team:k,role:'mem',site:'compound',hist:[{team:k,from:ymd(now),site:'compound'}]};people().push(p);setRole(p,'sup');}save();});
             if($('wzEd'))$('wzEd').onclick=()=>teamEditor(wz.team);
             if($('wzB'))$('wzB').onclick=()=>{wz.step--;rSetup();window.scrollTo(0,0);};
-            $('wzX').onclick=()=>{if(wz.step===2&&!wz.name.trim()){toast(t('needName'));$('wzN').focus();return;}
+            $('wzX').onclick=()=>{if(wz.step===2&&wz.mode!=='site'&&!wz.name.trim()){toast(t('needName'));$('wzN').focus();return;}
               if(wz.step===3){c.anchor=ymd(now);c.off=[0,1,2].map(k=>wz.cls[k]*2+wz.par);c.start=wz.start;c.fpStart=wz.fpStart;c.fpEnd=wz.fpEnd;save();}
               if(wz.step===2||wz.step===4)applyMe();
               if(wz.step===5){applyMe();c.mode=wz.mode;save();wz=null;view='home';render();window.scrollTo(0,0);return;}
+          EOF_FILE
+
+      - name: Create project files (20)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               wz.step++;rSetup();window.scrollTo(0,0);};}
-          function applyMe(){const c=C();const nm=wz.name.trim();if(!nm)return;c.myName=nm;
+          function applyMe(){const c=C();if(wz.mode==='site'){c.siteId=wz.site||'compound';c.pin=wz.pin||'';c.meId=null;if(c.notifOn==null)c.notifOn=true;save();return;}const nm=wz.name.trim();if(!nm)return;c.myName=nm;
             if(wz.mode==='pm'){c.meId=null;save();return;}c.myTeam=wz.team;
             let m=meP();if(!m)m=activePeople().find(p=>p.team===wz.team&&(p.name||'').trim()===nm);
             if(!m&&wz.mode==='sup')m=activePeople().find(p=>p.team===wz.team&&p.role==='sup');
@@ -1025,11 +1058,6 @@ jobs:
           let evFilter='all';
           function eventsList(list,withFilter,asgList){let h='';if(withFilter)h+=`<div class="tabs">${['all','absence','leave','callout','swap'].map(k=>`<button data-evf="${k}" class="${evFilter===k?'on':''}">${k==='all'?t('all'):t('ev_'+k)}</button>`).join('')}</div>`;
             const items=[];if(evFilter!=='callout'||!withFilter)list.filter(e=>!withFilter||evFilter==='all'||e.type===evFilter).forEach(e=>items.push({d:e.from,h:`<div class="item" ${e.type!=='swap'?`data-abs="${e.id}" style="cursor:pointer"`:''}><div class="h"><span>${esc(evText(e))}</span><button class="btn sm dang" data-delev="${e.id}">${t('del')}</button></div><div class="b">${evDates(e)}${e.note?'\n'+esc(e.note):''}</div></div>`}));
-          EOF_FILE
-
-      - name: Create project files (19)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(!withFilter||evFilter==='all'||evFilter==='callout')(asgList||S.asg).filter(a=>!withFilter||evFilter!=='callout'||!a.for).forEach(a=>items.push({d:a.k,h:`<div class="item"><div class="h"><span>${esc(asgText(a))}</span><button class="btn sm dang" data-delasg="${a.id}">${t('del')}</button></div>${a.note?`<div class="b">${esc(a.note)}</div>`:''}</div>`}));
             items.sort((a,b)=>a.d<b.d?1:-1);h+=`<div class="card">`+(items.length?items.map(x=>x.h).join(''):`<div class="empty-msg">${t('noEvents')}</div>`)+'</div>';return h;}
           function bindEvents(v,re){v.querySelectorAll('[data-evf]').forEach(b=>b.onclick=()=>{evFilter=b.dataset.evf;re();});
@@ -1051,6 +1079,11 @@ jobs:
                 if(s==='O')info=`<div class="muted" style="margin-top:6px">${esc(pName(p2.id))}: ${t('noShiftThatDay')}</div>`;else info=`<div class="muted" style="margin-top:6px">${esc(pName(p1.id))} → ${ICO[s]} ${t(s)} ${fmtK(k)}</div>`+confBox(conflicts(p1.id,k,s));
                 const b=$('efB').value;if(b){const s2=teamShift(teamAt(p1,b),b);if(s2!=='O')info+=`<div class="muted" style="margin-top:6px">${esc(pName(p2.id))} → ${ICO[s2]} ${t(s2)} ${fmtK(b)}</div>`+confBox(conflicts(p2.id,b,s2));}}}
               $('efInfo').innerHTML=info;};
+          EOF_FILE
+
+      - name: Create project files (21)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             $('panel').querySelectorAll('[data-eft]').forEach(b=>b.onclick=()=>{if(b.dataset.eft==='callout'){slotForm(null,$('efF').value);return;}ty=b.dataset.eft;$('panel').querySelectorAll('[data-eft]').forEach(x=>x.classList.toggle('on',x===b));upd();});
             ['efP','efF','efT','efP2','efB'].forEach(id=>$(id).addEventListener('change',upd));$('efC').onclick=closeSheet;
             $('efOk').onclick=()=>{const p1=$('efP').value,f=$('efF').value;if(!p1||!f)return;const note=$('efN').value.trim();let e;
@@ -1069,11 +1102,6 @@ jobs:
               <div class="b">⏮ ${t('restB')} ${fh(c.bef)}${t('hS')} · ⏭ ${t('restA')} ${fh(c.aft)}${t('hS')}${c.conf.length?'\n⚠️ '+c.conf.map(esc).join('\n⚠️ '):''}</div></div>`;}).join('');}
           function pickCover(k,ty,tm,site,forPid,back){const si=slotInfo(k,ty);const inSlot=[].concat(...si.sites.map(s=>s.present.map(p=>p.id).concat(s.asg.map(a=>a.pid),s.swIn)));
             const excl=inSlot.concat(forPid?[forPid]:[]).concat(S.asg.filter(a=>a.k===k&&a.type===ty).map(a=>a.pid));
-          EOF_FILE
-
-      - name: Create project files (20)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             openSheet(`<h3>${t('pickTitle')}</h3><div class="item"><div class="b" style="color:var(--text)">${ICO[ty]} ${t(ty)} — ${fmt(parse(k))}\n${esc(teamName(tm))} · 📍${esc(siteName(site))}${forPid?'\n'+t('inPlaceOf')+': '+esc(pName(forPid)):''}</div></div><p class="muted" style="margin:6px 0">${t('pickSub')}</p>${candList(k,ty,tm,excl)}<button class="btn full" id="pcC">${t('cancel')}</button>`);
             $('pcC').onclick=()=>{if(back)back();else closeSheet();};
             $('panel').querySelectorAll('[data-cand]').forEach(b=>b.onclick=()=>{S.asg.push({id:uid(),k,type:ty,team:tm,site,pid:b.dataset.cand,for:forPid||null,note:''});save();toast(t('assignDone'));if(back)back();else{closeSheet();render();}});}
@@ -1095,6 +1123,11 @@ jobs:
             openSheet(`<h3>⚠️ ${t('addWarn').replace('+ ','')}</h3><label>${t('person')}</label><select id="wP">${personOpts(isMember()&&meP()?C().meId:pid,isMember()&&meP()?personList().filter(x=>x.id===C().meId):null)}</select><div id="wSug" class="muted" style="margin-top:6px"></div>
             <label>${t('type')}</label><div class="tabs" id="wTy">${WL.map(w=>`<button data-wt="${w}">${t('w_'+w)}</button>`).join('')}</div>
             <label>${t('date')}</label><input type="date" id="wD" value="${ymd(now)}"><label>${t('reason')}</label><textarea id="wR" style="min-height:60px"></textarea>
+          EOF_FILE
+
+      - name: Create project files (22)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             <div id="wDed"><label>${t('deduct')}</label><div class="row"><input type="number" inputmode="decimal" id="wV" placeholder="${t('value')}"><select id="wU"><option value="days">${t('dedDays')}</option><option value="amount">${t('dedAmount')}</option></select></div></div>
             <div class="btns"><button class="btn pri" id="wOk">${t('save')}</button><button class="btn" id="wC">${t('cancel')}</button></div>`);
             let wt='verbal';const setT=x=>{wt=x;$('wTy').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.wt===x));};
@@ -1114,11 +1147,6 @@ jobs:
           function uniForm(pre){let ppl=personList();pre=pre||[];if(isMember()&&meP()){ppl=ppl.filter(x=>x.id===C().meId);pre=[C().meId];}
             let h=`<h3>👕 ${t('uniNew').replace('+ ','')}</h3><label>${t('date')}</label><input type="date" id="uD" value="${ymd(now)}"><div class="sec" style="margin-top:10px">${t('items')}</div>`+
             C().uniItems.map(it=>`<div class="row" style="align-items:center"><label class="chk" style="flex:2"><input type="checkbox" data-ui="${it.id}">${esc(itemName(it))}</label><input type="number" inputmode="numeric" min="1" value="1" data-uq="${it.id}" style="flex:1"></div>`).join('');
-          EOF_FILE
-
-      - name: Create project files (21)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="sec" style="margin-top:10px">${t('people')}</div><div class="btns" style="margin-bottom:6px"><button class="btn sm" data-pq="all">${t('all')}</button>${[0,1,2].map(i=>`<button class="btn sm" data-pq="${i}">${esc(teamName(i))}</button>`).join('')}<button class="btn sm" data-pq="none">${t('none')}</button></div>`;
             h+=ppl.map(p=>`<label class="chk"><input type="checkbox" data-pp="${p.id}" data-tx="${p.team}" ${pre.includes(p.id)?'checked':''}>${esc(p.name)}</label>`).join('');
             h+=`<label>${t('note')}</label><input id="uN"><div class="btns"><button class="btn pri" id="uNx">${t('nextStep')}</button><button class="btn" id="uC">${t('cancel')}</button></div>`;
@@ -1140,6 +1168,11 @@ jobs:
             let h=`<div class="shnav"><button class="btn" id="lP">${ar?'›':'‹'}</button><div class="mid"><b>${ICO[logSel.type]} ${t(logSel.type)} — ${fmt(logSel.date)}</b><span class="muted">${isCur?t('current')+' · ':''}${t('work')} ${hm(tm.st)}–${hm(tm.st+720)}</span></div><button class="btn" id="lN">${ar?'‹':'›'}</button></div>`;
             if(isCur&&logReminderActive(logSel))h+=`<div class="alert">${t('logReminder')}</div>`;
             const mmF=()=>(g.recv!=null&&g.hand!=null&&g.recv!==g.hand)||(g.recv!=null&&g.recv!==+C().cards);
+          EOF_FILE
+
+      - name: Create project files (23)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="card"><h3>🪪 ${t('cards')} <span class="muted">${t('total')}: ${C().cards}</span></h3><div class="row"><div><label>${t('received')}</label><input type="number" inputmode="numeric" id="fRecv" value="${g.recv==null?'':g.recv}" placeholder="${C().cards}"></div><div><label>${t('handed')}</label><input type="number" inputmode="numeric" id="fHand" value="${g.hand==null?'':g.hand}" placeholder="${C().cards}"></div></div>
               <div class="btns"><button class="btn sm" id="fAll">✓ ${t('received')} = ${C().cards}</button><button class="btn sm" id="fAllH">✓ ${t('handed')} = ${C().cards}</button></div>
               <div id="mmBox" style="display:${mmF()?'block':'none'}"><div class="alert" style="margin:10px 0 0">${t('mismatch')}</div><label>${t('mismatchNote')}</label><input id="fCN" value="${esc(g.cardNote)}"></div></div>`;
@@ -1155,11 +1188,6 @@ jobs:
             if($('fVis')){$('fVis').onchange=e=>{g.vis=e.target.checked;save();};$('fWrk').onchange=e=>{g.wrk=e.target.checked;save();};}
             $('fNotes').oninput=e=>{g.notes=e.target.value;save();};$('fInc').onclick=()=>incForm(g);
             v.querySelectorAll('[data-delinc]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{g.inc=g.inc.filter(x=>x.id!==b.dataset.delinc);save();rLog();}));}
-          EOF_FILE
-
-      - name: Create project files (22)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function incForm(g){const n=new Date();openSheet(`<h3>🚨 ${t('addIncident').replace('+ ','')}</h3><div class="row"><div><label>${t('time')}</label><input type="time" id="iT" value="${pad(n.getHours())}:${pad(n.getMinutes())}"></div><div><label>${t('type')}</label><select id="iY">${INC.map(k=>`<option value="${k}">${t('inc_'+k)}</option>`).join('')}</select></div></div>
             <label>${t('desc')}</label><textarea id="iD"></textarea><label>${t('action')}</label><textarea id="iA" style="min-height:60px"></textarea><div class="btns"><button class="btn pri" id="iS">${t('save')}</button><button class="btn" id="iC">${t('cancel')}</button></div>`);
             $('iC').onclick=closeSheet;$('iS').onclick=()=>{const d=$('iD').value.trim();if(!d){$('iD').focus();return;}g.inc.push({id:uid(),time:$('iT').value,type:$('iY').value,desc:d,action:$('iA').value.trim()});g.inc.sort((a,b)=>a.time<b.time?-1:1);save();closeSheet();rLog();toast(t('saved'));};}
@@ -1177,6 +1205,11 @@ jobs:
               <div class="tabs" style="${isMember()?'display:none':''}">${[['all',t('all')],['0',teamName(0)],['1',teamName(1)],['2',teamName(2)]].map(([k,l])=>`<button data-st="${k}" class="${sheetTeam===k?'on':''}">${esc(l)}</button>`).join('')}</div>
               <div class="tabs" style="${isMember()?'display:none':''}">${[['all','📍 '+t('allSites')],...C().sites.map(x=>[x.id,'📍 '+x.name])].map(([k,l])=>`<button data-ss="${k}" class="${sheetSite===k?'on':''}">${esc(l)}</button>`).join('')}</div>
               <div class="scrollx"><table class="tbl"><tr><th>${t('name')}</th><th>${t('site')}</th><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th><th>${t('warnC')}</th></tr>`;
+          EOF_FILE
+
+      - name: Create project files (24)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               let tot=0;sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);tot+=r.total;h+=`<tr data-pid="${p.id}"><td>${esc(pName(p.id))}${p.role==='res'?' <span class="tag res">'+t('reserve')+'</span>':''}</td><td>${esc(siteName(siteAt(p,B)))}</td><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs||''}</td><td>${r.leave||''}</td><td>${r.extra||''}</td><td>${r.w||''}</td></tr>`;});
               h+=`</table></div><div class="btns"><button class="btn pri" id="smPr">${t('print')}</button><button class="btn" id="smSh">${t('share')}</button></div></div>`;
               v.innerHTML=h;bindCommon(v);
@@ -1192,11 +1225,6 @@ jobs:
               v.innerHTML=h;
               v.querySelectorAll('[data-per]').forEach(b=>b.onclick=()=>{rp.per=b.dataset.per;rRep();});v.querySelectorAll('[data-sec]').forEach(b=>b.onchange=()=>{rp.sec[b.dataset.sec]=b.checked;});
               if($('rF')){$('rF').onchange=e=>rp.from=e.target.value;$('rT').onchange=e=>rp.to=e.target.value;}
-          EOF_FILE
-
-      - name: Create project files (23)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               $('rG').onclick=()=>{repOut=buildReport();rRep();setTimeout(()=>{const p=v.querySelector('pre');if(p)p.scrollIntoView({behavior:'smooth'});},50);};
               if(repOut){$('rC').onclick=()=>copyText(repOut);$('rS').onclick=()=>shareText(repOut);$('rPr').onclick=()=>printHtml(textHtml(repOut),t('report'));}}
             v.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{repSub=b.dataset.rs;rRep();});}
@@ -1209,6 +1237,11 @@ jobs:
           function sheetText(A,B){const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();let o=`${t('actual')} — ${m}\n${'─'.repeat(20)}\n`;
             sheetPeople(A,B).forEach(p=>{const r=monthRow(p,A,B);o+=`${pName(p.id)} (${siteName(siteAt(p,B))}): ${r.total} (${t('dayC')} ${r.d} · ${t('nightC')} ${r.n})${r.abs?' · '+t('absC')+' '+r.abs:''}${r.leave?' · '+t('leaveC')+' '+r.leave:''}${r.extra?' · '+t('extraC')+' '+r.extra:''}${r.w?' · ⚠️'+r.w:''}\n`;});return o;}
           function personMonthHtml(p,A,B,r){const m=MONTHS[L()][parse(A).getMonth()]+' '+parse(A).getFullYear();
+          EOF_FILE
+
+      - name: Create project files (25)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             let h=docHead(pName(p.id))+`<h1>${esc(pName(p.id))} — ${t('actual')}</h1><div class="sub">${esc(teamName(p.team))} · 📍${esc(siteName(curSite(p)))} · ${m}</div><table><tr><th>${t('dayC')}</th><th>${t('nightC')}</th><th>${t('total')}</th><th>${t('hours')}</th><th>${t('absC')}</th><th>${t('leaveC')}</th><th>${t('extraC')}</th></tr><tr><td>${r.d}</td><td>${r.n}</td><td><b>${r.total}</b></td><td>${r.total*12}</td><td>${r.abs}</td><td>${r.leave}</td><td>${r.extra}</td></tr></table><br>
             <table><tr><th>#</th><th>${t('date')}</th><th>${t('shiftT')}</th><th>${t('type')}</th></tr>`+r.list.map((x,i)=>`<tr><td>${i+1}</td><td>${fmt(parse(x.k))}</td><td>${t(x.type)}</td><td>${t('kind_'+x.kind)}</td></tr>`).join('')+`</table><div class="sig"><div>${t('sign1')}</div><div>${t('sign2')}</div></div></body></html>`;return h;}
           const textHtml=txt=>docHead(t('report'))+`<pre>${esc(txt)}</pre></body></html>`;
@@ -1221,11 +1254,6 @@ jobs:
             if(rp.sec.inc){o+=`\n■ ${t('secIncidents')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.inc)g.inc.forEach(i=>{n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${i.time} [${t('inc_'+i.type)}] ${i.desc}${i.action?' ↳ '+i.action:''}\n`;});});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.cards){o+=`\n■ ${t('secCards')} (${t('total')} ${C().cards})\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&(g.recv!=null||g.hand!=null)){n++;const bad=(g.recv!=null&&g.recv!==+C().cards)||(g.recv!=null&&g.hand!=null&&g.recv!==g.hand);o+=`- ${fmtS(x.date)} ${ICO[x.type]} ${t('received')} ${g.recv==null?'—':g.recv} / ${t('handed')} ${g.hand==null?'—':g.hand}${bad?' ⚠️'+(g.cardNote?' '+g.cardNote:''):''}\n`;}});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.logs){const ns=my.filter(x=>x.type==='N'&&started(x));if(ns.length){o+=`\n■ ${t('secLogs')}\n`;ns.forEach(x=>{const g=S.logs[x.id]||{};o+=`- ${fmtS(x.date)}: ${t('visitorsLog')} ${g.vis?'✓':'✗'} · ${t('workersLog')} ${g.wrk?'✓':'✗'}\n`;});}}
-          EOF_FILE
-
-      - name: Create project files (24)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             if(rp.sec.notes){o+=`\n■ ${t('secNotes')}\n`;let n=0;my.forEach(x=>{const g=S.logs[x.id];if(g&&g.notes){n++;o+=`- ${fmtS(x.date)} ${ICO[x.type]}: ${g.notes.replace(/\n/g,' / ')}\n`;}});if(!n)o+=t('nothing')+'\n';}
             if(rp.sec.team){o+=`\n■ ${t('secTeam')}\n`;const ev=S.events.filter(e=>(e.from<=B&&e.to>=A)||(e.back&&e.back>=A&&e.back<=B)).sort((x,y)=>x.from<y.from?-1:1);const as=S.asg.filter(x=>x.k>=A&&x.k<=B).sort((x,y)=>x.k<y.k?-1:1);o+=(ev.length||as.length)?ev.map(e=>`- ${evDates(e)}: ${evText(e)}${e.note?' ('+e.note+')':''}`).concat(as.map(x=>`- ${x.k}: ${asgText(x)}`)).join('\n')+'\n':t('nothing')+'\n';}
             if(rp.sec.warn){o+=`\n■ ${t('secWarn')}\n`;const ws=S.warns.filter(w=>w.date>=A&&w.date<=B).sort((x,y)=>x.date<y.date?-1:1);o+=ws.length?ws.map(w=>`- ${w.date} ${pName(w.p)}: ${t('w_'+w.type)}${w.reason?' — '+w.reason:''}${w.ded?' ('+t('deduct')+' '+w.ded+' '+(w.dedType==='amount'?t('dedAmount'):t('dedDays'))+')':''}`).join('\n')+'\n':t('nothing')+'\n';}
@@ -1244,6 +1272,11 @@ jobs:
           function gradeTag(s){const k=gradeKey(s);const st={g_weak:'background:var(--dangerBg);color:var(--danger)',g_ok:'background:var(--nightBg);color:var(--night)',g_good:'background:var(--dayBg);color:var(--day)',g_vgood:'background:var(--card);color:var(--accent)',g_exc:'background:var(--offBg);color:var(--off)'}[k];return `<span class="pill" style="${st}">${s}% · ${t(k)}</span>`;}
           function curSlotNow(){const k=ymd(now),tm=mins(C().start),m=now.getHours()*60+now.getMinutes();if(m>=tm&&m<tm+720)return{k,ty:'D'};if(m>=tm+720)return{k,ty:'N'};return{k:kAdd(k,-1),ty:'N'};}
           function kpiGrid(){const k=ymd(now),cs=curSlotNow(),si=slotInfo(cs.k,cs.ty);
+          EOF_FILE
+
+      - name: Create project files (26)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             const absent=S.events.filter(e=>e.type==='absence'&&e.from<=k&&e.to>=k).length,leave=S.events.filter(e=>e.type==='leave'&&e.from<=k&&e.to>=k).length;
             const sh=shortDays(k,kAdd(k,7)).length,al=dueList().length;
             const box=(n,l,bad,go)=>`<div class="kpi" ${go?`data-go="${go}" style="cursor:pointer"`:''}><b class="${bad?'bad':''}">${n}</b><span>${l}</span></div>`;
@@ -1261,11 +1294,6 @@ jobs:
             h+=`<div class="sec">${t('today')} — ${t('staffing')}</div>${teamsForDay(ymd(now))}`;
             v.innerHTML=h;bindCommon(v);bindSlots(v,null);bindDue(v);}
           // ---- reminders ----
-          EOF_FILE
-
-      - name: Create project files (25)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           const hmNow=()=>pad(now.getHours())+':'+pad(now.getMinutes());
           const isDue=x=>!x.done&&(x.date<ymd(now)||(x.date===ymd(now)&&(x.time||'00:00')<=hmNow()));
           const dueList=()=>S.notes.filter(isDue);
@@ -1284,6 +1312,11 @@ jobs:
             $('panel').querySelectorAll('[data-ndone]').forEach(b=>b.onclick=()=>{const n=S.notes.find(x=>x.id===b.dataset.ndone);if(n)n.done=true;save();notesSheet();updBell();});
             $('panel').querySelectorAll('[data-ndel]').forEach(b=>b.onclick=()=>{S.notes=S.notes.filter(x=>x.id!==b.dataset.ndel);save();notesSheet();updBell();});}
           // ---- training ----
+          EOF_FILE
+
+      - name: Create project files (27)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           function allTrainings(){const o=[];S.trainings.forEach(tr=>tr.items.forEach(it=>o.push({date:it.date,team:it.team,time:tr.time,tid:tr.id})));return o.sort((a,b)=>a.date<b.date?-1:1);}
           const trainingsOn=k=>allTrainings().filter(x=>x.date===k);
           function trainPlan(start){return [0,1,2].map(tm=>{let k=start;for(let i=0;i<14;i++){if(teamShift(tm,kAdd(k,-1))==='N'&&teamShift(tm,k)==='O')return{team:tm,date:k};k=kAdd(k,1);}return{team:tm,date:start};}).sort((a,b)=>a.date<b.date?-1:1);}
@@ -1299,11 +1332,6 @@ jobs:
               $('tgS').onchange=e=>{if(e.target.value){st=e.target.value;items=trainPlan(st);draw();}};$('tgT').onchange=e=>{if(e.target.value){tm=e.target.value;draw();}};$('tgC').onchange=e=>{ch=e.target.checked;draw();};
               $('panel').querySelectorAll('[data-tgi]').forEach(i=>i.onchange=()=>{if(i.value){items[+i.dataset.tgi].date=i.value;items.sort((a,b)=>a.date<b.date?-1:1);draw();}});
               $('tgCp').onclick=()=>copyText(trainMsg(tr));$('tgSh').onclick=()=>shareText(trainMsg(tr));$('tgX').onclick=closeSheet;
-          EOF_FILE
-
-      - name: Create project files (26)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               $('tgOk').onclick=()=>{S.trainings.push({id:uid(),m:items[0].date.slice(0,7),time:tm,change:ch,items:items.map(x=>({team:x.team,date:x.date}))});save();closeSheet();render();toast(t('saved'));};};draw();}
           // ---- stock ----
           const itemN=id=>{const it=C().items.find(x=>x.id===id);return it?it.name:id;};
@@ -1323,6 +1351,11 @@ jobs:
           // ---- admin view ----
           let adminSub='train',evalM=null,eomM=null;
           function eligibleFor(m){const act=activePeople();let set=[];S.eom.filter(x=>x.m<m).sort((a,b)=>a.m<b.m?-1:1).forEach(w=>{set.push(w.p);if(act.every(p=>set.includes(p.id)))set=[];});
+          EOF_FILE
+
+      - name: Create project files (28)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             let el=act.filter(p=>!set.includes(p.id));const reset=!el.length;if(reset)el=act;return{el,reset};}
           function rAdmin(){const v=$('v-admin');if(!evalM)evalM=ymOf(now);if(!eomM)eomM=ymOf(now);const ar=L()==='ar';
             let h=`<div class="tabs">${[['train','🎓 '+t('train')],['stock','📦 '+t('stock')],['evals','⭐ '+t('evals')],['eom','🏆 '+t('eom')],['notes','🔔 '+t('notes2')]].map(([k,l])=>`<button data-as="${k}" class="${adminSub===k?'on':''}">${l}</button>`).join('')}</div>`;
@@ -1334,11 +1367,6 @@ jobs:
               h+=`<button class="btn pri full" id="aNS" style="margin:0 0 12px">${t('newShip')}</button>`;
               h+=`<div class="card"><h3>${t('monthTot')} — ${monthLabel(A)}</h3><div class="scrollx"><table class="tbl"><tr><th>${t('items2')}</th>${[0,1,2].map(i=>`<th>${esc(teamName(i))}</th>`).join('')}<th>${t('total')}</th></tr>`+its.map(it=>{const q=[0,0,0];S.ships.filter(x=>x.date.slice(0,7)===A).forEach(sh=>sh.lines.filter(l=>l.it===it.id).forEach(l=>l.q.forEach((v,i)=>q[i]+=v)));return `<tr><td>${esc(it.name)}</td>${q.map(x=>`<td>${x||''}</td>`).join('')}<td><b>${q[0]+q[1]+q[2]||''}</b></td></tr>`;}).join('')+`</table></div></div>`;
               h+=`<div class="card"><h3>${t('ships')}</h3>`+(S.ships.length?S.ships.slice().sort((a,b)=>a.date<b.date?1:-1).map(sh=>`<div class="item"><div class="h"><span>📦 ${fmt(parse(sh.date))}</span><span style="white-space:nowrap"><button class="btn sm" data-shsh="${sh.id}">📤</button> <button class="btn sm dang" data-shdel="${sh.id}">✕</button></span></div><div class="b">${sh.lines.map(l=>`${esc(itemN(l.it))}: ${l.q.reduce((a,b)=>a+b,0)} → ${l.q.join(' / ')}`).join('\n')}${sh.note?'\n'+esc(sh.note):''}</div></div>`).join(''):`<div class="empty-msg">${t('nothing')}</div>`)+`</div>`;
-          EOF_FILE
-
-      - name: Create project files (27)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
               h+=`<div class="card"><h3>${t('items2')}</h3>`+its.map((it,i)=>`<div class="row" style="align-items:center;margin-bottom:6px"><input data-itm="${i}" value="${esc(it.name)}" style="flex:4"><button class="btn sm dang" data-itmd="${i}" style="flex:1">${t('del')}</button></div>`).join('')+`<div class="row"><input id="aIN" placeholder="${t('itemName')}" style="flex:4"><button class="btn sm pri" id="aIA" style="flex:1">${t('addItem2')}</button></div></div>`;}
             if(adminSub==='evals'){h+=`<div class="card">${mnav('ev',evalM)}<p class="muted">${t('g_weak')} &lt;50 · ${t('g_ok')} 50 · ${t('g_good')} 65 · ${t('g_vgood')} 75 · ${t('g_exc')} 85+</p></div>`;
               [0,1,2].forEach(tm=>{const ms=teamMembers(tm);if(!ms.length)return;h+=`<div class="sec">${esc(teamFull(tm))}</div><div class="card" style="padding:8px 12px">`+ms.map(p=>{const e=S.evals.find(x=>x.p===p.id&&x.m===evalM);return `<div class="tl" style="gap:6px"><span data-pid="${p.id}" style="cursor:pointer;flex:1">${esc(pName(p.id))}</span><span id="g_${p.id}">${e?gradeTag(e.score):''}</span><input type="number" inputmode="numeric" min="0" max="100" data-ev="${p.id}" value="${e?e.score:''}" style="width:70px;flex:0 0 auto" placeholder="%"></div>`;}).join('')+'</div>';});}
@@ -1356,6 +1384,11 @@ jobs:
             v.querySelectorAll('[data-trcp]').forEach(b=>b.onclick=()=>copyText(trainMsg(S.trainings.find(x=>x.id===b.dataset.trcp))));
             v.querySelectorAll('[data-trsh]').forEach(b=>b.onclick=()=>shareText(trainMsg(S.trainings.find(x=>x.id===b.dataset.trsh))));
             v.querySelectorAll('[data-shsh]').forEach(b=>b.onclick=()=>shareText(shipMsg(S.ships.find(x=>x.id===b.dataset.shsh))));
+          EOF_FILE
+
+      - name: Create project files (29)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             v.querySelectorAll('[data-shdel]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{S.ships=S.ships.filter(x=>x.id!==b.dataset.shdel);save();rAdmin();}));
             v.querySelectorAll('[data-itm]').forEach(i=>i.onchange=()=>{const v2=i.value.trim();if(v2){C().items[+i.dataset.itm].name=v2;save();toast(t('saved'));}});
             v.querySelectorAll('[data-itmd]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{C().items.splice(+b.dataset.itmd,1);save();rAdmin();}));
@@ -1364,6 +1397,85 @@ jobs:
             v.querySelectorAll('[data-eopick]').forEach(b=>b.onclick=()=>{S.eom=S.eom.filter(x=>x.m!==eomM);S.eom.push({m:eomM,p:b.dataset.eopick});save();rAdmin();toast('🏆');});
             v.querySelectorAll('[data-eodel]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{S.eom=S.eom.filter(x=>x.m!==b.dataset.eodel);save();rAdmin();}));}
 
+
+          // ================= SITE PHONE =================
+          function dutyNow(){const cs=curSlotNow();return{k:cs.k,ty:cs.ty,team:teamOn(parse(cs.k),cs.ty)};}
+          let unlockedUntil=0;
+          function requirePin(fn){const pin=(C().pin||'').trim();if(!pin||Date.now()<unlockedUntil){fn();return;}
+            openSheet(`<h3>🔒 ${t('pinAsk')}</h3><input id="pinIn" type="password" inputmode="numeric" maxlength="6"><div class="btns"><button class="btn pri" id="pinOk">${t('yes')}</button><button class="btn" id="pinC">${t('cancel')}</button></div>`);
+            $('pinC').onclick=closeSheet;$('pinOk').onclick=()=>{if($('pinIn').value.trim()===pin){unlockedUntil=Date.now()+10*6e4;closeSheet();fn();}else{toast(t('pinBad'));$('pinIn').value='';}};}
+          const DEF_CK=[['cards','🪪 البطاقات','🪪 Cards'],['locks','🔑 الأقفال والبوابات','🔑 Locks & gates'],['torch','🔦 الكشاف','🔦 Torch'],['radio','📻 الجهاز','📻 Radio'],['book','📓 دفتر الأحوال','📓 Logbook'],['cams','📹 الكاميرات','📹 Cameras']];
+          function ckItems(){const c=C();if(Array.isArray(c.ckItems)&&c.ckItems.length)return c.ckItems;return DEF_CK.map(([id,a,e])=>({id,name:L()==='ar'?a:e}));}
+          function slotKey(){const d=dutyNow();return d.k+'_'+d.ty;}
+          function siteCrew(){const d=dutyNow();return people().filter(p=>employedOn(p,d.k)&&teamAt(p,d.k)===d.team&&(p.role==='res'||siteAt(p,d.k)===(C().siteId||'compound'))).sort((a,b)=>RO[a.role]-RO[b.role]);}
+          function remRow(r){const dn=!!S.remDone[r.key];return `<div class="item" style="display:flex;justify-content:space-between;align-items:center;gap:8px;${dn?'opacity:.55':''}"><div><div class="h" style="display:block">${esc(r.title)} <span class="muted">${hm(new Date(r.at).getHours()*60+new Date(r.at).getMinutes())}</span></div><div class="b">${esc(r.body)}</div></div>${dn?'<span class="ok">✓</span>':`<button class="btn sm pri" data-rem="${r.key}">${t('ok_')}</button>`}</div>`;}
+          function rHomeSite(){const v=$('v-home'),d=dutyNow(),c=C();const tm=shiftTimes(parse(d.k),d.ty);const left=Math.max(0,Math.round((tm.e-now)/6e4));
+            let h=`<div class="hero ${d.ty}" id="siteNow"><span class="cd">⏳ ${L()==='ar'?'ينتهي بعد ':'ends in '}${Math.floor(left/60)}:${pad(left%60)}</span><div class="ico">${ICO[d.ty]}</div><div class="lbl">📍 ${esc(siteName(c.siteId||'compound'))} · ${fmt(now)}</div>
+              <div class="big">${t('nowDuty')}: ${esc(teamFull(d.team))}</div><div class="sub">${ICO[d.ty]} ${t(d.ty)} · ${shiftOf(parse(d.k),d.team).pos===1?t('first'):t('second')} · ${hm(tm.st)} ← ${hm(tm.st+720)}</div></div>`;
+            h+=dueAlerts();
+            const an=S.ann.filter(a=>a.active!==false).slice(-3).reverse();h+=an.map(a=>`<div class="alert" style="background:var(--dayBg);color:var(--text)">📢 ${esc(a.text)}</div>`).join('');
+            const rs=reminders(tm.s.getTime(),tm.e.getTime());h+=`<div class="sec">⏰ ${t('todayRem')}</div>`+rs.map(remRow).join('');
+            const ck=S.checks[slotKey()]||{},its=ckItems(),okN=its.filter(i=>ck[i.id]&&ck[i.id].ok===true).length,bad=its.filter(i=>ck[i.id]&&ck[i.id].ok===false);
+            h+=`<div class="card" data-go="check" style="cursor:pointer"><h3>${t('ckTitle')} <span class="muted">${okN}/${its.length}</span></h3>${bad.length?`<div class="b bad">✗ ${bad.map(i=>esc(i.name)+(ck[i.id].note?' — '+esc(ck[i.id].note):'')).join('، ')}</div>`:''}</div>`;
+            const at=S.attend[slotKey()]||{},crew=siteCrew();h+=`<div class="card" data-go="check" style="cursor:pointer"><h3>${t('attTitle')} <span class="muted">${crew.filter(p=>at[p.id]===true).length}/${crew.filter(p=>p.role!=='res').length}</span></h3><div class="muted">${crew.map(p=>(at[p.id]===true?'✓ ':at[p.id]===false?'✗ ':'')+esc(pName(p.id))+(p.role==='res'?' ('+t('reserve')+')':'')).join(' · ')}</div></div>`;
+            const id=d.k+'_'+d.ty,g=S.logs[id]||{};h+=`<button class="btn pri full" data-log="${id}">📝 ${t('openLog')}</button>`;
+            v.innerHTML=h;bindCommon(v);bindDue(v);v.querySelectorAll('[data-rem]').forEach(b=>b.onclick=()=>{S.remDone[b.dataset.rem]=Date.now();save();rHome();});}
+          function rCheck(){const v=$('v-check'),k=slotKey(),d=dutyNow();if(!S.checks[k])S.checks[k]={};if(!S.attend[k])S.attend[k]={};const ck=S.checks[k],at=S.attend[k];
+            let h=`<div class="card"><h3>${t('ckTitle')} <span class="muted">${ICO[d.ty]} ${esc(teamFull(d.team))}</span></h3>`+ckItems().map(i=>{const x=ck[i.id]||{};return `<div class="tl" style="flex-wrap:wrap"><span>${esc(i.name)}</span><span style="display:flex;gap:6px"><button class="btn sm ${x.ok===true?'pri':''}" data-ck="${i.id}" data-v="1">✓</button><button class="btn sm ${x.ok===false?'dang':''}" data-ck="${i.id}" data-v="0">✗</button></span>${x.ok===false?`<input data-ckn="${i.id}" placeholder="${t('ckNote')}" value="${esc(x.note||'')}" style="margin-top:6px">`:''}</div>`;}).join('')+'</div>';
+          EOF_FILE
+
+      - name: Create project files (30)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+            h+=`<div class="card"><h3>${t('attTitle')}</h3>`+siteCrew().map(p=>`<div class="tl"><span>${p.role==='sup'?'★ ':''}${esc(pName(p.id))}${p.role==='res'?' <span class="tag res">'+t('reserve')+'</span>':''}</span><span style="display:flex;gap:6px"><button class="btn sm ${at[p.id]===true?'pri':''}" data-att="${p.id}" data-v="1">✓</button><button class="btn sm ${at[p.id]===false?'dang':''}" data-att="${p.id}" data-v="0">✗</button></span></div>`).join('')+'</div>';
+            v.innerHTML=h;
+            v.querySelectorAll('[data-ck]').forEach(b=>b.onclick=()=>{const id=b.dataset.ck;ck[id]=Object.assign(ck[id]||{},{ok:b.dataset.v==='1'});save();rCheck();});
+            v.querySelectorAll('[data-ckn]').forEach(i=>i.onchange=()=>{ck[i.dataset.ckn].note=i.value.trim();save();});
+            v.querySelectorAll('[data-att]').forEach(b=>b.onclick=()=>{at[b.dataset.att]=b.dataset.v==='1';save();rCheck();});}
+          function rAnn(){const v=$('v-ann');let h=`<button class="btn pri full" id="annAdd" style="margin:0 0 12px">${t('annAdd')}</button>`;
+            const l=S.ann.slice().reverse();h+=l.length?l.map(a=>`<div class="card"><div style="font-size:16px;font-weight:700">📢 ${esc(a.text)}</div><div class="muted" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span>${a.date}</span><button class="btn sm dang" data-andel="${a.id}">${t('del')}</button></div></div>`).join(''):`<div class="empty-msg">${t('noAnn')}</div>`;
+            v.innerHTML=h;
+            $('annAdd').onclick=()=>requirePin(()=>{openSheet(`<h3>📢 ${t('annAdd').replace('+ ','')}</h3><textarea id="annT" placeholder="${t('annPh')}"></textarea><div class="btns"><button class="btn pri" id="annOk">${t('save')}</button><button class="btn" id="annC">${t('cancel')}</button></div>`);
+              $('annC').onclick=closeSheet;$('annOk').onclick=()=>{const tx=$('annT').value.trim();if(!tx)return;S.ann.push({id:uid(),text:tx,date:ymd(now),active:true});save();closeSheet();rAnn();toast(t('saved'));};});
+            v.querySelectorAll('[data-andel]').forEach(b=>b.onclick=()=>requirePin(()=>{S.ann=S.ann.filter(a=>a.id!==b.dataset.andel);save();rAnn();}));}
+          function dial(ph){try{if(AB&&AB.dial){AB.dial(ph);return;}}catch(e){}location.href='tel:'+ph;}
+          function rEmerg(){const v=$('v-emerg'),c=C();const sups=activePeople().filter(p=>p.role==='sup');
+            let h=`<div class="card"><h3>★ ${t('supervisor')}</h3>`+sups.map(p=>`<div class="tl"><span><b>${esc(pName(p.id))}</b> <span class="muted">${esc(teamName(p.team))}</span>${p.phone?`<br><span class="muted" dir="ltr">${esc(p.phone)}</span>`:''}</span>${p.phone?`<button class="btn sm pri" data-dial="${esc(p.phone)}">${t('call')}</button>`:`<span class="muted" style="font-size:11px">${t('noPhone')}</span>`}</div>`).join('')+'</div>';
+            h+=`<div class="card"><h3>📞 ${t('emerg')}</h3>`+(c.emerg||[]).map((e,i)=>`<div class="tl"><span><b>${esc(e.name)}</b><br><span class="muted" dir="ltr">${esc(e.phone)}</span></span><span style="display:flex;gap:6px"><button class="btn sm pri" data-dial="${esc(e.phone)}">${t('call')}</button><button class="btn sm dang" data-emdel="${i}">✕</button></span></div>`).join('')+`<button class="btn full" id="emAdd">${t('emAdd')}</button></div>`;
+            v.innerHTML=h;v.querySelectorAll('[data-dial]').forEach(b=>b.onclick=()=>dial(b.dataset.dial));
+            v.querySelectorAll('[data-emdel]').forEach(b=>b.onclick=()=>requirePin(()=>{c.emerg.splice(+b.dataset.emdel,1);save();rEmerg();}));
+            $('emAdd').onclick=()=>requirePin(()=>{openSheet(`<h3>${t('emAdd')}</h3><label>${t('emName')}</label><input id="emN"><label>${t('phone')}</label><input id="emP" type="tel" dir="ltr"><div class="btns"><button class="btn pri" id="emOk">${t('save')}</button><button class="btn" id="emC">${t('cancel')}</button></div>`);
+              $('emC').onclick=closeSheet;$('emOk').onclick=()=>{const n=$('emN').value.trim(),ph=$('emP').value.trim();if(!n||!ph)return;if(!c.emerg)c.emerg=[];c.emerg.push({name:n,phone:ph});save();closeSheet();rEmerg();};});}
+
+          // ================= SUN & REMINDERS =================
+          function sunTimes(k){const c=C();const lat=+c.lat||32.8872,lon=+c.lon||13.1913,R=Math.PI/180;const d=parse(k);
+            const J=utc(d)/864e5+2440587.5,n=Math.ceil(J-2451545+0.0008),Js=n-lon/360;
+            const M=((357.5291+0.98560028*Js)%360+360)%360,Cc=1.9148*Math.sin(M*R)+0.02*Math.sin(2*M*R)+0.0003*Math.sin(3*M*R);
+            const lam=((M+Cc+180+102.9372)%360+360)%360,Jt=2451545+Js+0.0053*Math.sin(M*R)-0.0069*Math.sin(2*lam*R);
+            const dec=Math.asin(Math.sin(lam*R)*Math.sin(23.4397*R));const cw=(Math.sin(-0.833*R)-Math.sin(lat*R)*Math.sin(dec))/(Math.cos(lat*R)*Math.cos(dec));
+            const w=Math.acos(Math.max(-1,Math.min(1,cw)))/R;const toMin=jd=>{const t=new Date((jd-2440587.5)*864e5);return t.getHours()*60+t.getMinutes();};
+            return{rise:toMin(Jt-w/360),set:toMin(Jt+w/360)};}
+          function notifTypes(){const c=C();return Object.assign({fp:true,locks:true,lights:true,logs:true,notes:true},c.notifTypes||{});}
+          function reminders(A,B){const out=[],nt=notifTypes(),c=C();const at=(k,m)=>dayStart(parse(k)).getTime()+m*6e4;
+            const tm=(ms)=>{const d=new Date(ms),m=d.getHours()*60+d.getMinutes(),st=mins(c.start);let k=ymd(d),ty='D';if(m>=st+720)ty='N';else if(m<st){ty='N';k=kAdd(k,-1);}return teamOn(parse(k),ty);};
+            const add=(kind,ms,ico,title,body)=>{if(ms>=A&&ms<=B)out.push({kind,key:kind+'_'+ymd(new Date(ms))+'_'+new Date(ms).getHours(),at:ms,title:ico+' '+title,body});};
+            for(let k=ymd(new Date(A-864e5));k<=ymd(new Date(B));k=kAdd(k,1)){
+              ['D','N'].forEach(ty=>{const st=mins(c.start)+(ty==='N'?720:0),team=teamOn(parse(k),ty),tl=teamFull(team);
+                if(nt.fp)add('fp',at(k,mins(c.fpStart)+(ty==='N'?720:0)),'👆',t('rFp'),tl+' · '+hm(mins(c.fpStart)+(ty==='N'?720:0))+'–'+hm(mins(c.fpEnd)+(ty==='N'?720:0)));
+                if(nt.locks){add('locksStart',at(k,st+5),'🔑',t('rLocksS'),tl);add('locksEnd',at(k,st+720-15),'🔑',t('rLocksE'),tl);}});
+              const su=sunTimes(k);
+              if(nt.lights){add('lightsOn',at(k,su.set),'💡',t('rLightOn'),t('rSunset')+' '+hm(su.set));add('lightsOff',at(k,su.rise),'💡',t('rLightOff'),t('rSunrise')+' '+hm(su.rise));}
+              if(nt.logs)add('logs',at(k,mins(c.logFrom)),'📒',t('rLogs'),c.logFrom+' – '+c.logTo);}
+            if(nt.notes)S.notes.filter(x=>!x.done).forEach(x=>{const ms=at(x.date,mins(x.time||'09:00'));if(ms>=A&&ms<=B)out.push({kind:'note',key:'note_'+x.id,at:ms,title:'📌 '+x.text,body:fmtK(x.date)+' '+(x.time||'')});});
+            out.forEach(r=>{if(r.kind!=='note'&&r.body.indexOf(t('teamWord'))<0)r.body+=' · '+teamFull(tm(r.at));});
+            return out.sort((a,b)=>a.at-b.at);}
+          EOF_FILE
+
+      - name: Create project files (31)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
+          window.__t={sunTimes:(k)=>sunTimes(k),reminders:(a,b)=>reminders(a,b)};
+
           // ================= SETTINGS =================
           function doRestore(text){let x;try{x=JSON.parse(text);if(!x||!x.cfg)throw 0;}catch(e){toast(t('bad'));return;}confirmBox(t('restoreQ'),()=>{S=normalize(x);save();toast(t('restored'));render();});}
           function rSet(){const v=$('v-set'),c=C();let h=`<div class="card"><h3>🌐 ${t('language')}</h3><div class="seg"><button data-lang="ar" class="${c.lang==='ar'?'on':''}">العربية</button><button data-lang="en" class="${c.lang==='en'?'on':''}">English</button></div>
@@ -1371,29 +1483,36 @@ jobs:
             h+=`<div class="card"><h3>🧑‍✈️ ${t('mode')}</h3><div class="seg"><button data-mode="member" class="${c.mode==='member'?'on':''}">${t('modeMember')}</button><button data-mode="sup" class="${c.mode==='sup'?'on':''}">★ ${t('modeSup')}</button><button data-mode="pm" class="${c.mode==='pm'?'on':''}">🧭 ${t('modePM')}</button></div>
               ${c.mode==='pm'?'':`<h3>👤 ${t('myTeam')}</h3><div class="seg">${[0,1,2].map(i=>`<button data-mt="${i}" class="${c.myTeam===i?'on':''}">${esc(teamFull(i))}</button>`).join('')}</div>`}<label>${t('myName')}</label><input id="sMe" value="${esc(c.myName)}">
               <button class="btn full" id="sSetup">${t('rerunSetup')}</button></div>`;
-          EOF_FILE
-
-      - name: Create project files (28)
-        run: |
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             h+=`<div class="card"><h3>👥 ${t('teams')}</h3>`+[0,1,2].map(i=>`<div class="tl"><span><b>${esc(teamFull(i))}</b> <span class="muted">· ${teamMembers(i).length}</span></span><button class="btn sm pri" data-tedit="${i}">${t('editTeam')}</button></div>`).join('')+`</div>`;
             h+=`<div class="card"><h3>⏰ ${t('times')}</h3><div class="row"><div><label>${t('fpStart')}</label><input type="time" data-k="fpStart" value="${c.fpStart}"></div><div><label>${t('fpEnd')}</label><input type="time" data-k="fpEnd" value="${c.fpEnd}"></div></div>
               <label>${t('startTime')}</label><input type="time" data-k="start" value="${c.start}"><p class="muted" style="margin-top:4px">${t('nightNote')}</p>
               <div class="row"><div><label>${t('logFrom')}</label><input type="time" data-k="logFrom" value="${c.logFrom}"></div><div><label>${t('logTo')}</label><input type="time" data-k="logTo" value="${c.logTo}"></div></div>
               <div class="row"><div><label>${t('cardsTotal')}</label><input type="number" inputmode="numeric" id="sCards" value="${c.cards}"></div><div><label>${t('minRest')}</label><input type="number" inputmode="numeric" id="sRest" value="${c.minRest}"></div></div>
               <label>${t('anchor')}</label><input type="date" id="sAnc" value="${c.anchor}"><p class="muted" style="margin-top:4px">${t('hint')}</p></div>`;
+            let ns={perm:true,exact:true};try{if(AB&&AB.notifStatus)ns=JSON.parse(AB.notifStatus());}catch(e){}const ntp=notifTypes();
+            h+=`<div class="card"><h3>${t('notifs')}</h3><label class="chk"><input type="checkbox" id="nOn" ${notifEnabled()?'checked':''}>${t('notifOnL')}</label>`+
+              ['fp','locks','lights','logs','notes'].map(k=>`<label class="chk" style="padding-inline-start:20px"><input type="checkbox" data-nt="${k}" ${ntp[k]?'checked':''}>${t('nT_'+k)}</label>`).join('')+
+              `<div class="btns"><button class="btn sm" id="nPerm">${t('nPermB')} · ${ns.perm?t('nPermOk'):t('nPermNo')}</button><button class="btn sm" id="nExact">${t('nExactB')} · ${ns.exact?t('nPermOk'):t('nExactNo')}</button></div>
+              <label>${t('locL')}</label><div class="row"><input type="number" step="0.0001" id="nLat" value="${c.lat}"><input type="number" step="0.0001" id="nLon" value="${c.lon}"></div></div>`;
+            if(isSite())h+=`<div class="card"><h3>📍 ${t('modeSite')}</h3><label>${t('siteOf')}</label><div class="seg">${c.sites.map(x=>`<button data-ssite="${x.id}" class="${(c.siteId||'compound')===x.id?'on':''}">📍 ${esc(x.name)}</button>`).join('')}</div><label>${t('pinL')}</label><input id="sPin" type="password" inputmode="numeric" maxlength="6" value="${esc(c.pin||'')}">
+              <label>${t('ckItemsL')}</label>${ckItems().map((it,i)=>`<div class="row" style="margin-bottom:6px"><input data-cki="${i}" value="${esc(it.name)}" style="flex:4"><button class="btn sm dang" data-ckd="${i}" style="flex:1">✕</button></div>`).join('')}<button class="btn full" id="ckA">${t('addItem')}</button></div>`;
             h+=`<div class="card"><h3>🧩 ${t('widgets')}</h3><button class="btn pri full" id="sWid">${t('addWidget')}</button></div>`;
             h+=`<div class="card"><h3>📍 ${t('sites')}</h3>`+c.sites.map((x,i)=>`<input data-site="${i}" value="${esc(x.name)}" style="margin-bottom:6px">`).join('')+`</div>`;
             h+=`<div class="card"><h3>👕 ${t('uniItems')}</h3>`+c.uniItems.map((it,i)=>`<div class="row" style="align-items:center;margin-bottom:6px"><input data-itn="${i}" value="${esc(itemName(it))}" style="flex:4"><button class="btn sm dang" data-itd="${i}" style="flex:1">${t('del')}</button></div>`).join('')+`<button class="btn full" id="itA">${t('addItem')}</button></div>`;
             h+=`<div class="card"><h3>💾 ${t('backup')}</h3><p class="muted">${t('fileHint')}</p><button class="btn pri full" id="bF">${t('shareFile')}</button>
               <label class="btn full" style="margin-top:8px;color:var(--text)">${t('restoreFile')}<input type="file" id="bI" accept=".json,application/json,text/plain,*/*" style="display:none"></label>
               <button class="btn full" id="bC">${t('copyText')}</button><label>${t('pasteText')}</label><textarea id="bT" style="min-height:50px"></textarea><button class="btn full" id="bR">${t('restore')}</button>
-              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v4.2<br>${t('credit')}<br><span dir="ltr">0924682644</span></p>`;
+              <button class="btn dang full" id="bX">${t('reset')}</button></div><p class="muted" style="text-align:center">v4.3<br>${t('credit')}<br><span dir="ltr">0924682644</span></p>`;
             v.innerHTML=h;
             v.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{c.lang=b.dataset.lang;repOut='';save();render();});
             v.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{c.theme=b.dataset.th;save();render();});
             v.querySelectorAll('[data-mt]').forEach(b=>b.onclick=()=>{const k=+b.dataset.mt;c.myTeam=k;logSel=null;const m=meP();if(m&&m.team!==k)movePerson(m,k,m.site||'compound',ymd(now));save();render();});
             $('sMe').onchange=e=>{c.myName=e.target.value.trim();const m=meP();if(m&&c.myName){m.name=c.myName;}save();render();};
+          EOF_FILE
+
+      - name: Create project files (32)
+        run: |
+          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
             v.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{const nm=b.dataset.mode;if(nm!=='pm'&&!meP()){c.mode=nm;startWizard();wz.mode=nm;wz.step=2;view='setup';render();return;}c.mode=nm;const m=meP();if(m){if(c.mode==='sup')setRole(m,'sup');else if(c.mode==='member'&&m.role==='sup')m.role='mem';}save();render();});
             $('sSetup').onclick=()=>{startWizard();view='setup';render();};
             v.querySelectorAll('[data-tedit]').forEach(b=>b.onclick=()=>teamEditor(+b.dataset.tedit));
@@ -1404,13 +1523,23 @@ jobs:
             v.querySelectorAll('[data-itn]').forEach(i=>i.onchange=()=>{const it=c.uniItems[+i.dataset.itn];const val=i.value.trim();it.name=(val===t('u_'+it.id))?'':val;save();toast(t('saved'));});
             v.querySelectorAll('[data-itd]').forEach(b=>b.onclick=()=>confirmBox(t('confirmDel'),()=>{c.uniItems.splice(+b.dataset.itd,1);save();rSet();}));
             v.querySelectorAll('[data-site]').forEach(i=>i.onchange=()=>{const v2=i.value.trim();if(v2){c.sites[+i.dataset.site].name=v2;save();toast(t('saved'));}});
+            v.querySelectorAll('[data-ssite]').forEach(b=>b.onclick=()=>{c.siteId=b.dataset.ssite;save();rSet();});
+            if($('sPin'))$('sPin').onchange=e=>{c.pin=e.target.value.trim();save();toast(t('saved'));};
+            const ckSet=()=>{if(!Array.isArray(c.ckItems)||!c.ckItems.length)c.ckItems=ckItems().map(x=>({id:x.id,name:x.name}));};
+            v.querySelectorAll('[data-cki]').forEach(i=>i.onchange=()=>{ckSet();c.ckItems[+i.dataset.cki].name=i.value.trim();save();});
+            v.querySelectorAll('[data-ckd]').forEach(b=>b.onclick=()=>{ckSet();c.ckItems.splice(+b.dataset.ckd,1);save();rSet();});
+            if($('ckA'))$('ckA').onclick=()=>{ckSet();c.ckItems.push({id:'ck'+uid(),name:t('itemName')});save();rSet();};
+            $('nOn').onchange=e=>{c.notifOn=e.target.checked;save();if(c.notifOn){try{AB&&AB.requestNotifPerm&&AB.requestNotifPerm();}catch(x){}}};
+            v.querySelectorAll('[data-nt]').forEach(i=>i.onchange=()=>{c.notifTypes=Object.assign({},notifTypes(),{[i.dataset.nt]:i.checked});save();});
+            $('nPerm').onclick=()=>{try{AB&&AB.requestNotifPerm&&AB.requestNotifPerm();}catch(e){}};$('nExact').onclick=()=>{try{AB&&AB.openExactAlarm&&AB.openExactAlarm();}catch(e){}};
+            $('nLat').onchange=e=>{const x=parseFloat(e.target.value);if(!isNaN(x)){c.lat=x;save();}};$('nLon').onchange=e=>{const x=parseFloat(e.target.value);if(!isNaN(x)){c.lon=x;save();}};
             $('sWid').onclick=()=>{openSheet(`<h3>🧩 ${t('widgets')}</h3>`+[['medium','wMed'],['small','wSm'],['off','wOff']].map(([k,l])=>`<button class="btn full" data-wk="${k}" style="margin-top:8px">${t(l)}</button>`).join('')+`<button class="btn full" id="wkC" style="margin-top:12px">${t('close')}</button>`);
               $('wkC').onclick=closeSheet;$('panel').querySelectorAll('[data-wk]').forEach(b=>b.onclick=()=>{let ok=false;try{ok=AB&&AB.pinWidget&&AB.pinWidget(b.dataset.wk);}catch(e){}if(!ok)toast(t('widgetNA'));closeSheet();});};
             $('itA').onclick=()=>{c.uniItems.push({id:'i'+uid(),name:t('itemName')});save();rSet();};
             $('bF').onclick=()=>shareFile('shifts-backup-'+ymd(now)+'.json','application/json',JSON.stringify(S));
             $('bI').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>doRestore(String(r.result));r.readAsText(f);e.target.value='';};
             $('bC').onclick=()=>copyText(JSON.stringify(S));$('bR').onclick=()=>doRestore($('bT').value);
-            $('bX').onclick=()=>confirmBox(t('resetQ'),()=>{S={cfg:S.cfg,logs:{},events:[],uni:[],warns:[],asg:[],trainings:[],ships:[],evals:[],eom:[],notes:[],v:4};save();render();});}
+            $('bX').onclick=()=>confirmBox(t('resetQ'),()=>{S={cfg:S.cfg,logs:{},events:[],uni:[],warns:[],asg:[],trainings:[],ships:[],evals:[],eom:[],notes:[],ann:[],checks:{},attend:{},remDone:{},v:4};save();render();});}
 
           try{const raw=localStorage.getItem(KEY);if(raw)S=normalize(JSON.parse(raw));
             else{const o=JSON.parse(localStorage.getItem('shiftcfg')||'null');if(o){if(o.team)S.cfg.myTeam=o.team-1;if(o.anchor)S.cfg.anchor=o.anchor;}}}catch(e){console.error('load failed',e);}
@@ -1419,8 +1548,6 @@ jobs:
           render();
           setInterval(()=>{now=new Date();updBell();},30000);
           setInterval(()=>{const n=new Date();if(n.getMinutes()!==now.getMinutes()&&(view==='home'||view==='cal')&&!$('sheet').classList.contains('show')&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))render();},30000);
-          EOF_FILE
-          cat >> 'app/src/main/assets/index.html' <<'EOF_FILE'
           document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(view==='home'||view==='cal')&&!$('sheet').classList.contains('show'))render();});
           })();
 
@@ -1428,14 +1555,39 @@ jobs:
           </body>
           </html>
           EOF_FILE
+          mkdir -p 'app/src/main/java/com/mohamed/shifts'
+          cat > 'app/src/main/java/com/mohamed/shifts/BootReceiver.java' <<'EOF_FILE'
+          package com.mohamed.shifts;
 
-      - name: Create project files (29)
+          import android.content.BroadcastReceiver;
+          import android.content.Context;
+          import android.content.Intent;
+
+          public class BootReceiver extends BroadcastReceiver {
+              @Override
+              public void onReceive(Context ctx, Intent intent) {
+                  String a = intent.getAction();
+                  if (Intent.ACTION_BOOT_COMPLETED.equals(a) || Intent.ACTION_MY_PACKAGE_REPLACED.equals(a)
+                          || "android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED".equals(a)) {
+                      NotifCenter.scheduleNext(ctx);
+                      WidgetUpdater.updateAll(ctx);
+                  }
+              }
+          }
+          EOF_FILE
+
+      - name: Create project files (33)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
           package com.mohamed.shifts;
 
           import android.app.Activity;
+          import android.app.AlarmManager;
+          import android.app.NotificationManager;
+          import android.content.SharedPreferences;
+          import android.content.pm.PackageManager;
+          import android.os.Build;
           import android.appwidget.AppWidgetManager;
           import android.content.ComponentName;
           import android.content.ClipData;
@@ -1516,6 +1668,18 @@ jobs:
               }
 
               @Override
+              protected void onResume() {
+                  super.onResume();
+                  if (web != null) web.evaluateJavascript("window.onAppResume&&window.onAppResume()", null);
+              }
+
+              @Override
+              public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+                  super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                  if (web != null) web.evaluateJavascript("window.onAppResume&&window.onAppResume()", null);
+              }
+
+              @Override
               public void onConfigurationChanged(Configuration newConfig) {
                   super.onConfigurationChanged(newConfig);
                   if (web != null) web.evaluateJavascript("window.onSysTheme&&window.onSysTheme()", null);
@@ -1581,6 +1745,11 @@ jobs:
                   public void share(String text) {
                       runOnUiThread(() -> {
                           Intent i = new Intent(Intent.ACTION_SEND);
+          EOF_FILE
+
+      - name: Create project files (34)
+        run: |
+          cat >> 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
                           i.setType("text/plain");
                           i.putExtra(Intent.EXTRA_TEXT, text);
                           startActivity(Intent.createChooser(i, null));
@@ -1593,6 +1762,77 @@ jobs:
                   }
 
                   @JavascriptInterface
+                  public void scheduleNotifs(String json) {
+                      NotifCenter.setList(MainActivity.this, json);
+                  }
+
+                  @JavascriptInterface
+                  public String getDone() {
+                      return NotifCenter.takeDone(MainActivity.this);
+                  }
+
+                  @JavascriptInterface
+                  public void clearDone() {
+                      NotifCenter.clearDone(MainActivity.this);
+                  }
+
+                  @JavascriptInterface
+                  public void requestNotifPerm() {
+                      runOnUiThread(() -> {
+                          SharedPreferences p = getSharedPreferences(NotifCenter.PREFS, Context.MODE_PRIVATE);
+                          int asked = (int) p.getLong("permAsk", 0);
+                          boolean granted = Build.VERSION.SDK_INT < 33 || checkSelfPermission("android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED;
+                          if (!granted && asked < 2) {
+                              p.edit().putLong("permAsk", asked + 1).apply();
+                              requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 7);
+                          } else {
+                              try {
+                                  startActivity(new Intent("android.settings.APP_NOTIFICATION_SETTINGS").putExtra("android.provider.extra.APP_PACKAGE", getPackageName()));
+                              } catch (Exception e) {
+                                  // settings screen not available
+                              }
+                          }
+                      });
+                  }
+
+                  @JavascriptInterface
+                  public void openExactAlarm() {
+                      if (Build.VERSION.SDK_INT >= 31) {
+                          runOnUiThread(() -> {
+                              try {
+                                  startActivity(new Intent("android.settings.REQUEST_SCHEDULE_EXACT_ALARM", Uri.parse("package:" + getPackageName())));
+                              } catch (Exception e) {
+                                  // settings screen not available
+                              }
+                          });
+                      }
+                  }
+
+                  @JavascriptInterface
+                  public String notifStatus() {
+                      NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                      boolean perm = (Build.VERSION.SDK_INT < 33 || checkSelfPermission("android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED)
+                              && nm != null && nm.areNotificationsEnabled();
+                      boolean exact = true;
+                      if (Build.VERSION.SDK_INT >= 31) {
+                          AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                          exact = am != null && am.canScheduleExactAlarms();
+                      }
+                      return "{\"perm\":" + perm + ",\"exact\":" + exact + "}";
+                  }
+
+                  @JavascriptInterface
+                  public void dial(String phone) {
+                      runOnUiThread(() -> {
+                          try {
+                              startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone)));
+                          } catch (Exception e) {
+                              // no dialer
+                          }
+                      });
+                  }
+
+                  @JavascriptInterface
                   public void saveWidget(String json) {
                       WidgetUpdater.save(MainActivity.this, json);
                   }
@@ -1600,11 +1840,6 @@ jobs:
                   @JavascriptInterface
                   public boolean pinWidget(String kind) {
                       AppWidgetManager m = AppWidgetManager.getInstance(MainActivity.this);
-          EOF_FILE
-
-      - name: Create project files (30)
-        run: |
-          cat >> 'app/src/main/java/com/mohamed/shifts/MainActivity.java' <<'EOF_FILE'
                       if (m == null || !m.isRequestPinAppWidgetSupported()) return false;
                       Class<?> cls = "small".equals(kind) ? WidgetSmall.class : "off".equals(kind) ? WidgetOff.class : WidgetMedium.class;
                       return m.requestPinAppWidget(new ComponentName(MainActivity.this, cls), null, null);
@@ -1631,6 +1866,249 @@ jobs:
                   @JavascriptInterface
                   public void print(String html, String title) {
                       runOnUiThread(() -> doPrint(html, title));
+                  }
+              }
+          }
+          EOF_FILE
+
+      - name: Create project files (35)
+        run: |
+          mkdir -p 'app/src/main/java/com/mohamed/shifts'
+          cat > 'app/src/main/java/com/mohamed/shifts/NotifCenter.java' <<'EOF_FILE'
+          package com.mohamed.shifts;
+
+          import android.app.AlarmManager;
+          import android.app.Notification;
+          import android.app.NotificationChannel;
+          import android.app.NotificationManager;
+          import android.app.PendingIntent;
+          import android.content.Context;
+          import android.content.Intent;
+          import android.content.SharedPreferences;
+          import android.graphics.drawable.Icon;
+          import android.os.Build;
+          import java.util.HashSet;
+          import java.util.Set;
+          import org.json.JSONArray;
+          import org.json.JSONObject;
+
+          /** Stores the reminder list computed by the web app and fires one alarm at a time. */
+          public final class NotifCenter {
+              static final String PREFS = "notif";
+              static final String CH = "reminders";
+              static final String FIRE = "com.mohamed.shifts.NOTIF_FIRE";
+              static final String DONE = "com.mohamed.shifts.NOTIF_DONE";
+              static final String SNOOZE = "com.mohamed.shifts.NOTIF_SNOOZE";
+
+              private NotifCenter() {}
+
+              static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
+
+              public static void setList(Context ctx, String json) {
+                  prefs(ctx).edit().putString("list", json).apply();
+                  scheduleNext(ctx);
+                  try { WidgetUpdater.updateAll(ctx); } catch (Exception e) { /* widget refresh is best-effort */ }
+              }
+
+              private static JSONArray list(Context ctx) {
+                  try { return new JSONArray(prefs(ctx).getString("list", "[]")); } catch (Exception e) { return new JSONArray(); }
+              }
+
+              private static long[] ats(JSONArray a) {
+                  long[] r = new long[a.length()];
+                  for (int i = 0; i < r.length; i++) {
+                      try { r[i] = a.getJSONObject(i).getLong("at"); } catch (Exception e) { r[i] = 0; }
+                  }
+                  return r;
+              }
+
+              /** Post every reminder that became due since the last run, then arm the next alarm. */
+              static void fireDue(Context ctx) {
+                  long now = System.currentTimeMillis();
+                  long lastAt = prefs(ctx).getLong("lastAt", 0);
+                  JSONArray a = list(ctx);
+                  long[] at = ats(a);
+                  long max = lastAt;
+                  for (int i : NotifLogic.due(at, lastAt, now, 6 * 3600000L)) {
+                      try {
+                          JSONObject o = a.getJSONObject(i);
+                          post(ctx, o.optString("key"), o.optString("title"), o.optString("body"));
+                      } catch (Exception e) {
+                          // skip malformed item
+                      }
+                  }
+                  for (long x : at) if (x > max && x <= now + 1000) max = x;
+                  prefs(ctx).edit().putLong("lastAt", max).apply();
+                  scheduleNext(ctx);
+              }
+
+              public static void scheduleNext(Context ctx) {
+                  AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+                  if (am == null) return;
+                  PendingIntent cur = fireIntent(ctx, 101, null);
+                  am.cancel(cur);
+                  long now = System.currentTimeMillis();
+                  long lastAt = prefs(ctx).getLong("lastAt", 0);
+                  long[] at = ats(list(ctx));
+                  int i = NotifLogic.next(at, lastAt);
+                  if (i >= 0) setAlarm(am, Math.max(at[i], now + 1000), cur);
+              }
+
+              private static PendingIntent fireIntent(Context ctx, int code, JSONObject o) {
+                  Intent i = new Intent(ctx, NotifReceiver.class).setAction(FIRE);
+                  if (o != null) {
+                      i.putExtra("key", o.optString("key"));
+                      i.putExtra("title", o.optString("title"));
+                      i.putExtra("body", o.optString("body"));
+                      i.putExtra("at", o.optLong("at"));
+                  }
+                  return PendingIntent.getBroadcast(ctx, code, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+              }
+
+              static void setAlarm(AlarmManager am, long at, PendingIntent pi) {
+                  try {
+                      if (Build.VERSION.SDK_INT >= 31 && !am.canScheduleExactAlarms()) {
+                          am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi);
+                      } else {
+                          am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi);
+                      }
+                  } catch (SecurityException e) {
+                      am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi);
+                  }
+              }
+
+              static void ensureChannel(Context ctx) {
+                  NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                  if (nm == null) return;
+                  NotificationChannel ch = new NotificationChannel(CH, "تذكيرات الوردية", NotificationManager.IMPORTANCE_HIGH);
+                  ch.setDescription("الإنارة، تغيير الأوراق، الأقفال، البصمة");
+                  nm.createNotificationChannel(ch);
+              }
+
+              private static PendingIntent action(Context ctx, String act, String key, String title, String body, int code) {
+                  Intent i = new Intent(ctx, NotifReceiver.class).setAction(act);
+                  i.putExtra("key", key);
+                  i.putExtra("title", title);
+                  i.putExtra("body", body);
+                  return PendingIntent.getBroadcast(ctx, code, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+              }
+
+              static void post(Context ctx, String key, String title, String body) {
+                  ensureChannel(ctx);
+                  NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                  if (nm == null || key == null) return;
+                  int id = key.hashCode();
+                  Intent open = new Intent(ctx, MainActivity.class).setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+                          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                  PendingIntent openPi = PendingIntent.getActivity(ctx, id, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                  Icon ic = Icon.createWithResource(ctx, R.drawable.ic_notif);
+                  Notification.Builder b = new Notification.Builder(ctx, CH)
+                          .setSmallIcon(R.drawable.ic_notif)
+                          .setContentTitle(title)
+                          .setContentText(body)
+                          .setStyle(new Notification.BigTextStyle().bigText(body))
+                          .setAutoCancel(true)
+                          .setContentIntent(openPi);
+                  if (!"openapp".equals(key)) {
+                      b.addAction(new Notification.Action.Builder(ic, "تم ✓", action(ctx, DONE, key, title, body, id * 2)).build());
+                      b.addAction(new Notification.Action.Builder(ic, "ذكّرني بعد 10 د", action(ctx, SNOOZE, key, title, body, id * 2 + 1)).build());
+                  }
+                  try {
+                      nm.notify(id, b.build());
+                  } catch (SecurityException e) {
+                      // notification permission not granted
+                  }
+              }
+
+          EOF_FILE
+
+      - name: Create project files (36)
+        run: |
+          cat >> 'app/src/main/java/com/mohamed/shifts/NotifCenter.java' <<'EOF_FILE'
+              static void markDone(Context ctx, String key) {
+                  Set<String> s = new HashSet<>(prefs(ctx).getStringSet("done", new HashSet<>()));
+                  s.add(key);
+                  prefs(ctx).edit().putStringSet("done", s).apply();
+              }
+
+              static String takeDone(Context ctx) {
+                  Set<String> s = prefs(ctx).getStringSet("done", new HashSet<>());
+                  return new JSONArray(s).toString();
+              }
+
+              static void clearDone(Context ctx) { prefs(ctx).edit().remove("done").apply(); }
+
+              static void snooze(Context ctx, String key, String title, String body) {
+                  AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+                  if (am == null) return;
+                  Intent i = new Intent(ctx, NotifReceiver.class).setAction(FIRE);
+                  i.putExtra("key", key);
+                  i.putExtra("title", title);
+                  i.putExtra("body", body);
+                  i.putExtra("snoozed", true);
+                  int code = key == null ? 102 : key.hashCode() * 2 + 1;
+                  PendingIntent pi = PendingIntent.getBroadcast(ctx, code, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                  setAlarm(am, System.currentTimeMillis() + 10 * 60000L, pi);
+              }
+          }
+          EOF_FILE
+          mkdir -p 'app/src/main/java/com/mohamed/shifts'
+          cat > 'app/src/main/java/com/mohamed/shifts/NotifLogic.java' <<'EOF_FILE'
+          package com.mohamed.shifts;
+
+          import java.util.ArrayList;
+          import java.util.List;
+
+          /** Pure scheduling rules for reminders (unit-tested without Android). */
+          public final class NotifLogic {
+              private NotifLogic() {}
+
+              /** Indices of items to post now: lastAt < at <= now+1s, and not older than {@code maxStale}. */
+              public static List<Integer> due(long[] ats, long lastAt, long now, long maxStale) {
+                  List<Integer> out = new ArrayList<>();
+                  for (int i = 0; i < ats.length; i++) {
+                      if (ats[i] > lastAt && ats[i] <= now + 1000 && now - ats[i] <= maxStale) out.add(i);
+                  }
+                  return out;
+              }
+
+              /** Index of the earliest item strictly after lastAt, or -1. */
+              public static int next(long[] ats, long lastAt) {
+                  int best = -1;
+                  for (int i = 0; i < ats.length; i++) {
+                      if (ats[i] > lastAt && (best < 0 || ats[i] < ats[best])) best = i;
+                  }
+                  return best;
+              }
+          }
+          EOF_FILE
+          mkdir -p 'app/src/main/java/com/mohamed/shifts'
+          cat > 'app/src/main/java/com/mohamed/shifts/NotifReceiver.java' <<'EOF_FILE'
+          package com.mohamed.shifts;
+
+          import android.app.NotificationManager;
+          import android.content.BroadcastReceiver;
+          import android.content.Context;
+          import android.content.Intent;
+
+          public class NotifReceiver extends BroadcastReceiver {
+              @Override
+              public void onReceive(Context ctx, Intent intent) {
+                  String a = intent.getAction();
+                  String key = intent.getStringExtra("key");
+                  String title = intent.getStringExtra("title");
+                  String body = intent.getStringExtra("body");
+                  if (NotifCenter.FIRE.equals(a)) {
+                      if (intent.getBooleanExtra("snoozed", false)) {
+                          if (key != null) NotifCenter.post(ctx, key, title, body);
+                      } else {
+                          NotifCenter.fireDue(ctx);
+                      }
+                  } else if (NotifCenter.DONE.equals(a) || NotifCenter.SNOOZE.equals(a)) {
+                      NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                      if (nm != null && key != null) nm.cancel(key.hashCode());
+                      if (NotifCenter.DONE.equals(a) && key != null) NotifCenter.markDone(ctx, key);
+                      if (NotifCenter.SNOOZE.equals(a)) NotifCenter.snooze(ctx, key, title, body);
                   }
               }
           }
@@ -1706,7 +2184,7 @@ jobs:
           }
           EOF_FILE
 
-      - name: Create project files (31)
+      - name: Create project files (37)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/ShiftCalc.java' <<'EOF_FILE'
@@ -1723,6 +2201,18 @@ jobs:
                   public int startMin = 480, fpS = 450, fpE = 465;
                   public String lang = "ar";
                   public String header = "";
+                  public String mode = "";
+                  public String siteName = "";
+                  public String[] teamNames = {"", "", ""};
+                  public String[] teamShort = {"1", "2", "3"};
+              }
+
+              /** Which team works a given 12h slot. */
+              public static final class Duty {
+                  public int team;
+                  public String type;
+                  public int pos;
+                  public long start, end;
               }
 
               public static final class State {
@@ -1771,7 +2261,7 @@ jobs:
                   return c;
               }
 
-              static String hoursText(long ms, String lang) {
+              public static String hoursText(long ms, String lang) {
                   boolean ar = !"en".equals(lang);
                   long h = ms / 3600000L;
                   if (h < 1) return ar ? "أقل من ساعة" : "<1h";
@@ -1781,6 +2271,47 @@ jobs:
                       return r == 0 ? d + "d" : d + "d " + r + "h";
                   }
                   return ar ? h + " س" : h + "h";
+              }
+
+              private static Duty slot(Config c, long ed, char ty) {
+                  Duty d = new Duty();
+                  d.type = String.valueOf(ty);
+                  for (int t = 0; t < 3; t++) {
+                      int i = idx(c, ed, t);
+                      if (PAT[i] == ty) { d.team = t; d.pos = i % 2 == 0 ? 1 : 2; break; }
+                  }
+                  d.start = calOf(ed).getTimeInMillis() + (c.startMin + (ty == 'N' ? 720 : 0)) * 60000L;
+                  d.end = d.start + 720 * 60000L;
+                  return d;
+              }
+
+              /** Team on duty at {@code now} (site phone). */
+              public static Duty dutyNow(Config c, long now) {
+                  Calendar n = Calendar.getInstance();
+                  n.setTimeInMillis(now);
+                  long today = epochDay(n.get(Calendar.YEAR), n.get(Calendar.MONTH) + 1, n.get(Calendar.DAY_OF_MONTH));
+                  for (long ed = today - 1; ed <= today; ed++) {
+                      for (char ty : new char[]{'D', 'N'}) {
+                          Duty d = slot(c, ed, ty);
+                          if (d.start <= now && now < d.end) return d;
+                      }
+                  }
+                  return slot(c, today, 'D');
+              }
+
+              /** The {@code count} slots after the current one. */
+              public static Duty[] nextSlots(Config c, long now, int count) {
+                  Duty cur = dutyNow(c, now);
+                  Duty[] out = new Duty[count];
+                  Calendar st = Calendar.getInstance();
+                  st.setTimeInMillis(cur.start);
+                  long ed = epochDay(st.get(Calendar.YEAR), st.get(Calendar.MONTH) + 1, st.get(Calendar.DAY_OF_MONTH));
+                  char ty = cur.type.charAt(0);
+                  for (int k = 0; k < count; k++) {
+                      if (ty == 'D') ty = 'N'; else { ty = 'D'; ed++; }
+                      out[k] = slot(c, ed, ty);
+                  }
+                  return out;
               }
 
               public static State compute(Config c, long now) {
@@ -1818,6 +2349,11 @@ jobs:
                       s.days[k] = String.valueOf(PAT[idx(c, today + k, c.team)]);
                       s.dayDow[k] = calOf(today + k).get(Calendar.DAY_OF_WEEK);
                   }
+          EOF_FILE
+
+      - name: Create project files (38)
+        run: |
+          cat >> 'app/src/main/java/com/mohamed/shifts/ShiftCalc.java' <<'EOF_FILE'
                   long offEd = today;
                   if (!"O".equals(s.todayType)) {
                       for (int k = 1; k < 8; k++) if (PAT[idx(c, today + k, c.team)] == 'O') { offEd = today + k; break; }
@@ -1883,9 +2419,6 @@ jobs:
               }
           }
           EOF_FILE
-
-      - name: Create project files (32)
-        run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/WidgetSmall.java' <<'EOF_FILE'
           package com.mohamed.shifts;
@@ -1912,7 +2445,7 @@ jobs:
           }
           EOF_FILE
 
-      - name: Create project files (33)
+      - name: Create project files (39)
         run: |
           mkdir -p 'app/src/main/java/com/mohamed/shifts'
           cat > 'app/src/main/java/com/mohamed/shifts/WidgetUpdater.java' <<'EOF_FILE'
@@ -1963,6 +2496,14 @@ jobs:
                       c.fpE = o.getInt("fpE");
                       c.lang = o.optString("lang", "ar");
                       c.header = o.optString("header", "");
+                      c.mode = o.optString("mode", "");
+                      c.siteName = o.optString("siteName", "");
+                      JSONArray tn = o.optJSONArray("teamNames");
+                      JSONArray ts = o.optJSONArray("teamShort");
+                      for (int i = 0; i < 3; i++) {
+                          if (tn != null && i < tn.length()) c.teamNames[i] = tn.optString(i);
+                          if (ts != null && i < ts.length()) c.teamShort[i] = ts.optString(i);
+                      }
                       return c;
                   } catch (Exception e) {
                       return null;
@@ -1991,6 +2532,8 @@ jobs:
                   v.setOnClickPendingIntent(R.id.wRoot, PendingIntent.getActivity(ctx, kind, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
                   if (c == null || s == null) {
                       v.setTextViewText(R.id.wTitle, "افتح التطبيق مرة");
+                  } else if ("site".equals(c.mode)) {
+                      try { fillSite(ctx, v, c, kind); } catch (Exception e) { v.setTextViewText(R.id.wTitle, "افتح التطبيق مرة"); }
                   } else if (kind == 0) {
                       fillMedium(v, c, s);
                   } else if (kind == 1) {
@@ -2039,6 +2582,11 @@ jobs:
                   return ar(c) ? "⏳ يبدأ بعد " + s.hoursLeftText : "⏳ Starts in " + s.hoursLeftText;
               }
 
+          EOF_FILE
+
+      - name: Create project files (40)
+        run: |
+          cat >> 'app/src/main/java/com/mohamed/shifts/WidgetUpdater.java' <<'EOF_FILE'
               private static int chipBg(ShiftCalc.State s) {
                   if ("ON".equals(s.status)) return R.drawable.chip_on;
                   if ("OFF".equals(s.status)) return R.drawable.chip_off;
@@ -2051,11 +2599,6 @@ jobs:
                   return hm(c.startMin + add) + (ar(c) ? " ← " : " → ") + hm(c.startMin + add + 720) + " · " + fp + hm(c.fpS + add) + "–" + hm(c.fpE + add);
               }
 
-          EOF_FILE
-
-      - name: Create project files (34)
-        run: |
-          cat >> 'app/src/main/java/com/mohamed/shifts/WidgetUpdater.java' <<'EOF_FILE'
               private static void fillMedium(RemoteViews v, ShiftCalc.Config c, ShiftCalc.State s) {
                   Calendar n = Calendar.getInstance();
                   int dw = n.get(Calendar.DAY_OF_WEEK) - 1;
@@ -2099,6 +2642,65 @@ jobs:
               private static PendingIntent tickIntent(Context ctx) {
                   Intent i = new Intent(ctx, WidgetMedium.class).setAction(TICK);
                   return PendingIntent.getBroadcast(ctx, 99, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+              }
+
+              private static void fillSite(Context ctx, RemoteViews v, ShiftCalc.Config c, int kind) {
+                  long now = System.currentTimeMillis();
+                  ShiftCalc.Duty d = ShiftCalc.dutyNow(c, now);
+                  String left = ShiftCalc.hoursText(d.end - now, c.lang);
+                  String tn = c.teamNames[d.team].isEmpty() ? (ar(c) ? "تيم " : "Team ") + (d.team + 1) : c.teamNames[d.team];
+                  if (kind == 0) {
+                      Calendar n = Calendar.getInstance();
+                      int dw = n.get(Calendar.DAY_OF_WEEK) - 1;
+                      v.setTextViewText(R.id.wHeader, "📍 " + c.siteName + " — " + (ar(c) ? DOW_AR[dw] : DOW_EN[dw]) + " " + n.get(Calendar.DAY_OF_MONTH));
+                      v.setTextViewText(R.id.wIcon, icon(d.type));
+                      v.setTextViewText(R.id.wTitle, (ar(c) ? "الآن: " : "Now: ") + tn);
+                      int add = "N".equals(d.type) ? 720 : 0;
+                      v.setTextViewText(R.id.wTimes, typeName(c, d.type) + " · " + posName(c, d.pos) + " · " + hm(c.startMin + add) + (ar(c) ? " ← " : " → ") + hm(c.startMin + add + 720));
+                      v.setTextViewText(R.id.wChip, (ar(c) ? "⏳ ينتهي بعد " : "⏳ Ends in ") + left);
+                      v.setInt(R.id.wChip, "setBackgroundResource", R.drawable.chip_on);
+                      ShiftCalc.Duty[] nx = ShiftCalc.nextSlots(c, now, 5);
+                      for (int k = 0; k < 5; k++) {
+                          v.setTextViewText(DAY_IDS[k], icon(nx[k].type) + "\n" + c.teamShort[nx[k].team]);
+                          v.setInt(DAY_IDS[k], "setBackgroundResource", R.drawable.cell);
+                      }
+                  } else if (kind == 1) {
+                      v.setTextViewText(R.id.wIcon, icon(d.type));
+                      v.setTextViewText(R.id.wTitle, c.teamShort[d.team]);
+                      v.setTextViewText(R.id.wChip, (ar(c) ? "باقي " : "") + left + (ar(c) ? "" : " left"));
+                      v.setInt(R.id.wChip, "setBackgroundResource", R.drawable.chip_on);
+                  } else {
+                      v.setTextViewText(R.id.wHeader, ar(c) ? "التذكير الجاي" : "Next reminder");
+                      String[] r = nextReminder(ctx, now);
+                      if (r == null) {
+                          v.setTextViewText(R.id.wTitle, "—");
+                          v.setTextViewText(R.id.wTimes, "");
+                      } else {
+                          v.setTextViewText(R.id.wTitle, r[0]);
+                          long at = Long.parseLong(r[1]);
+                          Calendar t = Calendar.getInstance();
+                          t.setTimeInMillis(at);
+                          v.setTextViewText(R.id.wTimes, hm(t.get(Calendar.HOUR_OF_DAY) * 60 + t.get(Calendar.MINUTE)) + " · " + (ar(c) ? "بعد " : "in ") + ShiftCalc.hoursText(at - now, c.lang));
+                      }
+                  }
+              }
+
+              private static String[] nextReminder(Context ctx, long now) {
+                  try {
+                      JSONArray a = new JSONArray(ctx.getSharedPreferences(NotifCenter.PREFS, Context.MODE_PRIVATE).getString("list", "[]"));
+                      for (int i = 0; i < a.length(); i++) {
+                          JSONObject o = a.getJSONObject(i);
+                          if (o.getLong("at") > now && !"openapp".equals(o.optString("key"))) return new String[]{o.optString("title"), String.valueOf(o.getLong("at"))};
+                      }
+                  } catch (Exception e) {
+          EOF_FILE
+
+      - name: Create project files (41)
+        run: |
+          cat >> 'app/src/main/java/com/mohamed/shifts/WidgetUpdater.java' <<'EOF_FILE'
+                      // no list yet
+                  }
+                  return null;
               }
 
               static void scheduleNext(Context ctx, long now, ShiftCalc.State s) {
@@ -2181,6 +2783,13 @@ jobs:
           </vector>
           EOF_FILE
           mkdir -p 'app/src/main/res/drawable'
+          cat > 'app/src/main/res/drawable/ic_notif.xml' <<'EOF_FILE'
+          <?xml version="1.0" encoding="utf-8"?>
+          <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+              <path android:fillColor="#FFFFFFFF" android:pathData="M7,2h2v2h6V2h2v2h2a2,2 0,0 1,2 2v14a2,2 0,0 1,-2 2H5a2,2 0,0 1,-2 -2V6a2,2 0,0 1,2 -2h2V2zM5,9v11h14V9H5zM7,11h4v4H7z"/>
+          </vector>
+          EOF_FILE
+          mkdir -p 'app/src/main/res/drawable'
           cat > 'app/src/main/res/drawable/widget_bg.xml' <<'EOF_FILE'
           <?xml version="1.0" encoding="utf-8"?>
           <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
@@ -2190,7 +2799,7 @@ jobs:
           </shape>
           EOF_FILE
 
-      - name: Create project files (35)
+      - name: Create project files (42)
         run: |
           mkdir -p 'app/src/main/res/layout'
           cat > 'app/src/main/res/layout/widget_medium.xml' <<'EOF_FILE'
@@ -2288,7 +2897,7 @@ jobs:
           </resources>
           EOF_FILE
 
-      - name: Create project files (36)
+      - name: Create project files (43)
         run: |
           mkdir -p 'app/src/main/res/xml'
           cat > 'app/src/main/res/xml/widget_medium_info.xml' <<'EOF_FILE'
@@ -2354,5 +2963,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Shifts v4.2 build ${{ github.run_number }}
+          name: Shifts v4.3 build ${{ github.run_number }}
           files: Shifts.apk
